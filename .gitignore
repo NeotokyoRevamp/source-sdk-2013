@@ -1,5 +1,20 @@
 # Files to ignore when considering what GIT should commit.
 
+# !!!
+# Custom ignores go below this!
+# !!!
+
+*.sentinel
+*.vpc_crc
+*.vcxproj.filters
+*.pdb
+*.lib
+*.cache
+
+# !!!
+# Everything below this point is a default ignore from Valve's repo!
+# !!!
+
 # Visual Studio 
 *.suo
 *.user
@@ -53,4 +68,3 @@ config.cfg
 
 # shader files
 *.tmp
-
