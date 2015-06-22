@@ -10,6 +10,9 @@
 *.pdb
 *.lib
 *.cache
+*.lib
+*.unsuccessfulbuild
+
 
 # !!!
 # Everything below this point is a default ignore from Valve's repo!
