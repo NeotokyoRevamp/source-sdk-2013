@@ -33,9 +33,9 @@
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
 
-#ifdef DEBUG	
+//#ifdef DEBUG	// Comment out to use Valve's vanilla test bots
 	#include "hl2mp_bot_temp.h"
-#endif
+//#endif // Comment out to use Valve's vanilla test bots
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -950,7 +950,7 @@ CAmmoDef *GetAmmoDef()
 
 #else
 
-#ifdef DEBUG
+//#ifdef DEBUG // Comment out to use Valve's vanilla test bots
 
 	// Handler for the "bot" command.
 	void Bot_f()
@@ -972,9 +972,10 @@ CAmmoDef *GetAmmoDef()
 	}
 
 
-	ConCommand cc_Bot( "bot", Bot_f, "Add a bot.", FCVAR_CHEAT );
+	//ConCommand cc_Bot( "bot", Bot_f, "Add a bot.", FCVAR_CHEAT ); // Original line. Gives bot_add a cheat flag, presumably.
+	ConCommand cc_Bot( "bot", Bot_f, "Add a bot."/*, FCVAR_CHEAT */); // Modified line. No cheat flag for bot_add.
 
-#endif
+//#endif // Comment out to use Valve's vanilla test bots
 
 	bool CHL2MPRules::FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon )
 	{		

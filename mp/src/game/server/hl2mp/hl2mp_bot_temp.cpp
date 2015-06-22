@@ -21,7 +21,7 @@
 void ClientPutInServer( edict_t *pEdict, const char *playername );
 void Bot_Think( CHL2MP_Player *pBot );
 
-#ifdef DEBUG
+//#ifdef DEBUG // Comment out to enable Valve's vanilla test bots
 
 ConVar bot_forcefireweapon( "bot_forcefireweapon", "", 0, "Force bots with the specified weapon to fire." );
 ConVar bot_forceattack2( "bot_forceattack2", "0", 0, "When firing, use attack2." );
@@ -431,5 +431,5 @@ void Bot_Think( CHL2MP_Player *pBot )
 
 
 
-#endif
+//#endif // Comment out to enable Valve's vanilla test bots
 

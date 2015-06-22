@@ -184,10 +184,10 @@ void GameStartFrame( void )
 
 	gpGlobals->teamplay = (teamplay.GetInt() != 0);
 
-#ifdef DEBUG
+//#ifdef DEBUG // Comment out to enable Valve's vanilla test bots
 	extern void Bot_RunAll();
 	Bot_RunAll();
-#endif
+//#endif // Comment out to enable Valve's vanilla test bots
 }
 
 //=========================================================
