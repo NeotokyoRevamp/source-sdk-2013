@@ -13,6 +13,7 @@
 		"test_hardware"		1
 	}
 	supportsvr	1
+	nodegraph 0
 
 
 	FileSystem
