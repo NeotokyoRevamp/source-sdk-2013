@@ -19,7 +19,7 @@ public:
 
 	// Input function
 	void InputTick( inputdata_t &inputData );
-
+	
 private:
 
 	int	m_nThreshold;	// Count at which to fire our output
