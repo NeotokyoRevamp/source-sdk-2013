@@ -44,8 +44,6 @@ public:
 
 	float		GetRange( void );
 	float		GetFireRate( void );
-
-	void		AddViewKick( void );
 	float		GetDamageForActivity( Activity hitActivity );
 	void		SecondaryAttack( void )	{	return;	}
 
@@ -56,7 +54,6 @@ public:
 #ifndef CLIENT_DLL
 	virtual void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	void HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
-	int WeaponMeleeAttack1Condition( float flDot, float flDist );
 #endif
 
 	CWeaponKnife( const CWeaponKnife & );

@@ -80,26 +80,6 @@ float CWeaponKnife::GetDamageForActivity( Activity hitActivity )
 	return 25.0f;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: Add in a view kick for this weapon
-//-----------------------------------------------------------------------------
-void CWeaponKnife::AddViewKick( void )
-{
-	CBasePlayer *pPlayer  = ToBasePlayer( GetOwner() );
-	
-	if ( pPlayer == NULL )
-		return;
-
-	QAngle punchAng;
-
-	punchAng.x = SharedRandomFloat( "crowbarpax", 1.0f, 2.0f );
-	punchAng.y = SharedRandomFloat( "crowbarpay", -2.0f, -1.0f );
-	punchAng.z = 0.0f;
-	
-	pPlayer->ViewPunch( punchAng ); 
-}
-
-
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Animation event handlers
@@ -150,62 +130,7 @@ void CWeaponKnife::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCha
 		break;
 	}
 }
-
-//-----------------------------------------------------------------------------
-// Attempt to lead the target (needed because citizens can't hit manhacks with the crowbar!)
-// 
-// TODO: Do we need this for Neotokyo? (Rain)
-//-----------------------------------------------------------------------------
-ConVar sk_crowbar_lead_time( "sk_crowbar_lead_time", "0.9" );
-
-int CWeaponKnife::WeaponMeleeAttack1Condition( float flDot, float flDist )
-{
-	// Attempt to lead the target (needed because citizens can't hit manhacks with the crowbar!)
-	CAI_BaseNPC *pNPC	= GetOwner()->MyNPCPointer();
-	CBaseEntity *pEnemy = pNPC->GetEnemy();
-	if (!pEnemy)
-		return COND_NONE;
-
-	Vector vecVelocity;
-	vecVelocity = pEnemy->GetSmoothedVelocity( );
-
-	// Project where the enemy will be in a little while
-	float dt = sk_crowbar_lead_time.GetFloat();
-	dt += SharedRandomFloat( "crowbarmelee1", -0.3f, 0.2f );
-	if ( dt < 0.0f )
-		dt = 0.0f;
-
-	Vector vecExtrapolatedPos;
-	VectorMA( pEnemy->WorldSpaceCenter(), dt, vecVelocity, vecExtrapolatedPos );
-
-	Vector vecDelta;
-	VectorSubtract( vecExtrapolatedPos, pNPC->WorldSpaceCenter(), vecDelta );
-
-	if ( fabs( vecDelta.z ) > 70 )
-	{
-		return COND_TOO_FAR_TO_ATTACK;
-	}
-
-	Vector vecForward = pNPC->BodyDirection2D( );
-	vecDelta.z = 0.0f;
-	float flExtrapolatedDist = Vector2DNormalize( vecDelta.AsVector2D() );
-	if ((flDist > 64) && (flExtrapolatedDist > 64))
-	{
-		return COND_TOO_FAR_TO_ATTACK;
-	}
-
-	float flExtrapolatedDot = DotProduct2D( vecDelta.AsVector2D(), vecForward.AsVector2D() );
-	if ((flDot < 0.7) && (flExtrapolatedDot < 0.7))
-	{
-		return COND_NOT_FACING_ATTACK;
-	}
-
-	return COND_CAN_MELEE_ATTACK1;
-}
-
 #endif
-
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 
