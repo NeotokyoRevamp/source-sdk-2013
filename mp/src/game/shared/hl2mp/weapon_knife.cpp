@@ -26,8 +26,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define	KNIFE_RANGE	75.0f
-#define	KNIFE_REFIRE	0.4f
+#define	KNIFE_RANGE	48.0f + 3.0f // Neotokyo range is 48 units ish. However, we need about 3 units more for the NT reach, possibly because viewmodel positioning? (Rain)
+#define	KNIFE_REFIRE	0.534f // Neotokyo refire rate is ~0.534 seconds
 
 
 //-----------------------------------------------------------------------------
@@ -47,6 +47,7 @@ PRECACHE_WEAPON_REGISTER( weapon_knife );
 
 #ifndef CLIENT_DLL
 
+// TODO: Animations dun goof'd, except the idle animation. (Rain)
 acttable_t	CWeaponKnife::m_acttable[] = 
 {
 	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_SLAM, true },
@@ -77,15 +78,20 @@ CWeaponKnife::CWeaponKnife( void )
 //-----------------------------------------------------------------------------
 float CWeaponKnife::GetDamageForActivity( Activity hitActivity )
 {
-	return 25.0f;
+	return 25.0f; // Assault class base damage of 25hp
 }
 
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Animation event handlers
+//
+// TODO: This doesn't seem to be called at all? Because animation isnt working?
+// However, weapon sounds work just fine. Are the WeaponSound parts here pointless? (Rain)
 //-----------------------------------------------------------------------------
 void CWeaponKnife::HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
+	Msg( "CWeaponKnife::HandleAnimEventMeleeHit\n ");
+
 	// Trace up or down based on where the enemy is...
 	// But only if we're basically facing that direction
 	Vector vecDirection;
@@ -99,7 +105,12 @@ void CWeaponKnife::HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatChar
 	// did I hit someone?
 	if ( pHurt )
 	{
-		// play sound
+		Msg( "Hit!\n ");
+
+		// do the swooshy noise even if hit
+		WeaponSound( MELEE_MISS );
+
+		// play hit sound
 		WeaponSound( MELEE_HIT );
 
 		// Fake a trace impact, so the effects work out like a player's crowbaw
@@ -109,10 +120,10 @@ void CWeaponKnife::HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatChar
 	}
 	else
 	{
+		Msg( "Miss!\n ");
 		WeaponSound( MELEE_MISS );
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Animation event
