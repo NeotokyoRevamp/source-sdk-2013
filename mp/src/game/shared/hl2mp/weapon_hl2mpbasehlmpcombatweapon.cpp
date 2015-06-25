@@ -36,7 +36,6 @@ BEGIN_DATADESC( CBaseHL2MPCombatWeapon )
 
 	DEFINE_FIELD( m_bLowered,			FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flRaiseTime,		FIELD_TIME ),
-	DEFINE_FIELD( m_flHolsterTime,		FIELD_TIME ),
 
 END_DATADESC()
 
@@ -45,35 +44,9 @@ END_DATADESC()
 BEGIN_PREDICTION_DATA( CBaseHL2MPCombatWeapon )
 END_PREDICTION_DATA()
 
-extern ConVar sk_auto_reload_time;
-
 CBaseHL2MPCombatWeapon::CBaseHL2MPCombatWeapon( void )
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CBaseHL2MPCombatWeapon::ItemHolsterFrame( void )
-{
-	BaseClass::ItemHolsterFrame();
-
-	// Must be player held
-	if ( GetOwner() && GetOwner()->IsPlayer() == false )
-		return;
-
-	// We can't be active
-	if ( GetOwner()->GetActiveWeapon() == this )
-		return;
-
-	// If it's been longer than three seconds, reload
-	if ( ( gpGlobals->curtime - m_flHolsterTime ) > sk_auto_reload_time.GetFloat() )
-	{
-		// Just load the clip with no animations
-		FinishReload();
-		m_flHolsterTime = gpGlobals->curtime;
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -142,22 +115,6 @@ bool CBaseHL2MPCombatWeapon::Deploy( void )
 // Purpose: 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CBaseHL2MPCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
-{
-	if ( BaseClass::Holster( pSwitchingTo ) )
-	{
-		SetWeaponVisible( false );
-		m_flHolsterTime = gpGlobals->curtime;
-		return true;
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Output : Returns true on success, false on failure.
-//-----------------------------------------------------------------------------
 bool CBaseHL2MPCombatWeapon::WeaponShouldBeLowered( void )
 {
 	// Can't be in the middle of another animation
@@ -208,6 +165,38 @@ void CBaseHL2MPCombatWeapon::WeaponIdle( void )
 		else if ( HasWeaponIdleTimeElapsed() ) 
 		{
 			SendWeaponAnim( ACT_VM_IDLE );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Override for mag toss
+//-----------------------------------------------------------------------------
+void CBaseHL2MPCombatWeapon::FinishReload(void)
+{
+	CBaseCombatCharacter *pOwner = GetOwner();
+
+	if (pOwner)
+	{
+		// If I use primary clips, reload primary
+		if ( UsesClipsForAmmo1() )
+		{
+			int primary	= MIN( GetMaxClip1(), pOwner->GetAmmoCount(m_iPrimaryAmmoType));	
+			m_iClip1 = primary;
+			pOwner->RemoveAmmo( primary, m_iPrimaryAmmoType);
+		}
+
+		// If I use secondary clips, reload secondary
+		if ( UsesClipsForAmmo2() )
+		{
+			int secondary = MIN( GetMaxClip2(), pOwner->GetAmmoCount(m_iSecondaryAmmoType));
+			m_iClip2 = secondary;
+			pOwner->RemoveAmmo( secondary, m_iSecondaryAmmoType );
+		}
+
+		if ( m_bReloadsSingly )
+		{
+			m_bInReload = false;
 		}
 	}
 }
