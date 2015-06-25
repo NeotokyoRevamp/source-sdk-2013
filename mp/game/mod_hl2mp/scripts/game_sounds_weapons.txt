@@ -1623,3 +1623,78 @@
 	"soundlevel"				"SNDLVL_NORM"
 	"wave"						"weapons/tachi/tachi_empty.wav"
 }
+
+// Kyla
+"Weapon_Kyla.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/kyla/kyla_fire.wav"
+}
+
+"Weapon_Kyla.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98, 102"
+	"wave"						"^weapons/kyla/kyla_fire.wav"
+}
+
+"Weapon_Kyla.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						")weapons/kyla/kyla_reload.wav"
+}
+
+"Weapon_Kyla.OpenLoader"
+{
+	// We don't have a separate sound for this, unless we wanna use the 357 sound.
+	// Volume set to 0 for now.
+	"channel"					"CHAN_ITEM"
+	"volume"					"0.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/357/357_reload1.wav"
+}
+
+"Weapon_Kyla.RemoveLoader"
+{
+	// We don't have a separate sound for this, unless we wanna use the 357 sound.
+	// Volume set to 0 for now.
+	"channel"					"CHAN_ITEM"
+	"volume"					"0.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/357/357_reload4.wav"
+}
+
+"Weapon_Kyla.ReplaceLoader"
+{
+	// We don't have a separate sound for this, unless we wanna use the 357 sound.
+	// Volume set to 0 for now.
+	"channel"					"CHAN_ITEM"
+	"volume"					"0.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/357/357_reload3.wav"
+}
+
+"Weapon_Kyla.Spin"
+{
+	// We don't have a separate sound for this, unless we wanna use the 357 sound.
+	// Volume set to 0 for now.
+	"channel"					"CHAN_ITEM"
+	"volume"					"0.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/357/357_spin1.wav"
+}
+
+"Weapon_Kyla.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/kyla/kyla_empty.wav"
+}
