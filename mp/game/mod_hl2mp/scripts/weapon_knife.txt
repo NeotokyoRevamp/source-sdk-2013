@@ -3,12 +3,12 @@
 WeaponData
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
-	"printname"	"#HL2_Crowbar"
+	"printname"	"Knife"
 	"viewmodel"				"models/weapons/v_jinrai_knife.mdl"
 	"playermodel"			"models/weapons/w_knife.mdl"
 	"anim_prefix"			"crowbar"
-	"bucket"				"1"
-	"bucket_position"		"4"
+	"bucket"				"2"
+	"bucket_position"		"0"
 
 	"clip_size"				"-1"
 	"primary_ammo"			"None"
