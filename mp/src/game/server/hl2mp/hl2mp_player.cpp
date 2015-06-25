@@ -198,9 +198,11 @@ void CHL2MP_Player::GiveDefaultItems( void )
 {
 	EquipSuit();
 
+	SetArmorValue(100);
+
 	// Give ammo
 	CBasePlayer::GiveAmmo( 255,	"Pistol");
-
+	
 	// Give default weapons
 	GiveNamedItem("weapon_knife");
 	GiveNamedItem("weapon_tachi");
