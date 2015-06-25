@@ -203,10 +203,12 @@ void CHL2MP_Player::GiveDefaultItems( void )
 
 	// Give default weapons
 	GiveNamedItem("weapon_knife");
+	GiveNamedItem("weapon_tachi");
 
 	const char *szDefaultWeaponName = engine->GetClientConVarValue( engine->IndexOfEdict( edict() ), "cl_defaultweapon" );
 
 	CBaseCombatWeapon *pDefaultWeapon = Weapon_OwnsThisType( szDefaultWeaponName );
+
 
 	// Switch to default weapon
 	if ( pDefaultWeapon )
