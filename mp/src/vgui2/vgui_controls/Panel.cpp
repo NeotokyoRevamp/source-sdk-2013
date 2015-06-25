@@ -3428,7 +3428,9 @@ bool Panel::RequestFocusNext(VPANEL panel)
 void Panel::RequestFocus(int direction)
 {
 	// NOTE: This doesn't make any sense if we don't have keyboard input enabled
-	Assert( ( IsX360() || IsConsoleStylePanel() ) || IsKeyBoardInputEnabled() );
+	// This keeps throwing asserts during scoreboard open, is kb input temporarily disabled then? Removed entire assert for now. (Rain)
+	//Assert( ( IsX360() || IsConsoleStylePanel() ) || IsKeyBoardInputEnabled() );
+
 	//	ivgui()->DPrintf2("RequestFocus(%s, %s)\n", GetName(), GetClassName());
 	OnRequestFocus(GetVPanel(), NULL);
 }

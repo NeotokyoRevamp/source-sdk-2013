@@ -1565,3 +1565,61 @@
 	"soundlevel"  	"SNDLVL_70dB"
 	"wave"	"weapons/tripwire/mine_activate.wav"
 }
+
+// NT:R weapons
+
+// Knife
+"Weapon_Knife.Melee_Swing"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"1.0"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"wave"			"^weapons/melee_swing1.wav"
+	"CompatibilityAttenuation"	"1.4"
+	"pitch"		"PITCH_NORM"
+}
+
+// Tachi
+"Weapon_Tachi.Single"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"1.0"
+	"soundlevel"	"SNDLVL_150dB"
+	"pitch"			"98,102"
+	"wave"			"^weapons/tachi/tachi_fire.wav"
+}
+
+"Weapon_Tachi.NPC_Single"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"1.0"
+	"soundlevel"	"SNDLVL_150dB"
+	"pitch"			"98,102"
+	"wave"			"^weapons/tachi/tachi_fire.wav"
+}
+
+"Weapon_Tachi.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/tachi/tachi_reload.wav"
+}
+
+"Weapon_Tachi.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						")weapons/tachi/tachi_reload.wav"
+}
+
+"Weapon_Tachi.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/tachi/tachi_empty.wav"
+}
