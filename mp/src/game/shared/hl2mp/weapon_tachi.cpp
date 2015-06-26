@@ -20,7 +20,7 @@
 #define	TACHI_FASTEST_DRY_REFIRE_TIME	0.2f
 
 #define	TACHI_ACCURACY_SHOT_PENALTY_TIME		0.2f	// Applied amount of time each shot adds to the time we must recover from
-#define	TACHI_ACCURACY_MAXIMUM_PENALTY_TIME		1.5f	// Maximum penalty to deal out
+#define	TACHI_ACCURACY_MAXIMUM_PENALTY_TIME		2.0f	// Maximum penalty to deal out
 
 #ifdef CLIENT_DLL
 #define CWeaponTachi C_WeaponTachi
@@ -65,7 +65,7 @@ public:
 											1.0f ); 
 
 			// We lerp from very accurate to inaccurate over time
-		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_10DEGREES, ramp, cone );
+		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_8DEGREES, ramp, cone );
 
 		return cone;
 	}
