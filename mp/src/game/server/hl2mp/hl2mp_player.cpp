@@ -161,37 +161,18 @@ void CHL2MP_Player::GiveAllItems( void )
 {
 	EquipSuit();
 
-	CBasePlayer::GiveAmmo( 255,	"Pistol");
-	CBasePlayer::GiveAmmo( 255,	"AR2" );
-	CBasePlayer::GiveAmmo( 5,	"AR2AltFire" );
-	CBasePlayer::GiveAmmo( 255,	"SMG1");
-	CBasePlayer::GiveAmmo( 1,	"smg1_grenade");
-	CBasePlayer::GiveAmmo( 255,	"Buckshot");
-	CBasePlayer::GiveAmmo( 32,	"357" );
-	CBasePlayer::GiveAmmo( 3,	"rpg_round");
+	CBasePlayer::GiveAmmo(255, "Pistol"); // tachi and milso
+	CBasePlayer::GiveAmmo(255, "SMG1"); // mpn
+	CBasePlayer::GiveAmmo(255, "357"); // kyla
 
-	CBasePlayer::GiveAmmo( 1,	"grenade" );
-	CBasePlayer::GiveAmmo( 2,	"slam" );
+	GiveNamedItem("weapon_knife");
 
-	GiveNamedItem( "weapon_crowbar" );
-	GiveNamedItem( "weapon_stunstick" );
-	GiveNamedItem( "weapon_pistol" );
-	GiveNamedItem( "weapon_357" );
+	GiveNamedItem("weapon_kyla");
+	GiveNamedItem("weapon_milso");
+	GiveNamedItem("weapon_tachi");
 
-	GiveNamedItem( "weapon_smg1" );
-	GiveNamedItem( "weapon_ar2" );
-	
-	GiveNamedItem( "weapon_shotgun" );
-	GiveNamedItem( "weapon_frag" );
-	
-	GiveNamedItem( "weapon_crossbow" );
-	
-	GiveNamedItem( "weapon_rpg" );
-
-	GiveNamedItem( "weapon_slam" );
-
-	GiveNamedItem( "weapon_physcannon" );
-	
+	GiveNamedItem("weapon_mpn45");
+	GiveNamedItem("weapon_mpn45s");
 }
 
 void CHL2MP_Player::GiveDefaultItems( void )
