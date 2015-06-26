@@ -13,7 +13,7 @@ WeaponData
 	"clip_size"				"30"
 	"clip2_size"			"-1"
 
-	"default_clip"			"45"
+	"default_clip"			"30"
 	"default_clip2"			"-1"
 
 	"primary_ammo"			"SMG1"
