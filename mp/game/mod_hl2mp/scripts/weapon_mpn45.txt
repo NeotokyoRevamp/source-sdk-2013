@@ -7,7 +7,7 @@ WeaponData
 	"viewmodel"				"models/weapons/v_jinrai_mpn.mdl"
 	"playermodel"			"models/weapons/w_mpn.mdl"
 	"anim_prefix"			"smg2"
-	"bucket"				"2"
+	"bucket"				"0"
 	"bucket_position"		"0"
 
 	"clip_size"				"30"
@@ -17,7 +17,7 @@ WeaponData
 	"default_clip2"			"-1"
 
 	"primary_ammo"			"SMG1"
-	"secondary_ammo"		"SMG1_Grenade"
+	"secondary_ammo"		"None"
 
 	"weight"				"3"
 	"item_flags"			"0"
