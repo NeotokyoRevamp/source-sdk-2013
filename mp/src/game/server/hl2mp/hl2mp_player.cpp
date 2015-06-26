@@ -545,6 +545,14 @@ void CHL2MP_Player::PreThink( void )
 	//Reset bullet force accumulator, only lasts one frame
 	m_vecTotalBulletForce = vec3_origin;
 	SetLocalAngles( vOldAngles );
+
+	if (m_afButtonPressed & IN_DROP)
+	{
+		if (IsAlive() && !IsInAVehicle() && HasWeapons())
+		{
+			DropActiveWeapon();
+		}
+	}
 }
 
 void CHL2MP_Player::PostThink( void )
@@ -1192,6 +1200,20 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 	BaseClass::Weapon_Drop( pWeapon, pvecTarget, pVelocity );
 }
 
+void CHL2MP_Player::DropActiveWeapon(void)
+{
+	Vector VecForward;
+
+	EyeVectors(&VecForward, NULL, NULL);
+
+	VecForward *= 300.0f;
+
+	CBaseCombatWeapon *pKnife = Weapon_OwnsThisType("weapon_knife");
+	if (GetActiveWeapon() == pKnife) // Don't drop knife
+		return;
+
+	Weapon_Drop(GetActiveWeapon(), NULL, &VecForward);
+}
 
 void CHL2MP_Player::DetonateTripmines( void )
 {
