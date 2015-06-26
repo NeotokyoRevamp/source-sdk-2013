@@ -1,0 +1,64 @@
+// Milso
+
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"	"Milso"
+	"viewmodel"			"models/weapons/v_jinrai_milso.mdl"
+	"playermodel"		"models/weapons/w_milso.mdl"
+	"anim_prefix"		"pistol"
+	"bucket"			"1"
+	"bucket_position"	"0"
+
+	"clip_size"			"12"
+	"primary_ammo"		"Pistol"
+	"secondary_ammo"	"None"
+
+	"weight"			"2"
+	"item_flags"		"0"
+	"damage"			"16" // Assault mid damage is 16hp per 1 shot
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+
+		"reload"		"Weapon_Milso.Reload"
+		"reload_npc"	"Weapon_Milso.NPC_Reload"
+		"empty"			"Weapon_Milso.Empty"
+		"single_shot"	"Weapon_Milso.Single"
+		"single_shot_npc"	"Weapon_Milso.NPC_Single"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"d"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"d"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIcons"
+				"character"	"p"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}
