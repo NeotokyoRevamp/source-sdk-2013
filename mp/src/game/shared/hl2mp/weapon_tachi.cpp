@@ -40,11 +40,11 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void	Precache( void );
 	void	ItemPostFrame( void );
 	void	ItemPreFrame( void );
 	void	ItemBusyFrame( void );
 	void	PrimaryAttack( void );
+	void	SecondaryAttack(void);
 	void	AddViewKick( void );
 	void	DryFire( void );
 
@@ -65,7 +65,7 @@ public:
 											1.0f ); 
 
 			// We lerp from very accurate to inaccurate over time
-		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone );
+		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_10DEGREES, ramp, cone );
 
 		return cone;
 	}
@@ -153,22 +153,8 @@ CWeaponTachi::CWeaponTachi( void )
 	m_flSoonestPrimaryAttack = gpGlobals->curtime;
 	m_flAccuracyPenalty = 0.0f;
 
-	m_fMinRange1		= 24;
-	m_fMaxRange1		= 1500;
-	m_fMinRange2		= 24;
-	m_fMaxRange2		= 200;
-
 	m_bFiresUnderwater	= true;
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponTachi::Precache( void )
-{
-	BaseClass::Precache();
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -211,6 +197,77 @@ void CWeaponTachi::PrimaryAttack( void )
 	}
 
 	BaseClass::PrimaryAttack();
+
+	// Add an accuracy penalty which can move past our maximum penalty time if we're really spastic
+	m_flAccuracyPenalty += TACHI_ACCURACY_SHOT_PENALTY_TIME;
+}
+
+void CWeaponTachi::SecondaryAttack(void)
+{
+	// Only the player fires this way so we can cast
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	// No ammo
+	if ((UsesClipsForAmmo1() && m_iClip1 == 0) || (!UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType)))
+	{
+		m_flNextSecondaryAttack = gpGlobals->curtime + TACHI_FASTEST_DRY_REFIRE_TIME;
+
+		DryFire();
+
+		return;
+	}
+
+	int iBulletsToFire = 1; // Can change this to higher number for burst fire, just edit the rate of fire
+
+	if (iBulletsToFire > m_iClip1) // Shouldn't happen without more than one bullet
+	{
+		iBulletsToFire = m_iClip1;
+	}
+
+	// MUST call sound before removing a round from the clip of a CMachineGun
+	WeaponSound(SINGLE);
+
+	m_iClip1 -= iBulletsToFire;
+
+	pPlayer->DoMuzzleFlash();
+	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+
+	// player "shoot" animation
+	pPlayer->SetAnimation(PLAYER_ATTACK1);
+
+	if ((gpGlobals->curtime - m_flLastAttackTime) > 0.5f)
+	{
+		m_nNumShotsFired = 0;
+	}
+	else
+	{
+		m_nNumShotsFired++;
+	}
+
+	Vector vecSrc = pPlayer->Weapon_ShootPosition();
+	Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
+
+	FireBulletsInfo_t info(iBulletsToFire, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType);
+	info.m_pAttacker = pPlayer;
+
+	// Fire the bullets, and force the first shot to be perfectly accuracy
+	pPlayer->FireBullets(info);
+
+	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+	{
+		// HEV suit - indicate out of ammo condition
+		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+	}
+
+	BaseClass::PrimaryAttack();
+
+	m_flNextPrimaryAttack = gpGlobals->curtime + TACHI_FASTEST_REFIRE_TIME;
+	m_flNextSecondaryAttack = gpGlobals->curtime + TACHI_FASTEST_REFIRE_TIME;
 
 	// Add an accuracy penalty which can move past our maximum penalty time if we're really spastic
 	m_flAccuracyPenalty += TACHI_ACCURACY_SHOT_PENALTY_TIME;
@@ -324,14 +381,23 @@ bool CWeaponTachi::Reload( void )
 void CWeaponTachi::AddViewKick( void )
 {
 	CBasePlayer *pPlayer  = ToBasePlayer( GetOwner() );
-	
-	if ( pPlayer == NULL )
+
+	if (pPlayer == NULL)
 		return;
 
 	QAngle	viewPunch;
 
-	viewPunch.x = SharedRandomFloat( "tachipax", 0.25f, 0.5f );
-	viewPunch.y = SharedRandomFloat( "tachipay", -.6f, .6f );
+	float maxpunchx = .5f;
+	float maxpunchy = .6f;
+
+	if (pPlayer->m_nButtons & IN_ATTACK2 && m_nNumShotsFired >= 4)
+	{
+		maxpunchx *= 2.5;
+		maxpunchy *= 2.5;
+	}
+
+	viewPunch.x = SharedRandomFloat("tachipax", .25, maxpunchx);
+	viewPunch.y = SharedRandomFloat("tachipay", -.5, maxpunchy);
 	viewPunch.z = 0.0f;
 
 	//Add it to the view punch
