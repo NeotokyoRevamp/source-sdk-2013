@@ -1871,3 +1871,68 @@
 	"soundlevel"				"SNDLVL_NORM"
 	"wave"						"weapons/srm/srm_empty.wav"
 }
+
+// Jitte
+"Weapon_Jitte.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/jitte/jitte_fire.wav"
+}
+
+"Weapon_Jitte.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/jitte/jitte_fire.wav"
+}
+
+"Weapon_Jittes.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/jitte/jitte_scoped_fire.wav"
+}
+
+"Weapon_Jittes.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/jitte/jitte_scoped_fire.wav"
+}
+
+"Weapon_Jitte.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/jitte/jitte_reload.wav"
+}
+
+"Weapon_Jitte.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						")weapons/jitte/jitte_reload.wav"
+}
+
+"Weapon_Jitte.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/jitte/jitte_empty.wav"
+}
