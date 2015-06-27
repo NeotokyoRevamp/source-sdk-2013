@@ -161,9 +161,10 @@ void CHL2MP_Player::GiveAllItems( void )
 {
 	EquipSuit();
 
-	CBasePlayer::GiveAmmo(255, "Pistol"); // tachi and milso
-	CBasePlayer::GiveAmmo(255, "SMG1"); // mpn
+	// TODO: Give each weapon unique ammunitions (Rain)
+	CBasePlayer::GiveAmmo(255, "Pistol"); // tachi, milso
 	CBasePlayer::GiveAmmo(255, "357"); // kyla
+	CBasePlayer::GiveAmmo(255, "SMG1"); // primary weapons
 
 	GiveNamedItem("weapon_knife");
 
@@ -177,6 +178,9 @@ void CHL2MP_Player::GiveAllItems( void )
 	GiveNamedItem("weapon_srms");
 	GiveNamedItem("weapon_jitte");
 	GiveNamedItem("weapon_jittes");
+	GiveNamedItem("weapon_zr68c");
+	GiveNamedItem("weapon_zr68l");
+	GiveNamedItem("weapon_zr68s");
 }
 
 void CHL2MP_Player::GiveDefaultItems( void )
