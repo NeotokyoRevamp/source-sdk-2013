@@ -2116,3 +2116,68 @@
 		"wave"					")weapons/murata/murata_insert_shell3.wav"
 	}
 }
+
+"Weapon_MX.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/mx/mx_fire.wav"
+}
+
+"Weapon_MX.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/mx/mx_fire.wav"
+}
+
+"Weapon_MXs.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/mx/mxs_fire.wav"
+}
+
+"Weapon_MXs.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/mx/mxs_fire.wav"
+}
+
+"Weapon_MX.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/mx/mx_reload.wav"
+}
+
+"Weapon_MX.NPC_Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						")weapons/mx/mx_reload.wav"
+}
+
+"Weapon_MX.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/mx/mx_empty.wav"
+}
