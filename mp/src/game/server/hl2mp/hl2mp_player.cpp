@@ -173,6 +173,10 @@ void CHL2MP_Player::GiveAllItems( void )
 
 	GiveNamedItem("weapon_mpn45");
 	GiveNamedItem("weapon_mpn45s");
+	GiveNamedItem("weapon_srm");
+	GiveNamedItem("weapon_srms");
+	GiveNamedItem("weapon_jitte");
+	GiveNamedItem("weapon_jittes");
 }
 
 void CHL2MP_Player::GiveDefaultItems( void )
