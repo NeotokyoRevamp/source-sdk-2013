@@ -10,10 +10,10 @@ WeaponData
 	"bucket"				"0"
 	"bucket_position"		"3"
 
-	"clip_size"				"30"
+	"clip_size"				"50"
 	"clip2_size"			"-1"
 
-	"default_clip"			"30"
+	"default_clip"			"50"
 	"default_clip2"			"-1"
 
 	"primary_ammo"			"SMG1"
