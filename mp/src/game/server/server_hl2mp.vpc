@@ -295,6 +295,7 @@ $Project "Server (HL2MP)"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_slam.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_slam.h"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_smg1.cpp"
+				$File	"$SRCDIR\game\shared\hl2mp\weapon_srm.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_stunstick.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_tachi.cpp"
 			}
