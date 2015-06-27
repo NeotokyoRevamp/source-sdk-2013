@@ -8,7 +8,7 @@ WeaponData
 	"playermodel"		"models/weapons/w_tachi.mdl"
 	"anim_prefix"		"pistol"
 	"bucket"			"1"
-	"bucket_position"	"0"
+	"bucket_position"	"1"
 
 	"clip_size"			"15"
 	"primary_ammo"		"Pistol"
