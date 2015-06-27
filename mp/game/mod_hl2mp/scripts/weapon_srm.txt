@@ -1,4 +1,4 @@
-// MPN, non-silenced
+// SRM
 
 WeaponData
 {
