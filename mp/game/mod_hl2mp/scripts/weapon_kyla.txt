@@ -23,8 +23,10 @@ WeaponData
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"empty"		"Weapon_Kyla.Empty"
+		"empty"			"Weapon_Kyla.Empty"
 		"single_shot"	"Weapon_Kyla.Single"
+		"reload"		"Weapon_Kyla.Reload"
+		"reload_npc"	"Weapon_Kyla.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

@@ -20,8 +20,12 @@ WeaponData
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"single_shot"		"Weapon_Crowbar.Single"
+		"single_shot"		"Weapon_Knife.Melee_Swing"
+		
+		"melee_hit"			"Weapon_Knife.Melee_Swing" // Do the swoosh noise even if the hit lands
 		"melee_hit"			"Weapon_Crowbar.Melee_Hit"
+		
+		"melee_hit_world"	"Weapon_Knife.Melee_Swing" // Do the swoosh noise even if the hit lands
 		"melee_hit_world"	"Weapon_Crowbar.Melee_HitWorld"
 	}
 

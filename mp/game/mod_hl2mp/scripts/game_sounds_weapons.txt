@@ -1566,9 +1566,13 @@
 	"wave"	"weapons/tripwire/mine_activate.wav"
 }
 
+//--------------------------------------------------------------
 // NT:R weapons
+//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 // Knife
+//--------------------------------------------------------------
 "Weapon_Knife.Melee_Swing"
 {
 	"channel"		"CHAN_WEAPON"
@@ -1579,7 +1583,9 @@
 	"pitch"		"PITCH_NORM"
 }
 
+//--------------------------------------------------------------
 // Tachi
+//--------------------------------------------------------------
 "Weapon_Tachi.Single"
 {
 	"channel"		"CHAN_WEAPON"
@@ -1624,7 +1630,9 @@
 	"wave"						"weapons/tachi/tachi_empty.wav"
 }
 
+//--------------------------------------------------------------
 // Kyla
+//--------------------------------------------------------------
 "Weapon_Kyla.Single"
 {
 	"channel"					"CHAN_WEAPON"
@@ -1699,7 +1707,9 @@
 	"wave"						"weapons/kyla/kyla_empty.wav"
 }
 
+//--------------------------------------------------------------
 // Milso
+//--------------------------------------------------------------
 "Weapon_Milso.Single"
 {
 	"channel"					"CHAN_WEAPON"
@@ -1744,7 +1754,9 @@
 	"wave"						"weapons/milso/milso_empty.wav"
 }
 
-// MPN
+//--------------------------------------------------------------
+// MPN45 / MPN45s
+//--------------------------------------------------------------
 "Weapon_MPN45.Single"
 {
 	"channel"					"CHAN_WEAPON"
@@ -1807,7 +1819,9 @@
 	"wave"						"weapons/mpn45/mpn45_empty.wav"
 }
 
-// SRM
+//--------------------------------------------------------------
+// SRM / SRM-S
+//--------------------------------------------------------------
 "Weapon_SRM.Single"
 {
 	"channel"					"CHAN_WEAPON"
@@ -1872,7 +1886,9 @@
 	"wave"						"weapons/srm/srm_empty.wav"
 }
 
-// Jitte
+//--------------------------------------------------------------
+// Jitte / JitteS
+//--------------------------------------------------------------
 "Weapon_Jitte.Single"
 {
 	"channel"					"CHAN_WEAPON"
@@ -1935,4 +1951,88 @@
 	"volume"					"1.0"
 	"soundlevel"				"SNDLVL_NORM"
 	"wave"						"weapons/jitte/jitte_empty.wav"
+}
+
+//--------------------------------------------------------------
+// ZR68c/l/s
+//--------------------------------------------------------------
+"Weapon_ZR68c.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68c_fire.wav"
+}
+
+"Weapon_ZR68c.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68c_fire.wav"
+}
+
+"Weapon_ZR68l.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68l_fire.wav"
+}
+
+"Weapon_ZR68l.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68l_fire.wav"
+}
+
+"Weapon_ZR68s.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68s_fire.wav"
+}
+
+"Weapon_ZR68s.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/zr68/zr68s_fire.wav"
+}
+
+"Weapon_ZR68.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/zr68/zr68_reload.wav"
+}
+
+"Weapon_ZR68.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						")weapons/zr68/zr68_reload.wav"
+}
+
+"Weapon_ZR68.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/zr68/zr68_empty.wav"
 }

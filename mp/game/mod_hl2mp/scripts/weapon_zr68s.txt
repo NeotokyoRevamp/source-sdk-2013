@@ -1,14 +1,14 @@
-// Jitte silenced
+// ZR68l
 
 WeaponData
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
-	"printname"				"Jitte Silenced"
-	"viewmodel"				"models/weapons/v_jinrai_jittes.mdl"
-	"playermodel"			"models/weapons/w_jittes.mdl"
+	"printname"				"ZR68s"
+	"viewmodel"				"models/weapons/v_jinrai_zr68s.mdl"
+	"playermodel"			"models/weapons/w_zr68s.mdl"
 	"anim_prefix"			"smg2"
 	"bucket"				"0"
-	"bucket_position"		"5"
+	"bucket_position"		"8"
 
 	"clip_size"				"30"
 	"clip2_size"			"-1"
@@ -21,16 +21,16 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"14" // Assault mid body damage: 14hp / 1 bullet
+	"damage"				"21" // Assault mid body damage: 21hp / 1 bullet
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"reload"			"Weapon_Jitte.Reload"
-		"reload_npc"		"Weapon_Jitte.NPC_Reload"
-		"empty"				"Weapon_Jitte.Empty"
-		"single_shot"		"Weapon_Jittes.Single"
-		"single_shot_npc"	"Weapon_Jittes.NPC_Single"
+		"reload"			"Weapon_ZR68.Reload"
+		"reload_npc"		"Weapon_ZR68.NPC_Reload"
+		"empty"				"Weapon_ZR68.Empty"
+		"single_shot"		"Weapon_ZR68s.Single"
+		"single_shot_npc"	"Weapon_ZR68s.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
