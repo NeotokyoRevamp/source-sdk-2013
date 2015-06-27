@@ -1826,6 +1826,24 @@
 	"wave"						"^weapons/srm/srm_fire.wav"
 }
 
+"Weapon_SRMs.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/srm/srm_s_fire.wav"
+}
+
+"Weapon_SRMs.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/srm/srm_s_fire.wav"
+}
+
 "Weapon_SRM.Reload"
 {
 	"channel"					"CHAN_ITEM"
