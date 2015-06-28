@@ -110,14 +110,6 @@ void CWeaponKnife::PrimaryAttack()
 {
 	BaseClass::PrimaryAttack();
 
-	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
-	if (!pOwner)
-		return;
-
 	// Knife model doesn't have HIT or MISS animation so we have to show attack animation manually
 	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
-
-	//Setup our next attack times
-	m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
-	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration();
 }
