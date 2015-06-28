@@ -6,29 +6,54 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "hl2mp/weapon_knife.h"
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
-#include "gamerules.h"
-#include "ammodef.h"
-#include "mathlib/mathlib.h"
-#include "in_buttons.h"
-#include "vstdlib/random.h"
-#include "npcevent.h"
+#include "weapon_hl2mpbasebasebludgeon.h"
 
 #if defined( CLIENT_DLL )
 	#include "c_hl2mp_player.h"
 #else
 	#include "hl2mp_player.h"
-	#include "ai_basenpc.h"
 #endif
-
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define	KNIFE_RANGE	48.0f + 3.0f // Neotokyo range is 48 units ish. However, we need about 3 units more for the NT reach, possibly because viewmodel positioning? (Rain)
-#define	KNIFE_REFIRE	0.534f // Neotokyo refire rate is ~0.534 seconds
+#define	KNIFE_RANGE	 48.0f + 3.0f // Neotokyo range is 48 units ish. However, we need about 3 units more for the NT reach, possibly because viewmodel positioning? (Rain)
+#define	KNIFE_REFIRE 0.534f // Neotokyo refire rate is ~0.534 seconds
+#define KNIFE_DAMAGE 25.0f // Assault class base damage of 25hp
 
+#ifdef CLIENT_DLL
+#define CWeaponKnife C_WeaponKnife
+#endif
+
+//-----------------------------------------------------------------------------
+// CWeaponKnife
+//-----------------------------------------------------------------------------
+
+class CWeaponKnife : public CBaseHL2MPBludgeonWeapon
+{
+public:
+	DECLARE_CLASS(CWeaponKnife, CBaseHL2MPBludgeonWeapon);
+
+	DECLARE_NETWORKCLASS();
+	DECLARE_PREDICTABLE();
+
+#ifndef CLIENT_DLL
+	DECLARE_ACTTABLE();
+#endif
+
+	CWeaponKnife();
+
+	float		GetRange(void) { return	KNIFE_RANGE; }
+	float		GetFireRate(void) { return	KNIFE_REFIRE; }
+	float		GetDamageForActivity(Activity hitActivity) { return KNIFE_DAMAGE; }
+	void		PrimaryAttack(void);
+	void		SecondaryAttack(void)	{ return; }
+	
+	void		Drop(const Vector &vecVelocity);
+
+	CWeaponKnife(const CWeaponKnife &);
+};
 
 //-----------------------------------------------------------------------------
 // CWeaponKnife
@@ -72,79 +97,7 @@ CWeaponKnife::CWeaponKnife( void )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Get the damage amount for the animation we're doing
-// Input  : hitActivity - currently played activity
-// Output : Damage amount
-//-----------------------------------------------------------------------------
-float CWeaponKnife::GetDamageForActivity( Activity hitActivity )
-{
-	return 25.0f; // Assault class base damage of 25hp
-}
-
-#ifndef CLIENT_DLL
-//-----------------------------------------------------------------------------
-// Animation event handlers
-//
-// TODO: This doesn't seem to be called at all? Because animation isnt working?
-// However, weapon sounds work just fine. Are the WeaponSound parts here pointless? (Rain)
-//-----------------------------------------------------------------------------
-void CWeaponKnife::HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
-{
-	Msg( "CWeaponKnife::HandleAnimEventMeleeHit\n ");
-
-	// Trace up or down based on where the enemy is...
-	// But only if we're basically facing that direction
-	Vector vecDirection;
-	AngleVectors( GetAbsAngles(), &vecDirection );
-
-	Vector vecEnd;
-	VectorMA( pOperator->Weapon_ShootPosition(), 50, vecDirection, vecEnd );
-	CBaseEntity *pHurt = pOperator->CheckTraceHullAttack( pOperator->Weapon_ShootPosition(), vecEnd, 
-		Vector(-16,-16,-16), Vector(36,36,36), GetDamageForActivity( GetActivity() ), DMG_CLUB, 0.75 );
-	
-	// did I hit someone?
-	if ( pHurt )
-	{
-		Msg( "Hit!\n ");
-
-		// do the swooshy noise even if hit
-		WeaponSound( MELEE_MISS );
-
-		// play hit sound
-		WeaponSound( MELEE_HIT );
-
-		// Fake a trace impact, so the effects work out like a player's crowbaw
-		trace_t traceHit;
-		UTIL_TraceLine( pOperator->Weapon_ShootPosition(), pHurt->GetAbsOrigin(), MASK_SHOT_HULL, pOperator, COLLISION_GROUP_NONE, &traceHit );
-		ImpactEffect( traceHit );
-	}
-	else
-	{
-		Msg( "Miss!\n ");
-		WeaponSound( MELEE_MISS );
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Animation event
-//-----------------------------------------------------------------------------
-void CWeaponKnife::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
-{
-	switch( pEvent->event )
-	{
-	case EVENT_WEAPON_MELEE_HIT:
-		HandleAnimEventMeleeHit( pEvent, pOperator );
-		break;
-
-	default:
-		BaseClass::Operator_HandleAnimEvent( pEvent, pOperator );
-		break;
-	}
-}
-#endif
-
-//-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose: Removes weapon when it's dropped
 //-----------------------------------------------------------------------------
 void CWeaponKnife::Drop( const Vector &vecVelocity )
 {
@@ -153,14 +106,18 @@ void CWeaponKnife::Drop( const Vector &vecVelocity )
 #endif
 }
 
-float CWeaponKnife::GetRange( void )
+void CWeaponKnife::PrimaryAttack()
 {
-	return	KNIFE_RANGE;	
+	BaseClass::PrimaryAttack();
+
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+	if (!pOwner)
+		return;
+
+	// Knife model doesn't have HIT or MISS animation so we have to show attack animation manually
+	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+
+	//Setup our next attack times
+	m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
+	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration();
 }
-
-float CWeaponKnife::GetFireRate( void )
-{
-	return	KNIFE_REFIRE;	
-}
-
-
