@@ -31,12 +31,14 @@ public:
 
 	virtual bool	Reload( void );
 
+
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void	SecondaryAttack(void);
-	void	AddViewKick( void );
-	bool	Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
+	void SecondaryAttack(void);
+	void AddViewKick( void );
+	bool Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
+	void Drop(const Vector &vecVelocity);
 
 	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
@@ -202,4 +204,11 @@ bool CWeaponZRLong::Holster(CBaseCombatWeapon *pSwitchingTo)
 	CancelZoom();
 
 	return BaseClass::Holster(pSwitchingTo);
+}
+
+void CWeaponZRLong::Drop(const Vector &vecVelocity)
+{
+	CancelZoom();
+
+	BaseClass::Drop(vecVelocity);
 }
