@@ -184,6 +184,7 @@ $Project "Client (HL2MP)"
 				$File	"hl2mp\ui\hl2mptextwindow.cpp"
 				$File	"hl2mp\ui\hl2mptextwindow.h"
 				$File	"hl2mp\hud_deathnotice.cpp"
+				$File	"hl2mp\hud_scope.cpp"
 			}
 		}
 	}
