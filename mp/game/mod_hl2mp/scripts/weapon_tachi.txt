@@ -11,7 +11,7 @@ WeaponData
 	"bucket_position"	"1"
 
 	"clip_size"			"15"
-	"primary_ammo"		"Pistol"
+	"primary_ammo"		"pistol"
 	"secondary_ammo"	"None"
 
 	"weight"			"2"
@@ -38,7 +38,7 @@ WeaponData
 				"character"	"d"
 		}
 		"weapon_s"
-		{	
+		{
 				"font"		"WeaponIconsSelected"
 				"character"	"d"
 		}

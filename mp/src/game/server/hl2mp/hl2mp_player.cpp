@@ -161,10 +161,17 @@ void CHL2MP_Player::GiveAllItems( void )
 {
 	EquipSuit();
 
-	// TODO: Give each weapon unique ammunitions (Rain)
-	CBasePlayer::GiveAmmo(255, "Pistol"); // tachi, milso
-	CBasePlayer::GiveAmmo(255, "357"); // kyla
-	CBasePlayer::GiveAmmo(255, "SMG1"); // primary weapons
+	CBasePlayer::GiveAmmo(150, "pistol"); // tachi
+	CBasePlayer::GiveAmmo(150, "pistols"); // milso
+	CBasePlayer::GiveAmmo(12, "357"); // kyla
+	CBasePlayer::GiveAmmo(30, "Buckshot"); // kyla
+	CBasePlayer::GiveAmmo(90, "smg"); // mpn45, srm, jitte
+	CBasePlayer::GiveAmmo(90, "smgs"); // mpn45s, srms, jittes
+	CBasePlayer::GiveAmmo(90, "zr");  // zr68c, zr68l
+	CBasePlayer::GiveAmmo(90, "zrs"); // zr68s
+	CBasePlayer::GiveAmmo(90, "mx"); // mx, m41, m41l
+	CBasePlayer::GiveAmmo(90, "mxs"); // mxs, m41s
+	CBasePlayer::GiveAmmo(30, "srs");
 
 	GiveNamedItem("weapon_knife");
 
@@ -181,6 +188,10 @@ void CHL2MP_Player::GiveAllItems( void )
 	GiveNamedItem("weapon_zr68c");
 	GiveNamedItem("weapon_zr68l");
 	GiveNamedItem("weapon_zr68s");
+	GiveNamedItem("weapon_mx");
+	GiveNamedItem("weapon_mxs");
+
+	GiveNamedItem("weapon_supa7");
 }
 
 void CHL2MP_Player::GiveDefaultItems( void )
@@ -190,7 +201,7 @@ void CHL2MP_Player::GiveDefaultItems( void )
 	SetArmorValue(100);
 
 	// Give ammo
-	CBasePlayer::GiveAmmo( 255,	"Pistol");
+	CBasePlayer::GiveAmmo(150, "pistol");
 	
 	// Give default weapons
 	GiveNamedItem("weapon_knife");
@@ -208,7 +219,7 @@ void CHL2MP_Player::GiveDefaultItems( void )
 	}
 	else
 	{
-		Weapon_Switch( Weapon_OwnsThisType( "weapon_knife" ) );
+		Weapon_Switch( Weapon_OwnsThisType( "weapon_tachi" ) );
 	}
 }
 

@@ -935,6 +935,15 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("SMG1_Grenade",		DMG_BURN,					TRACER_NONE,			0,			0,			3,			0,							0 );
 		def.AddAmmoType("Grenade",			DMG_BURN,					TRACER_NONE,			0,			0,			5,			0,							0 );
 		def.AddAmmoType("slam",				DMG_BURN,					TRACER_NONE,			0,			0,			5,			0,							0 );
+		def.AddAmmoType("pistol",			DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			150,		BULLET_IMPULSE(200, 1225),	0);
+		def.AddAmmoType("pistols",			DMG_BULLET,					TRACER_NONE,			0,			0,			150,		BULLET_IMPULSE(200, 800),	0);
+		def.AddAmmoType("smg",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			90,			BULLET_IMPULSE(200, 1225),	0);
+		def.AddAmmoType("smgs",				DMG_BULLET,					TRACER_NONE,			0,			0,			90,			BULLET_IMPULSE(200, 800),	0);
+		def.AddAmmoType("zr",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			90,			BULLET_IMPULSE(200, 1500),	0);
+		def.AddAmmoType("zrs",				DMG_BULLET,					TRACER_NONE,		    0,			0,			90,			BULLET_IMPULSE(200, 1000),	0);
+		def.AddAmmoType("mx",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			90,			BULLET_IMPULSE(400, 2500),	0);
+		def.AddAmmoType("mxs",				DMG_BULLET,					TRACER_NONE,			0,			0,			90,			BULLET_IMPULSE(400, 2000),	0);
+		def.AddAmmoType("srs",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			30,			BULLET_IMPULSE(400, 5000),	0);
 	}
 
 	return &def;
