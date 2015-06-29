@@ -36,20 +36,8 @@ enum EScoreboardSections
 	SCORESECTION_SPECTATOR = 4
 };
 
-const int NumSegments = 7;
-static int coord[NumSegments+1] = {
-	0,
-	1,
-	2,
-	3,
-	4,
-	6,
-	9,
-	10
-};
-
 //-----------------------------------------------------------------------------
-// Purpose: Konstructor
+// Purpose: Constructor
 //-----------------------------------------------------------------------------
 CHL2MPClientScoreBoardDialog::CHL2MPClientScoreBoardDialog(IViewPort *pViewPort):CClientScoreBoardDialog(pViewPort)
 {
@@ -63,272 +51,10 @@ CHL2MPClientScoreBoardDialog::~CHL2MPClientScoreBoardDialog()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Paint background for rounded corners
-//-----------------------------------------------------------------------------
-void CHL2MPClientScoreBoardDialog::PaintBackground()
-{
-	m_pPlayerList->SetBgColor( Color(0, 0, 0, 0) );
-	m_pPlayerList->SetBorder(NULL);
-
-	int x1, x2, y1, y2;
-	surface()->DrawSetColor(m_bgColor);
-	surface()->DrawSetTextColor(m_bgColor);
-
-	int wide, tall;
-	GetSize( wide, tall );
-
-	int i;
-
-	// top-left corner --------------------------------------------------------
-	int xDir = 1;
-	int yDir = -1;
-	int xIndex = 0;
-	int yIndex = NumSegments - 1;
-	int xMult = 1;
-	int yMult = 1;
-	int x = 0;
-	int y = 0;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = y + coord[NumSegments];
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// top-right corner -------------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = wide;
-	y = 0;
-	xMult = -1;
-	yMult = 1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = y + coord[NumSegments];
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// bottom-right corner ----------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = wide;
-	y = tall;
-	xMult = -1;
-	yMult = -1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = y - coord[NumSegments];
-		y2 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// bottom-left corner -----------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = 0;
-	y = tall;
-	xMult = 1;
-	yMult = -1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = y - coord[NumSegments];
-		y2 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// paint between top left and bottom left ---------------------------------
-	x1 = 0;
-	x2 = coord[NumSegments];
-	y1 = coord[NumSegments];
-	y2 = tall - coord[NumSegments];
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-	// paint between left and right -------------------------------------------
-	x1 = coord[NumSegments];
-	x2 = wide - coord[NumSegments];
-	y1 = 0;
-	y2 = tall;
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-	
-	// paint between top right and bottom right -------------------------------
-	x1 = wide - coord[NumSegments];
-	x2 = wide;
-	y1 = coord[NumSegments];
-	y2 = tall - coord[NumSegments];
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: Paint border for rounded corners
-//-----------------------------------------------------------------------------
-void CHL2MPClientScoreBoardDialog::PaintBorder()
-{
-	int x1, x2, y1, y2;
-	surface()->DrawSetColor(m_borderColor);
-	surface()->DrawSetTextColor(m_borderColor);
-
-	int wide, tall;
-	GetSize( wide, tall );
-
-	int i;
-
-	// top-left corner --------------------------------------------------------
-	int xDir = 1;
-	int yDir = -1;
-	int xIndex = 0;
-	int yIndex = NumSegments - 1;
-	int xMult = 1;
-	int yMult = 1;
-	int x = 0;
-	int y = 0;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// top-right corner -------------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = wide;
-	y = 0;
-	xMult = -1;
-	yMult = 1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// bottom-right corner ----------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = wide;
-	y = tall;
-	xMult = -1;
-	yMult = -1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// bottom-left corner -----------------------------------------------------
-	xDir = 1;
-	yDir = -1;
-	xIndex = 0;
-	yIndex = NumSegments - 1;
-	x = 0;
-	y = tall;
-	xMult = 1;
-	yMult = -1;
-	for ( i=0; i<NumSegments; ++i )
-	{
-		x1 = MIN( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		x2 = MAX( x + coord[xIndex]*xMult, x + coord[xIndex+1]*xMult );
-		y1 = MIN( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		y2 = MAX( y + coord[yIndex]*yMult, y + coord[yIndex+1]*yMult );
-		surface()->DrawFilledRect( x1, y1, x2, y2 );
-		xIndex += xDir;
-		yIndex += yDir;
-	}
-
-	// top --------------------------------------------------------------------
-	x1 = coord[NumSegments];
-	x2 = wide - coord[NumSegments];
-	y1 = 0;
-	y2 = 1;
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-	// bottom -----------------------------------------------------------------
-	x1 = coord[NumSegments];
-	x2 = wide - coord[NumSegments];
-	y1 = tall - 1;
-	y2 = tall;
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-	// left -------------------------------------------------------------------
-	x1 = 0;
-	x2 = 1;
-	y1 = coord[NumSegments];
-	y2 = tall - coord[NumSegments];
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-
-	// right ------------------------------------------------------------------
-	x1 = wide - 1;
-	x2 = wide;
-	y1 = coord[NumSegments];
-	y2 = tall - coord[NumSegments];
-	surface()->DrawFilledRect( x1, y1, x2, y2 );
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: Apply scheme settings
-//-----------------------------------------------------------------------------
-void CHL2MPClientScoreBoardDialog::ApplySchemeSettings( vgui::IScheme *pScheme )
-{
-	BaseClass::ApplySchemeSettings( pScheme );
-
-	m_bgColor = GetSchemeColor("SectionedListPanel.BgColor", GetBgColor(), pScheme);
-	m_borderColor = pScheme->GetColor( "FgColor", Color( 0, 0, 0, 0 ) );
-
-	SetBgColor( Color(0, 0, 0, 0) );
-	SetBorder( pScheme->GetBorder( "BaseBorder" ) );
-}
-
-
-//-----------------------------------------------------------------------------
 // Purpose: sets up base sections
 //-----------------------------------------------------------------------------
 void CHL2MPClientScoreBoardDialog::InitScoreboardSections()
 {
-	m_pPlayerList->SetBgColor( Color(0, 0, 0, 0) );
-	m_pPlayerList->SetBorder(NULL);
-
 	// fill out the structure of the scoreboard
 	AddHeader();
 
@@ -350,7 +76,8 @@ void CHL2MPClientScoreBoardDialog::InitScoreboardSections()
 //-----------------------------------------------------------------------------
 void CHL2MPClientScoreBoardDialog::UpdateTeamInfo()
 {
-	if ( g_PR == NULL )
+	IGameResources *gr = GameResources();
+	if ( !gr )
 		return;
 
 	int iNumPlayersInGame = 0;
@@ -448,11 +175,11 @@ void CHL2MPClientScoreBoardDialog::AddHeader()
 	m_pPlayerList->AddSection(0, "");
 	m_pPlayerList->SetSectionAlwaysVisible(0);
 	HFont hFallbackFont = scheme()->GetIScheme( GetScheme() )->GetFont( "DefaultVerySmallFallBack", false );
-	m_pPlayerList->AddColumnToSection(0, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_NAME_WIDTH ), hFallbackFont );
-	m_pPlayerList->AddColumnToSection(0, "class", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_CLASS_WIDTH ) );
-	m_pPlayerList->AddColumnToSection(0, "frags", "#PlayerScore", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_SCORE_WIDTH ) );
-	m_pPlayerList->AddColumnToSection(0, "deaths", "#PlayerDeath", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_DEATH_WIDTH ) );
-	m_pPlayerList->AddColumnToSection(0, "ping", "#PlayerPing", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_PING_WIDTH ) );
+	m_pPlayerList->AddColumnToSection(0, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iNameWidth ), hFallbackFont );
+	m_pPlayerList->AddColumnToSection(0, "class", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iClassWidth ) );
+	m_pPlayerList->AddColumnToSection(0, "frags", "#PlayerScore", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iScoreWidth ) );
+	m_pPlayerList->AddColumnToSection(0, "deaths", "#PlayerDeath", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iDeathWidth ) );
+	m_pPlayerList->AddColumnToSection(0, "ping", "#PlayerPing", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iPingWidth ) );
 //	m_pPlayerList->AddColumnToSection(0, "voice", "#PlayerVoice", SectionedListPanel::COLUMN_IMAGE | SectionedListPanel::HEADER_TEXT| SectionedListPanel::COLUMN_CENTER, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_VOICE_WIDTH ) );
 //	m_pPlayerList->AddColumnToSection(0, "tracker", "#PlayerTracker", SectionedListPanel::COLUMN_IMAGE | SectionedListPanel::HEADER_TEXT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_FRIENDS_WIDTH ) );
 }
@@ -470,11 +197,15 @@ void CHL2MPClientScoreBoardDialog::AddSection(int teamType, int teamNumber)
  		m_pPlayerList->AddSection(sectionID, "", StaticPlayerSortFunc);
 
 		// setup the columns
-		m_pPlayerList->AddColumnToSection(sectionID, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_NAME_WIDTH ), hFallbackFont );
-		m_pPlayerList->AddColumnToSection(sectionID, "class", "" , 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_CLASS_WIDTH ) );
-		m_pPlayerList->AddColumnToSection(sectionID, "frags", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_SCORE_WIDTH ) );
-		m_pPlayerList->AddColumnToSection(sectionID, "deaths", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_DEATH_WIDTH ) );
-		m_pPlayerList->AddColumnToSection(sectionID, "ping", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_PING_WIDTH ) );
+		if (ShowAvatars())
+		{
+			m_pPlayerList->AddColumnToSection(sectionID, "avatar", "", SectionedListPanel::COLUMN_IMAGE, m_iAvatarWidth);
+		}
+		m_pPlayerList->AddColumnToSection(sectionID, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iNameWidth ) - m_iAvatarWidth, hFallbackFont );
+		m_pPlayerList->AddColumnToSection(sectionID, "class", "" , 0, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iClassWidth ) );
+		m_pPlayerList->AddColumnToSection(sectionID, "frags", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iScoreWidth ) );
+		m_pPlayerList->AddColumnToSection(sectionID, "deaths", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iDeathWidth ) );
+		m_pPlayerList->AddColumnToSection(sectionID, "ping", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iPingWidth ) );
 
 		// set the section to have the team color
 		if ( teamNumber )
@@ -488,8 +219,11 @@ void CHL2MPClientScoreBoardDialog::AddSection(int teamType, int teamNumber)
 	else if ( teamType == TYPE_SPECTATORS )
 	{
 		m_pPlayerList->AddSection(sectionID, "");
-		m_pPlayerList->AddColumnToSection(sectionID, "name", "#Spectators", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_NAME_WIDTH ), hFallbackFont );
-		m_pPlayerList->AddColumnToSection(sectionID, "class", "" , 0, scheme()->GetProportionalScaledValueEx( GetScheme(), 100 ) );
+		if (ShowAvatars())
+		{
+			m_pPlayerList->AddColumnToSection(sectionID, "avatar", "", SectionedListPanel::COLUMN_IMAGE, m_iAvatarWidth);
+		}
+		m_pPlayerList->AddColumnToSection(sectionID, "name", "#Spectators", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), m_iNameWidth ) - m_iAvatarWidth, hFallbackFont );
 	}
 }
 
@@ -540,52 +274,6 @@ bool CHL2MPClientScoreBoardDialog::GetPlayerScoreInfo(int playerIndex, KeyValues
 	return true;
 }
 
-enum {
-	MAX_PLAYERS_PER_TEAM = 16,
-	MAX_SCOREBOARD_PLAYERS = 32
-};
-struct PlayerScoreInfo
-{
-	int index;
-	int frags;
-	int deaths;
-	bool important;
-	bool alive;
-};
-
-int PlayerScoreInfoSort( const PlayerScoreInfo *p1, const PlayerScoreInfo *p2 )
-{
-	// check local
-	if ( p1->important )
-		return -1;
-	if ( p2->important )
-		return 1;
-
-	// check alive
-	if ( p1->alive && !p2->alive )
-		return -1;
-	if ( p2->alive && !p1->alive )
-		return 1;
-
-	// check frags
-	if ( p1->frags > p2->frags )
-		return -1;
-	if ( p2->frags > p1->frags )
-		return 1;
-
-	// check deaths
-	if ( p1->deaths < p2->deaths )
-		return -1;
-	if ( p2->deaths < p1->deaths )
-		return 1;
-
-	// check index
-	if ( p1->index < p2->index )
-		return -1;
-
-	return 1;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -593,7 +281,6 @@ void CHL2MPClientScoreBoardDialog::UpdatePlayerInfo()
 {
 	m_iSectionId = 0; // 0'th row is a header
 	int selectedRow = -1;
-	int i;
 
 	CBasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 
@@ -601,16 +288,26 @@ void CHL2MPClientScoreBoardDialog::UpdatePlayerInfo()
 		return;
 
 	// walk all the players and make sure they're in the scoreboard
-	for ( i = 1; i <= gpGlobals->maxClients; i++ )
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 	{
-		bool shouldShow = g_PR->IsConnected( i );
-		if ( shouldShow )
+		IGameResources *gr = GameResources();
+
+		if ( gr && gr->IsConnected( i ) )
 		{
 			// add the player to the list
 			KeyValues *playerData = new KeyValues("data");
 			GetPlayerScoreInfo( i, playerData );
+			UpdatePlayerAvatar( i, playerData );
+
+			const char *oldName = playerData->GetString( "name", "" );
+			char newName[MAX_PLAYER_NAME_LENGTH];
+
+			UTIL_MakeSafeName( oldName, newName, MAX_PLAYER_NAME_LENGTH );
+
+			playerData->SetString("name", newName);
+
 			int itemID = FindItemIDForPlayerIndex( i );
-  			int sectionID = GetSectionFromTeamNumber( g_PR->GetTeam( i ) );
+  			int sectionID = GetSectionFromTeamNumber( gr->GetTeam( i ) );
 						
 			if (itemID == -1)
 			{
@@ -623,13 +320,13 @@ void CHL2MPClientScoreBoardDialog::UpdatePlayerInfo()
 				m_pPlayerList->ModifyItem( itemID, sectionID, playerData );
 			}
 
-			if ( i == pPlayer->entindex() )
+			if ( gr->IsLocalPlayer( i ) )
 			{
 				selectedRow = itemID;	// this is the local player, hilight this row
 			}
 
 			// set the row color based on the players team
-			m_pPlayerList->SetItemFgColor( itemID, g_PR->GetTeamColor( g_PR->GetTeam( i ) ) );
+			m_pPlayerList->SetItemFgColor( itemID, gr->GetTeamColor( gr->GetTeam( i ) ) );
 
 			playerData->deleteThis();
 		}
@@ -648,6 +345,4 @@ void CHL2MPClientScoreBoardDialog::UpdatePlayerInfo()
 	{
 		m_pPlayerList->SetSelectedItem(selectedRow);
 	}
-
-	
 }
