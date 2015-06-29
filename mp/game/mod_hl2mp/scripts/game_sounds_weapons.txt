@@ -2181,3 +2181,82 @@
 	"pitch"						"PITCH_NORM"
 	"wave"						"weapons/mx/mx_empty.wav"
 }
+
+"Weapon_M41.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/m41/m41_fire.wav"
+}
+
+"Weapon_M41.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/m41/m41_fire.wav"
+}
+
+"Weapon_M41S.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"wave"						"^weapons/m41/s_fire.wav"
+}
+
+"Weapon_M41S.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/m41/s_fire.wav"
+}
+
+"Weapon_M41L.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/m41/m41l_fire.wav"
+}
+
+"Weapon_M41L.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/m41/m41l_fire.wav"
+}
+
+"Weapon_M41.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/m41/m41_reload.wav"
+}
+
+"Weapon_M41.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						")weapons/m41/m41_reload.wav"
+}
+
+"Weapon_M41.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/m41/m41_empty.wav"
+}

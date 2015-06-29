@@ -188,6 +188,9 @@ void CHL2MP_Player::GiveAllItems( void )
 	GiveNamedItem("weapon_zr68c");
 	GiveNamedItem("weapon_zr68l");
 	GiveNamedItem("weapon_zr68s");
+	GiveNamedItem("weapon_m41");
+	GiveNamedItem("weapon_m41l");
+	GiveNamedItem("weapon_m41s");
 	GiveNamedItem("weapon_mx");
 	GiveNamedItem("weapon_mxs");
 
