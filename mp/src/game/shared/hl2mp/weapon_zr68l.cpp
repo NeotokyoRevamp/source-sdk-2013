@@ -29,6 +29,8 @@ public:
 
 	CWeaponZRLong();
 
+	virtual bool	Reload( void );
+
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
@@ -53,6 +55,9 @@ public:
 	
 private:
 	CWeaponZRLong( const CWeaponZRLong & );
+
+	void	ToggleZoom( void );
+	void	CancelZoom( void );
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponZRLong, DT_WeaponZRLong )
@@ -109,6 +114,11 @@ Activity CWeaponZRLong::GetPrimaryAttackActivity( void )
 // Zoom view by changing FOV
 void CWeaponZRLong::SecondaryAttack(void)
 {
+	ToggleZoom();
+}
+
+void CWeaponZRLong::ToggleZoom( void )
+{
 	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
 	if (pPlayer == NULL)
@@ -116,7 +126,7 @@ void CWeaponZRLong::SecondaryAttack(void)
 
 	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
 	{
-		pPlayer->SetFOV(pPlayer, 40, 0.2f);
+		pPlayer->SetFOV(pPlayer, 40, 0.2f); // TODO: Show scope
 	}
 	else
 	{
@@ -124,8 +134,19 @@ void CWeaponZRLong::SecondaryAttack(void)
 	}
 
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+}
 
-	// TODO: Show scope
+void CWeaponZRLong::CancelZoom( void )
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+	if (pPlayer->GetFOV() != pPlayer->GetDefaultFOV())
+	{
+		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -144,4 +165,16 @@ void CWeaponZRLong::AddViewKick( void )
 		return;
 
 	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
+}
+
+bool CWeaponZRLong::Reload( void )
+{
+	if ( BaseClass::Reload() )
+	{
+		CancelZoom();
+
+		return true;
+	}
+
+	return false;
 }
