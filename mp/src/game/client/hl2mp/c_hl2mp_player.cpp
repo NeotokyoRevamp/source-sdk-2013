@@ -691,39 +691,48 @@ void C_HL2MP_Player::CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNea
 {
 	if ( m_lifeState != LIFE_ALIVE && !IsObserver() )
 	{
-		Vector origin = EyePosition();			
+		// Get origin and angles for first person ragdoll
+		C_HL2MPRagdoll *pRagdoll = (C_HL2MPRagdoll*)m_hRagdoll.Get();
+		pRagdoll->GetAttachment(pRagdoll->LookupAttachment("eyes"), eyeOrigin, eyeAngles);
 
-		IRagdoll *pRagdoll = GetRepresentativeRagdoll();
+		// Move camera up a bit to avoid clipping with the ground
+		// TODO: You can still see through walls.
+		eyeOrigin.z += zNear * 1.8f; // Magic number ftw
 
-		if ( pRagdoll )
-		{
-			origin = pRagdoll->GetRagdollOrigin();
-			origin.z += VEC_DEAD_VIEWHEIGHT_SCALED( this ).z; // look over ragdoll, not through
-		}
+		//// Third person
+		//Vector origin = EyePosition();			
 
-		BaseClass::CalcView( eyeOrigin, eyeAngles, zNear, zFar, fov );
+		//IRagdoll *pRagdoll = GetRepresentativeRagdoll();
 
-		eyeOrigin = origin;
-		
-		Vector vForward; 
-		AngleVectors( eyeAngles, &vForward );
+		//if ( pRagdoll )
+		//{
+		//	origin = pRagdoll->GetRagdollOrigin();
+		//	origin.z += VEC_DEAD_VIEWHEIGHT_SCALED( this ).z; // look over ragdoll, not through
+		//}
 
-		VectorNormalize( vForward );
-		VectorMA( origin, -CHASE_CAM_DISTANCE_MAX, vForward, eyeOrigin );
+		//BaseClass::CalcView( eyeOrigin, eyeAngles, zNear, zFar, fov );
 
-		Vector WALL_MIN( -WALL_OFFSET, -WALL_OFFSET, -WALL_OFFSET );
-		Vector WALL_MAX( WALL_OFFSET, WALL_OFFSET, WALL_OFFSET );
+		//eyeOrigin = origin;
+		//
+		//Vector vForward; 
+		//AngleVectors( eyeAngles, &vForward );
 
-		trace_t trace; // clip against world
-		C_BaseEntity::PushEnableAbsRecomputations( false ); // HACK don't recompute positions while doing RayTrace
-		UTIL_TraceHull( origin, eyeOrigin, WALL_MIN, WALL_MAX, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &trace );
-		C_BaseEntity::PopEnableAbsRecomputations();
+		//VectorNormalize( vForward );
+		//VectorMA( origin, -CHASE_CAM_DISTANCE_MAX, vForward, eyeOrigin );
 
-		if (trace.fraction < 1.0)
-		{
-			eyeOrigin = trace.endpos;
-		}
-		
+		//Vector WALL_MIN( -WALL_OFFSET, -WALL_OFFSET, -WALL_OFFSET );
+		//Vector WALL_MAX( WALL_OFFSET, WALL_OFFSET, WALL_OFFSET );
+
+		//trace_t trace; // clip against world
+		//C_BaseEntity::PushEnableAbsRecomputations( false ); // HACK don't recompute positions while doing RayTrace
+		//UTIL_TraceHull( origin, eyeOrigin, WALL_MIN, WALL_MAX, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &trace );
+		//C_BaseEntity::PopEnableAbsRecomputations();
+
+		//if (trace.fraction < 1.0)
+		//{
+		//	eyeOrigin = trace.endpos;
+		//}
+
 		return;
 	}
 
@@ -974,6 +983,18 @@ void C_HL2MPRagdoll::SetupWeights( const matrix3x4_t *pBoneToWorld, int nFlexWei
 			modelrender->SetViewTarget( GetModelPtr(), GetBody(), tmp );
 		}
 	}
+}
+
+// Don't draw own corpse while dying to avoid clipping.
+bool C_HL2MPRagdoll::ShouldDraw()
+{
+	// TODO: Figure out where to call UpdateVisibility to make corpse visible again
+	// when going to spectator. Until then just never render own corpse.
+	C_HL2MP_Player *pPlayer = dynamic_cast< C_HL2MP_Player* >(m_hPlayer.Get());
+	if (pPlayer && pPlayer->IsLocalPlayer())
+		return false; // pPlayer->IsAlive() || pPlayer->IsObserver();
+
+	return BaseClass::ShouldDraw();
 }
 
 void C_HL2MP_Player::PostThink( void )
