@@ -36,6 +36,7 @@ public:
 
 	void	SecondaryAttack(void);
 	void	AddViewKick( void );
+	bool	Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
 
 	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
@@ -122,26 +123,22 @@ void CWeaponZRLong::ToggleZoom( void )
 		return;
 
 #ifndef CLIENT_DLL
+	// Send a message to show the scope
+	CSingleUserRecipientFilter filter(pPlayer);
+	UserMessageBegin(filter, "ShowScope");
+	
 	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
 	{
 		pPlayer->SetFOV(pPlayer, 40, 0.2f);
-
-		// Send a message to show the scope
-		CSingleUserRecipientFilter filter(pPlayer);
-		UserMessageBegin(filter, "ShowScope");
-		WRITE_BYTE(1);
-		MessageEnd();
+		WRITE_BYTE(1); //Show scope
 	}
 	else
 	{
 		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-
-		// Send a message to hide the scope
-		CSingleUserRecipientFilter filter(pPlayer);
-		UserMessageBegin(filter, "ShowScope");
-		WRITE_BYTE(0);
-		MessageEnd();
+		WRITE_BYTE(0); //Hide scope
 	}
+
+	MessageEnd();
 #endif
 
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
@@ -186,6 +183,7 @@ void CWeaponZRLong::AddViewKick( void )
 	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
 }
 
+// Disable scope when releading
 bool CWeaponZRLong::Reload( void )
 {
 	if ( BaseClass::Reload() )
@@ -196,4 +194,12 @@ bool CWeaponZRLong::Reload( void )
 	}
 
 	return false;
+}
+
+// Disable scope when switching weapons
+bool CWeaponZRLong::Holster(CBaseCombatWeapon *pSwitchingTo)
+{
+	CancelZoom();
+
+	return BaseClass::Holster(pSwitchingTo);
 }
