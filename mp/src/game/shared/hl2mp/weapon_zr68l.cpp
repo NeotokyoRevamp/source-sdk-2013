@@ -37,9 +37,6 @@ public:
 	void	SecondaryAttack(void);
 	void	AddViewKick( void );
 
-	int		GetMinBurst() { return 2; }
-	int		GetMaxBurst() { return 5; }
-
 	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
 

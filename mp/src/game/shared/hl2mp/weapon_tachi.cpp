@@ -5,7 +5,6 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "npcevent.h"
 #include "in_buttons.h"
 
 #ifdef CLIENT_DLL
@@ -68,16 +67,6 @@ public:
 		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_8DEGREES, ramp, cone );
 
 		return cone;
-	}
-	
-	virtual int	GetMinBurst() 
-	{ 
-		return 1; 
-	}
-
-	virtual int	GetMaxBurst() 
-	{ 
-		return 3; 
 	}
 
 	virtual float GetFireRate( void ) 

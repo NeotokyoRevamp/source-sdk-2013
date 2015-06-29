@@ -34,9 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	int		GetMinBurst() { return 2; }
-	int		GetMaxBurst() { return 5; }
-
 	float	GetFireRate( void ) { return 0.075f; }	// 13.3hz
 	Activity	GetPrimaryAttackActivity( void );
 

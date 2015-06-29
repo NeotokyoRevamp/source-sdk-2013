@@ -5,7 +5,6 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "npcevent.h"
 #include "in_buttons.h"
 
 #ifdef CLIENT_DLL
@@ -40,7 +39,6 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void	Precache( void );
 	void	ItemPostFrame( void );
 	void	ItemPreFrame( void );
 	void	ItemBusyFrame( void );
@@ -65,21 +63,11 @@ public:
 											1.0f ); 
 
 			// We lerp from very accurate to inaccurate over time
-		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone );
+		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_3DEGREES, ramp, cone );
 
 		return cone;
 	}
 	
-	virtual int	GetMinBurst() 
-	{ 
-		return 1; 
-	}
-
-	virtual int	GetMaxBurst() 
-	{ 
-		return 3; 
-	}
-
 	virtual float GetFireRate( void ) 
 	{
 		return 0.5f; 
@@ -153,22 +141,8 @@ CWeaponMilso::CWeaponMilso( void )
 	m_flSoonestPrimaryAttack = gpGlobals->curtime;
 	m_flAccuracyPenalty = 0.0f;
 
-	m_fMinRange1		= 24;
-	m_fMaxRange1		= 1500;
-	m_fMinRange2		= 24;
-	m_fMaxRange2		= 200;
-
 	m_bFiresUnderwater	= true;
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CWeaponMilso::Precache( void )
-{
-	BaseClass::Precache();
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose:

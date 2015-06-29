@@ -6,8 +6,6 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "npcevent.h"
-#include "in_buttons.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"

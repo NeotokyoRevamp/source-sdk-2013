@@ -44,9 +44,6 @@ public:
 		return cone;
 	}
 
-	virtual int				GetMinBurst() { return 1; }
-	virtual int				GetMaxBurst() { return 3; }
-
 	bool StartReload( void );
 	bool Reload( void );
 	void FillClip( void );
