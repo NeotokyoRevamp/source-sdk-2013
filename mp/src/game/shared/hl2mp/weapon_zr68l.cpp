@@ -32,17 +32,18 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
+	void	SecondaryAttack(void);
 	void	AddViewKick( void );
 
 	int		GetMinBurst() { return 2; }
 	int		GetMaxBurst() { return 5; }
 
-	float	GetFireRate( void ) { return 0.075f; }	// 13.3hz
+	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
 
 	virtual const Vector& GetBulletSpread( void )
 	{
-		static const Vector cone = VECTOR_CONE_5DEGREES;
+		static const Vector cone = VECTOR_CONE_1DEGREES;
 		return cone;
 	}
 
@@ -105,13 +106,35 @@ Activity CWeaponZRLong::GetPrimaryAttackActivity( void )
 	return ACT_VM_RECOIL3;
 }
 
+// Zoom view by changing FOV
+void CWeaponZRLong::SecondaryAttack(void)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
+	{
+		pPlayer->SetFOV(pPlayer, 40, 0.2f);
+	}
+	else
+	{
+		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
+	}
+
+	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+
+	// TODO: Show scope
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CWeaponZRLong::AddViewKick( void )
 {
 	#define	EASY_DAMPEN			0.5f
-	#define	MAX_VERTICAL_KICK	1.0f	//Degrees
+	#define	MAX_VERTICAL_KICK	30.0f	//Degrees
 	#define	SLIDE_LIMIT			2.0f	//Seconds
 	
 	//Get the view kick
@@ -120,5 +143,5 @@ void CWeaponZRLong::AddViewKick( void )
 	if ( pPlayer == NULL )
 		return;
 
-	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, m_fFireDuration, SLIDE_LIMIT );
+	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
 }
