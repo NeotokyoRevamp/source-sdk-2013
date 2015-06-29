@@ -121,14 +121,28 @@ void CWeaponZRLong::ToggleZoom( void )
 	if (pPlayer == NULL)
 		return;
 
+#ifndef CLIENT_DLL
 	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
 	{
-		pPlayer->SetFOV(pPlayer, 40, 0.2f); // TODO: Show scope
+		pPlayer->SetFOV(pPlayer, 40, 0.2f);
+
+		// Send a message to show the scope
+		CSingleUserRecipientFilter filter(pPlayer);
+		UserMessageBegin(filter, "ShowScope");
+		WRITE_BYTE(1);
+		MessageEnd();
 	}
 	else
 	{
 		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
+
+		// Send a message to hide the scope
+		CSingleUserRecipientFilter filter(pPlayer);
+		UserMessageBegin(filter, "ShowScope");
+		WRITE_BYTE(0);
+		MessageEnd();
 	}
+#endif
 
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
 }
@@ -140,10 +154,18 @@ void CWeaponZRLong::CancelZoom( void )
 	if (pPlayer == NULL)
 		return;
 
+#ifndef CLIENT_DLL
 	if (pPlayer->GetFOV() != pPlayer->GetDefaultFOV())
 	{
 		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
+
+		// Send a message to hide the scope
+		CSingleUserRecipientFilter filter(pPlayer);
+		UserMessageBegin(filter, "ShowScope");
+		WRITE_BYTE(0);
+		MessageEnd();
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
