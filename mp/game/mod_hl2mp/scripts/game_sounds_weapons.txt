@@ -2378,3 +2378,51 @@
 	"soundlevel"				"SNDLVL_NORM"
 	"wave"						"weapons/aa13/aa13_empty.wav"
 }
+
+//--------------------------------------------------------------
+// PZ
+//--------------------------------------------------------------
+"Weapon_PZ.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"
+	"pitch"						"98,102"
+	"wave"						"^weapons/pz/pz_fire.wav"	
+}
+
+"Weapon_PZ.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"soundlevel"				"SNDLVL_150dB"
+	"volume"					"1.0"		
+	"pitch"						"98,102"
+	"wave"						"^weapons/pz/pz_fire.wav"	
+}
+
+"Weapon_PZ.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"	
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/pz/pz_reload.wav"
+}
+
+"Weapon_PZ.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"
+	"pitch"						"PITCH_NORM"
+	"wave"						")weapons/pz/pz_reload.wav"
+}
+
+"Weapon_PZ.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"soundlevel"				"SNDLVL_NORM"
+	"volume"					"1.0"       
+	"pitch"						"PITCH_NORM"
+	"wave"						"weapons/pz/pz_empty.wav"
+}

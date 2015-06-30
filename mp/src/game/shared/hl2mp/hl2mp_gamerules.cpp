@@ -948,6 +948,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("m41",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			30,			BULLET_IMPULSE(300, 1250),	0);
 		def.AddAmmoType("m41s",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			30,			BULLET_IMPULSE(300, 1250),	0);
 		def.AddAmmoType("m41l",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			30,			BULLET_IMPULSE(350, 1500),	0);
+		def.AddAmmoType("pz",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	0,			0,			30,			BULLET_IMPULSE(350, 1500),	0);
 	}
 
 	return &def;
