@@ -10,10 +10,10 @@ WeaponData
 	"bucket"				"0"
 	"bucket_position"		"15"
 
-	"clip_size"				"10"
+	"clip_size"				"5"
 	"clip2_size"			"-1"
 
-	"default_clip"			"10"
+	"default_clip"			"5"
 	"default_clip2"			"-1"
 
 	"primary_ammo"			"srs"
