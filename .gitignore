@@ -12,6 +12,7 @@
 *.cache
 *.lib
 *.unsuccessfulbuild
+mp/src/utils/sapi51
 
 # !!!
 # Everything below this point is a default ignore from Valve's repo!
