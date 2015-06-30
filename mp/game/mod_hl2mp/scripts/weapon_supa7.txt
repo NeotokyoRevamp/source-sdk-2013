@@ -10,13 +10,13 @@ WeaponData
 	"bucket"				"0"
 	"bucket_position"		"9"
 
-	"clip_size"				"6"
+	"clip_size"				"7"
 	"primary_ammo"			"Buckshot"
 	"secondary_ammo"		"None"
 
 	"weight"				"4"
 	"item_flags"			"0"
-	"damage"				"134"
+	"damage"				"17" // 134 hp assault mid / 8 pellets = 16.75hp
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
