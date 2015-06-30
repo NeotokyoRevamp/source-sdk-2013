@@ -27,7 +27,7 @@
 	#include "voice_gamemgr.h"
 	#include "iscorer.h"
 	#include "hl2mp_player.h"
-	#include "weapon_hl2mpbasehlmpcombatweapon.h"
+	#include "weapon_hl2mpbase.h"
 	#include "team.h"
 	#include "voice_gamemgr.h"
 	#include "hl2mp_gameinterface.h"
@@ -1083,7 +1083,7 @@ void CHL2MPRules::CleanUpMap()
 	CBaseEntity *pCur = gEntList.FirstEnt();
 	while ( pCur )
 	{
-		CBaseHL2MPCombatWeapon *pWeapon = dynamic_cast< CBaseHL2MPCombatWeapon* >( pCur );
+		CWeaponHL2MPBase *pWeapon = dynamic_cast< CWeaponHL2MPBase* >( pCur );
 		// Weapons with owners don't want to be removed..
 		if ( pWeapon )
 		{

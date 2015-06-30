@@ -12,7 +12,7 @@
 #pragma once
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #ifdef CLIENT_DLL
 
@@ -164,9 +164,9 @@ CAPCMissile *FindAPCMissileInCone( const Vector &vecOrigin, const Vector &vecDir
 #define CWeaponRPG C_WeaponRPG
 #endif
 
-class CWeaponRPG : public CBaseHL2MPCombatWeapon
+class CWeaponRPG : public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CWeaponRPG, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponRPG, CWeaponHL2MPBase );
 public:
 
 	CWeaponRPG();

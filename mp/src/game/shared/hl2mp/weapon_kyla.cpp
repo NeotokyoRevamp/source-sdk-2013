@@ -13,7 +13,7 @@
 	#include "hl2mp_player.h"
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponKyla C_WeaponKyla
@@ -23,9 +23,9 @@
 // CWeaponKyla
 //-----------------------------------------------------------------------------
 
-class CWeaponKyla : public CBaseHL2MPCombatWeapon
+class CWeaponKyla : public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CWeaponKyla, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponKyla, CWeaponHL2MPBase );
 public:
 
 	CWeaponKyla( void );

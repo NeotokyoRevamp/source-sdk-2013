@@ -14,7 +14,7 @@
 	#include "hl2mp_player.h"
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponSupa7 C_WeaponSupa7
@@ -23,10 +23,10 @@
 extern ConVar sk_supa7_auto_reload_time;
 extern ConVar sk_supa7_plr_num_shotgun_pellets;
 
-class CWeaponSupa7 : public CBaseHL2MPCombatWeapon
+class CWeaponSupa7 : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponSupa7, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponSupa7, CWeaponHL2MPBase );
 
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();

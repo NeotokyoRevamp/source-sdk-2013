@@ -13,7 +13,7 @@
 	#include "hl2mp_player.h"
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #define	MILSO_FASTEST_REFIRE_TIME		0.1f
 #define	MILSO_FASTEST_DRY_REFIRE_TIME	0.2f
@@ -29,10 +29,10 @@
 // CWeaponPistol
 //-----------------------------------------------------------------------------
 
-class CWeaponMilso : public CBaseHL2MPCombatWeapon
+class CWeaponMilso : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponMilso, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponMilso, CWeaponHL2MPBase );
 
 	CWeaponMilso(void);
 

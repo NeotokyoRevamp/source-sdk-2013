@@ -10,16 +10,20 @@
 #pragma once
 #endif
 
-#include "hl2mp_player_shared.h"
-#include "basecombatweapon_shared.h"
+//#include "hl2mp_player_shared.h"
+//#include "basecombatweapon_shared.h"
 #include "hl2mp_weapon_parse.h"
+
+#ifdef CLIENT_DLL
+	#include "c_hl2mp_player.h"
+#else
+	#include "hl2mp_player.h"
+#endif
 
 #if defined( CLIENT_DLL )
 	#define CWeaponHL2MPBase C_WeaponHL2MPBase
 	void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &clip );
 #endif
-
-class CHL2MP_Player;
 
 // These are the names of the ammo types that go in the CAmmoDefs and that the 
 // weapon script files reference.
@@ -41,25 +45,43 @@ public:
 	#ifdef GAME_DLL
 		DECLARE_DATADESC();
 	
-		void SendReloadSoundEvent( void );
+		void			SendReloadSoundEvent( void );
 
-		void Materialize( void );
-		virtual	int	ObjectCaps( void );
+		void			Materialize( void );
+		virtual	int		ObjectCaps( void );
 	#endif
+
+	virtual bool	WeaponShouldBeLowered( void );
+
+	virtual bool	Ready( void );
+	virtual bool	Lower( void );
+	virtual bool	Deploy( void );
+	virtual void	WeaponIdle( void );
+
+	virtual void	FinishReload(void);
+
+	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
+	virtual	float	CalcViewmodelBob( void );
+
+	virtual Vector	GetBulletSpread( WeaponProficiency_t proficiency );
+	virtual float	GetSpreadBias( WeaponProficiency_t proficiency );
+
+	virtual const	WeaponProficiencyInfo_t *GetProficiencyValues();
+	static const	WeaponProficiencyInfo_t *GetDefaultProficiencyValues();
 
 	// All predicted weapons need to implement and return true
 	virtual bool	IsPredicted() const;
 
-	CBasePlayer* GetPlayerOwner() const;
-	CHL2MP_Player* GetHL2MPPlayerOwner() const;
+	CBasePlayer*	GetPlayerOwner() const;
+	CHL2MP_Player*	GetHL2MPPlayerOwner() const;
 
-	void WeaponSound( WeaponSound_t sound_type, float soundtime = 0.0f );
+	void			WeaponSound( WeaponSound_t sound_type, float soundtime = 0.0f );
 	
 	CHL2MPSWeaponInfo const	&GetHL2MPWpnData() const;
 
 
-	virtual void FireBullets( const FireBulletsInfo_t &info );
-	virtual void FallInit( void );
+	virtual void	FireBullets( const FireBulletsInfo_t &info );
+	virtual void	FallInit( void );
 	
 public:
 	#if defined( CLIENT_DLL )
@@ -75,18 +97,22 @@ public:
 
 	#endif
 
-	float		m_flPrevAnimTime;
-	float  m_flNextResetCheckTime;
+	float			m_flPrevAnimTime;
+	float			m_flNextResetCheckTime;
 
-	Vector	GetOriginalSpawnOrigin( void ) { return m_vOriginalSpawnOrigin;	}
-	QAngle	GetOriginalSpawnAngles( void ) { return m_vOriginalSpawnAngles;	}
+	Vector			GetOriginalSpawnOrigin( void ) { return m_vOriginalSpawnOrigin;	}
+	QAngle			GetOriginalSpawnAngles( void ) { return m_vOriginalSpawnAngles;	}
+
+protected:
+	bool			m_bLowered;			// Whether the viewmodel is raised or lowered
+	float			m_flRaiseTime;		// If lowered, the time we should raise the viewmodel
 
 private:
 
 	CWeaponHL2MPBase( const CWeaponHL2MPBase & );
 
-	Vector m_vOriginalSpawnOrigin;
-	QAngle m_vOriginalSpawnAngles;
+	Vector			m_vOriginalSpawnOrigin;
+	QAngle			m_vOriginalSpawnAngles;
 };
 
 
