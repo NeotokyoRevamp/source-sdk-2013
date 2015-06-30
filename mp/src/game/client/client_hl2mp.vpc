@@ -130,6 +130,7 @@ $Project "Client (HL2MP)"
 			$Folder	"Weapons"
 			{
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_357.cpp"
+				$File	"$SRCDIR\game\shared\hl2mp\weapon_aa13.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_ar2.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_ar2.h"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_crossbow.cpp"

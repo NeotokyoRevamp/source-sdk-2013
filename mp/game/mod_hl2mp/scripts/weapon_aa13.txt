@@ -1,0 +1,63 @@
+// AA13
+
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"AA13"
+	"viewmodel"				"models/weapons/v_jinrai_aa13.mdl"
+	"playermodel"			"models/weapons/w_aa13.mdl"
+	"anim_prefix"			"shotgun"
+	"bucket"				"0"
+	"bucket_position"		"16"
+
+	"clip_size"				"16"
+	"primary_ammo"			"aa13"
+	"secondary_ammo"		"None"
+
+	"weight"				"4"
+	"item_flags"			"0"
+	"damage"				"23" // 117hp assault mid / 5 pellets = 23.4hp
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"single_shot"		"Weapon_AA13.Single"
+		"single_shot_npc"	"Weapon_AA13.NPC_Single"
+		"reload"			"Weapon_AA13.Reload"
+		"reload_npc"		"Weapon_AA13.NPC_Reload"
+		"empty"				"Weapon_AA13.Empty"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"b"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"b"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIcons"
+				"character"	"s"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}

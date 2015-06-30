@@ -2331,3 +2331,50 @@
 	"soundlevel"				"SNDLVL_NORM"
 	"wave"						"weapons/srs/srs_empty.wav"
 }
+
+//--------------------------------------------------------------
+// AA13
+//--------------------------------------------------------------
+"Weapon_AA13.Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/aa13/aa13_fire.wav"
+}
+
+"Weapon_AA13.NPC_Single"
+{
+	"channel"					"CHAN_WEAPON"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_150dB"
+	"pitch"						"98,102"
+	"wave"						"^weapons/aa13/aa13_fire.wav"
+}
+
+"Weapon_AA13.Reload"
+{
+	"channel"					"CHAN_ITEM"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"						"98,102"
+	"wave"						"weapons/aa13/aa13_reload.wav"
+}
+
+"Weapon_AA13.NPC_Reload"
+{
+	"channel"					"CHAN_AUTO"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						")weapons/aa13/aa13_reload.wav"
+}
+
+"Weapon_AA13.Empty"
+{
+	"channel"					"CHAN_USER_BASE2"
+	"volume"					"1.0"
+	"soundlevel"				"SNDLVL_NORM"
+	"wave"						"weapons/aa13/aa13_empty.wav"
+}
