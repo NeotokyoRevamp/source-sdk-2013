@@ -7,6 +7,7 @@
 #include "c_basehlplayer.h" //alternative #include "c_baseplayer.h"
  
 #include <vgui/IScheme.h>
+#include <vgui/ISurface.h>
 #include <vgui_controls/Panel.h>
  
 // memdbgon must be the last include file in a .cpp file!
@@ -103,10 +104,22 @@ void CHudScope::Paint( void )
                 //Perform depth hack to prevent clips by world
 	        //materials->DepthRange( 0.0f, 0.1f );
  
-		// This will draw the scope at the origin of this HUD element, and
-		// stretch it to the width and height of the element. As long as the
-		// HUD element is set up to cover the entire screen, so will the scope
-		m_pScope->DrawSelf(0, 0, GetWide(), GetTall(), Color(255,255,255,255));
+		// Draw the scope as a perfect square. Then, fill both sides according to aspect ratio.
+		// This way the aspect ratio will not affect our scope's visibility.
+		int x1 = (GetWide() / 2) - (GetTall() * 1.14 / 2); // Scope texture compensates for widescreen stretch, so he have undo that here (height -14%)
+		int x2 = GetWide() - (x1 * 2);
+		int x3 = GetWide() - x1;
+
+		// TODO: Create colour slide textures for the sides to match the scope's outer colouring
+		surface()->DrawSetColor(Color(0,0,0,255));
+		surface()->DrawFilledRect(0, 0, x1, GetTall()); // Fill in the left side
+ 
+		surface()->DrawSetColor(Color(0,0,0,255));
+		surface()->DrawFilledRect(x3, 0, GetWide(), GetTall()); // Fill in the right side
+
+		m_pScope->DrawSelf(x1, 0, x2, GetTall(), Color(255,255,255,255)); // Draw the scope as a perfect square
+
+
  
 	        //Restore depth
 	        //materials->DepthRange( 0.0f, 1.0f );
