@@ -1,0 +1,74 @@
+// SRS
+
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"SRS"
+	"viewmodel"				"models/weapons/v_jinrai_srs.mdl"
+	"playermodel"			"models/weapons/w_srs.mdl"
+	"anim_prefix"			"smg2"
+	"bucket"				"0"
+	"bucket_position"		"15"
+
+	"clip_size"				"10"
+	"clip2_size"			"-1"
+
+	"default_clip"			"10"
+	"default_clip2"			"-1"
+
+	"primary_ammo"			"srs"
+	"secondary_ammo"		"None"
+
+	"weight"				"3"
+	"item_flags"			"0"
+	"damage"				"93" // Assault mid body 93hp per shot
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"reload"			"Weapon_SRS.Reload"
+		"reload_npc"		"Weapon_SRS.NPC_Reload"
+		"empty"				"Weapon_SRS.Empty"
+		"single_shot"		"Weapon_SRS.Single"
+		"single_shot_npc"	"Weapon_SRS.NPC_Single"
+		"charge"			"Weapon_SRS.Charge"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"a"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"a"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIcons"
+				"character"	"r"
+		}
+		"ammo2"
+		{
+				"font"		"WeaponIcons"
+				"character"	"t"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}
