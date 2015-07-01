@@ -19,7 +19,7 @@
 
 #include "weapon_ar2.h"
 #include "effect_dispatch_data.h"
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -41,9 +41,9 @@
 //-----------------------------------------------------------------------------
 // Fragmentation grenades
 //-----------------------------------------------------------------------------
-class CWeaponFrag: public CBaseHL2MPCombatWeapon
+class CWeaponFrag: public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CWeaponFrag, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponFrag, CWeaponHL2MPBase );
 public:
 
 	DECLARE_NETWORKCLASS(); 
@@ -133,7 +133,7 @@ LINK_ENTITY_TO_CLASS( weapon_frag, CWeaponFrag );
 PRECACHE_WEAPON_REGISTER(weapon_frag);
 
 CWeaponFrag::CWeaponFrag( void ) :
-	CBaseHL2MPCombatWeapon()
+	CWeaponHL2MPBase()
 {
 	m_bRedraw = false;
 }

@@ -8,7 +8,7 @@
 // $NoKeywords: $
 //=============================================================================//
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #ifndef BASEBLUDGEONWEAPON_H
 #define BASEBLUDGEONWEAPON_H
@@ -25,9 +25,9 @@
 //=========================================================
 // CBaseHLBludgeonWeapon 
 //=========================================================
-class CBaseHL2MPBludgeonWeapon : public CBaseHL2MPCombatWeapon
+class CBaseHL2MPBludgeonWeapon : public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CBaseHL2MPBludgeonWeapon, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CBaseHL2MPBludgeonWeapon, CWeaponHL2MPBase );
 public:
 	CBaseHL2MPBludgeonWeapon();
 

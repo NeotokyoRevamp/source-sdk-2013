@@ -20,7 +20,7 @@
 	#include "beam_shared.h"
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 #include "effect_dispatch_data.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -388,9 +388,9 @@ void CCrossbowBolt::BubbleThink( void )
 #define CWeaponCrossbow C_WeaponCrossbow
 #endif
 
-class CWeaponCrossbow : public CBaseHL2MPCombatWeapon
+class CWeaponCrossbow : public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CWeaponCrossbow, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponCrossbow, CWeaponHL2MPBase );
 public:
 
 	CWeaponCrossbow( void );

@@ -15,7 +15,7 @@
 	#include "hl2mp_player.h"
 #endif
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 
 #ifdef CLIENT_DLL
 #define CWeapon357 C_Weapon357
@@ -25,9 +25,9 @@
 // CWeapon357
 //-----------------------------------------------------------------------------
 
-class CWeapon357 : public CBaseHL2MPCombatWeapon
+class CWeapon357 : public CWeaponHL2MPBase
 {
-	DECLARE_CLASS( CWeapon357, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeapon357, CWeaponHL2MPBase );
 public:
 
 	CWeapon357( void );

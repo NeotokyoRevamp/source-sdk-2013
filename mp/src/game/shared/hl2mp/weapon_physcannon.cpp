@@ -41,7 +41,7 @@
 #include "weapon_physcannon.h"
 #include "physics_saverestore.h"
 #include "movevars_shared.h"
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 #include "vphysics/friction.h"
 #include "debugoverlay_shared.h"
 
@@ -1065,10 +1065,10 @@ private:
 #define CWeaponPhysCannon C_WeaponPhysCannon
 #endif
 
-class CWeaponPhysCannon : public CBaseHL2MPCombatWeapon
+class CWeaponPhysCannon : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponPhysCannon, CBaseHL2MPCombatWeapon );
+	DECLARE_CLASS( CWeaponPhysCannon, CWeaponHL2MPBase );
 
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();

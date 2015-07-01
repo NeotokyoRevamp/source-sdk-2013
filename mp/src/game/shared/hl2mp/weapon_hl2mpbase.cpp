@@ -65,29 +65,37 @@ IMPLEMENT_NETWORKCLASS_ALIASED( WeaponHL2MPBase, DT_WeaponHL2MPBase )
 BEGIN_NETWORK_TABLE( CWeaponHL2MPBase, DT_WeaponHL2MPBase )
 
 #ifdef CLIENT_DLL
-  
+//	RecvPropInt( RECVINFO( m_bReflectViewModelAnimations ) ),
 #else
 	// world weapon models have no aminations
   //	SendPropExclude( "DT_AnimTimeMustBeFirst", "m_flAnimTime" ),
 //	SendPropExclude( "DT_BaseAnimating", "m_nSequence" ),
 //	SendPropExclude( "DT_LocalActiveWeaponData", "m_flTimeWeaponIdle" ),
+//	SendPropInt( SENDINFO( m_bReflectViewModelAnimations ), 1, SPROP_UNSIGNED ),
 #endif
 	
 END_NETWORK_TABLE()
+
+#if !defined( CLIENT_DLL )
+
+#include "globalstate.h"
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC( CWeaponHL2MPBase )
+
+	DEFINE_FIELD( m_bLowered,			FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_flRaiseTime,		FIELD_TIME ),
+
+END_DATADESC()
+
+#endif
 
 BEGIN_PREDICTION_DATA( CWeaponHL2MPBase ) 
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( weapon_hl2mp_base, CWeaponHL2MPBase );
-
-
-#ifdef GAME_DLL
-
-	BEGIN_DATADESC( CWeaponHL2MPBase )
-
-	END_DATADESC()
-
-#endif
 
 // ----------------------------------------------------------------------------- //
 // CWeaponHL2MPBase implementation. 
@@ -100,6 +108,360 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 	m_flNextResetCheckTime = 0.0f;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Drops the weapon into a lowered pose
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+bool CWeaponHL2MPBase::Lower(void)
+{
+	//Don't bother if we don't have the animation
+	if (SelectWeightedSequence(ACT_VM_IDLE_LOWERED) == ACTIVITY_NOT_AVAILABLE)
+		return false;
+
+	m_bLowered = true;
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Brings the weapon up to the ready position
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+bool CWeaponHL2MPBase::Ready(void)
+{
+	//Don't bother if we don't have the animation
+	if (SelectWeightedSequence(ACT_VM_LOWERED_TO_IDLE) == ACTIVITY_NOT_AVAILABLE)
+		return false;
+
+	m_bLowered = false;
+	m_flRaiseTime = gpGlobals->curtime + 0.5f;
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+bool CWeaponHL2MPBase::Deploy(void)
+{
+	// If we should be lowered, deploy in the lowered position
+	// We have to ask the player if the last time it checked, the weapon was lowered
+	if (GetOwner() && GetOwner()->IsPlayer())
+	{
+		CHL2MP_Player *pPlayer = assert_cast<CHL2MP_Player*>(GetOwner());
+		if (pPlayer->IsWeaponLowered())
+		{
+			if (SelectWeightedSequence(ACT_VM_IDLE_LOWERED) != ACTIVITY_NOT_AVAILABLE)
+			{
+				if (DefaultDeploy((char*)GetViewModel(), (char*)GetWorldModel(), ACT_VM_IDLE_LOWERED, (char*)GetAnimPrefix()))
+				{
+					m_bLowered = true;
+
+					// Stomp the next attack time to fix the fact that the lower idles are long
+					pPlayer->SetNextAttack(gpGlobals->curtime + 1.0);
+					m_flNextPrimaryAttack = gpGlobals->curtime + 1.0;
+					m_flNextSecondaryAttack = gpGlobals->curtime + 1.0;
+					return true;
+				}
+			}
+		}
+	}
+
+	m_bLowered = false;
+	return BaseClass::Deploy();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+bool CWeaponHL2MPBase::WeaponShouldBeLowered(void)
+{
+	// Can't be in the middle of another animation
+	if (GetIdealActivity() != ACT_VM_IDLE_LOWERED && GetIdealActivity() != ACT_VM_IDLE &&
+		GetIdealActivity() != ACT_VM_IDLE_TO_LOWERED && GetIdealActivity() != ACT_VM_LOWERED_TO_IDLE)
+		return false;
+
+	if (m_bLowered)
+		return true;
+
+#if !defined( CLIENT_DLL )
+
+	if (GlobalEntity_GetState("friendly_encounter") == GLOBAL_ON)
+		return true;
+
+#endif
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Allows the weapon to choose proper weapon idle animation
+//-----------------------------------------------------------------------------
+void CWeaponHL2MPBase::WeaponIdle(void)
+{
+	//See if we should idle high or low
+	if (WeaponShouldBeLowered())
+	{
+		// Move to lowered position if we're not there yet
+		if (GetActivity() != ACT_VM_IDLE_LOWERED && GetActivity() != ACT_VM_IDLE_TO_LOWERED
+			&& GetActivity() != ACT_TRANSITION)
+		{
+			SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+		}
+		else if (HasWeaponIdleTimeElapsed())
+		{
+			// Keep idling low
+			SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+		}
+	}
+	else
+	{
+		// See if we need to raise immediately
+		if (m_flRaiseTime < gpGlobals->curtime && GetActivity() == ACT_VM_IDLE_LOWERED)
+		{
+			SendWeaponAnim(ACT_VM_IDLE);
+		}
+		else if (HasWeaponIdleTimeElapsed())
+		{
+			SendWeaponAnim(ACT_VM_IDLE);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Override for mag toss
+//-----------------------------------------------------------------------------
+void CWeaponHL2MPBase::FinishReload(void)
+{
+	CBaseCombatCharacter *pOwner = GetOwner();
+
+	if (pOwner)
+	{
+		// If I use primary clips, reload primary
+		if (UsesClipsForAmmo1())
+		{
+			int primary = MIN(GetMaxClip1(), pOwner->GetAmmoCount(m_iPrimaryAmmoType));
+			m_iClip1 = primary;
+			pOwner->RemoveAmmo(primary, m_iPrimaryAmmoType);
+		}
+
+		// If I use secondary clips, reload secondary
+		if (UsesClipsForAmmo2())
+		{
+			int secondary = MIN(GetMaxClip2(), pOwner->GetAmmoCount(m_iSecondaryAmmoType));
+			m_iClip2 = secondary;
+			pOwner->RemoveAmmo(secondary, m_iSecondaryAmmoType);
+		}
+
+		if (m_bReloadsSingly)
+		{
+			m_bInReload = false;
+		}
+	}
+}
+
+#if defined( CLIENT_DLL )
+
+#define	HL2_BOB_CYCLE_MIN	1.0f
+#define	HL2_BOB_CYCLE_MAX	0.45f
+#define	HL2_BOB			0.002f
+#define	HL2_BOB_UP		0.5f
+
+extern float	g_lateralBob;
+extern float	g_verticalBob;
+
+static ConVar	cl_bobcycle("cl_bobcycle", "0.8");
+static ConVar	cl_bob("cl_bob", "0.002");
+static ConVar	cl_bobup("cl_bobup", "0.5");
+
+// Register these cvars if needed for easy tweaking
+static ConVar	v_iyaw_cycle("v_iyaw_cycle", "2", FCVAR_REPLICATED | FCVAR_CHEAT);
+static ConVar	v_iroll_cycle("v_iroll_cycle", "0.5", FCVAR_REPLICATED | FCVAR_CHEAT);
+static ConVar	v_ipitch_cycle("v_ipitch_cycle", "1", FCVAR_REPLICATED | FCVAR_CHEAT);
+static ConVar	v_iyaw_level("v_iyaw_level", "0.3", FCVAR_REPLICATED | FCVAR_CHEAT);
+static ConVar	v_iroll_level("v_iroll_level", "0.1", FCVAR_REPLICATED | FCVAR_CHEAT);
+static ConVar	v_ipitch_level("v_ipitch_level", "0.3", FCVAR_REPLICATED | FCVAR_CHEAT);
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : float
+//-----------------------------------------------------------------------------
+float CWeaponHL2MPBase::CalcViewmodelBob(void)
+{
+	static	float bobtime;
+	static	float lastbobtime;
+	float	cycle;
+
+	CBasePlayer *player = ToBasePlayer(GetOwner());
+	//Assert( player );
+
+	//NOTENOTE: For now, let this cycle continue when in the air, because it snaps badly without it
+
+	if ((!gpGlobals->frametime) || (player == NULL))
+	{
+		//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
+		return 0.0f;// just use old value
+	}
+
+	//Find the speed of the player
+	float speed = player->GetLocalVelocity().Length2D();
+
+	//FIXME: This maximum speed value must come from the server.
+	//		 MaxSpeed() is not sufficient for dealing with sprinting - jdw
+
+	speed = clamp(speed, -320, 320);
+
+	float bob_offset = RemapVal(speed, 0, 320, 0.0f, 1.0f);
+
+	bobtime += (gpGlobals->curtime - lastbobtime) * bob_offset;
+	lastbobtime = gpGlobals->curtime;
+
+	//Calculate the vertical bob
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX)*HL2_BOB_CYCLE_MAX;
+	cycle /= HL2_BOB_CYCLE_MAX;
+
+	if (cycle < HL2_BOB_UP)
+	{
+		cycle = M_PI * cycle / HL2_BOB_UP;
+	}
+	else
+	{
+		cycle = M_PI + M_PI*(cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
+	}
+
+	g_verticalBob = speed*0.005f;
+	g_verticalBob = g_verticalBob*0.3 + g_verticalBob*0.7*sin(cycle);
+
+	g_verticalBob = clamp(g_verticalBob, -7.0f, 4.0f);
+
+	//Calculate the lateral bob
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX * 2)*HL2_BOB_CYCLE_MAX * 2;
+	cycle /= HL2_BOB_CYCLE_MAX * 2;
+
+	if (cycle < HL2_BOB_UP)
+	{
+		cycle = M_PI * cycle / HL2_BOB_UP;
+	}
+	else
+	{
+		cycle = M_PI + M_PI*(cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
+	}
+
+	g_lateralBob = speed*0.005f;
+	g_lateralBob = g_lateralBob*0.3 + g_lateralBob*0.7*sin(cycle);
+	g_lateralBob = clamp(g_lateralBob, -7.0f, 4.0f);
+
+	//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
+	return 0.0f;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : &origin - 
+//			&angles - 
+//			viewmodelindex - 
+//-----------------------------------------------------------------------------
+void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin, QAngle &angles)
+{
+	Vector	forward, right;
+	AngleVectors(angles, &forward, &right, NULL);
+
+	CalcViewmodelBob();
+
+	// Apply bob, but scaled down to 40%
+	VectorMA(origin, g_verticalBob * 0.1f, forward, origin);
+
+	// Z bob a bit more
+	origin[2] += g_verticalBob * 0.1f;
+
+	// bob the angles
+	angles[ROLL] += g_verticalBob * 0.5f;
+	angles[PITCH] -= g_verticalBob * 0.4f;
+
+	angles[YAW] -= g_lateralBob  * 0.3f;
+
+	VectorMA(origin, g_lateralBob * 0.8f, right, origin);
+}
+
+//-----------------------------------------------------------------------------
+Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
+{
+	return BaseClass::GetBulletSpread(proficiency);
+}
+
+//-----------------------------------------------------------------------------
+float CWeaponHL2MPBase::GetSpreadBias(WeaponProficiency_t proficiency)
+{
+	return BaseClass::GetSpreadBias(proficiency);
+}
+//-----------------------------------------------------------------------------
+
+const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetProficiencyValues()
+{
+	return NULL;
+}
+
+#else
+
+// Server stubs
+float CWeaponHL2MPBase::CalcViewmodelBob(void)
+{
+	return 0.0f;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : &origin - 
+//			&angles - 
+//			viewmodelindex - 
+//-----------------------------------------------------------------------------
+void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin, QAngle &angles)
+{
+}
+
+
+//-----------------------------------------------------------------------------
+Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
+{
+	Vector baseSpread = BaseClass::GetBulletSpread(proficiency);
+
+	const WeaponProficiencyInfo_t *pProficiencyValues = GetProficiencyValues();
+	float flModifier = (pProficiencyValues)[proficiency].spreadscale;
+	return (baseSpread * flModifier);
+}
+
+//-----------------------------------------------------------------------------
+float CWeaponHL2MPBase::GetSpreadBias(WeaponProficiency_t proficiency)
+{
+	const WeaponProficiencyInfo_t *pProficiencyValues = GetProficiencyValues();
+	return (pProficiencyValues)[proficiency].bias;
+}
+
+//-----------------------------------------------------------------------------
+const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetProficiencyValues()
+{
+	return GetDefaultProficiencyValues();
+}
+
+//-----------------------------------------------------------------------------
+const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetDefaultProficiencyValues()
+{
+	// Weapon proficiency table. Keep this in sync with WeaponProficiency_t enum in the header!!
+	static WeaponProficiencyInfo_t g_BaseWeaponProficiencyTable[] =
+	{
+		{ 2.50, 1.0 },
+		{ 2.00, 1.0 },
+		{ 1.50, 1.0 },
+		{ 1.25, 1.0 },
+		{ 1.00, 1.0 },
+	};
+
+	COMPILE_TIME_ASSERT(ARRAYSIZE(g_BaseWeaponProficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
+
+	return g_BaseWeaponProficiencyTable;
+}
+
+#endif
 
 bool CWeaponHL2MPBase::IsPredicted() const
 { 
