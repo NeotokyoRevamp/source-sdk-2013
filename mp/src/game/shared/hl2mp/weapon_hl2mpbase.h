@@ -82,8 +82,7 @@ public:
 
 	virtual void	FireBullets( const FireBulletsInfo_t &info );
 	virtual void	FallInit( void );
-	
-public:
+
 	#if defined( CLIENT_DLL )
 		
 		virtual bool	ShouldPredict();
