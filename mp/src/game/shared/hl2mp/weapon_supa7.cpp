@@ -5,7 +5,6 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "npcevent.h"
 #include "in_buttons.h"
 
 #ifdef CLIENT_DLL
@@ -20,9 +19,6 @@
 #define CWeaponSupa7 C_WeaponSupa7
 #endif
 
-extern ConVar sk_supa7_auto_reload_time;
-extern ConVar sk_supa7_plr_num_shotgun_pellets;
-
 class CWeaponSupa7 : public CWeaponHL2MPBase
 {
 public:
@@ -34,7 +30,6 @@ public:
 private:
 	CNetworkVar( bool,	m_bNeedPump );		// When emptied completely
 	CNetworkVar( bool,	m_bDelayedFire1 );	// Fire primary when finished reloading
-	CNetworkVar( bool,	m_bDelayedFire2 );	// Fire secondary when finished reloading
 	CNetworkVar( bool,	m_bDelayedReload );	// Reload when finished pump
 
 public:
@@ -53,7 +48,6 @@ public:
 //	void WeaponIdle( void );
 	void ItemPostFrame( void );
 	void PrimaryAttack( void );
-	void SecondaryAttack( void );
 	void DryFire( void );
 	virtual float GetFireRate( void ) { return 0.7; };
 
@@ -73,12 +67,10 @@ BEGIN_NETWORK_TABLE( CWeaponSupa7, DT_WeaponSupa7 )
 #ifdef CLIENT_DLL
 	RecvPropBool( RECVINFO( m_bNeedPump ) ),
 	RecvPropBool( RECVINFO( m_bDelayedFire1 ) ),
-	RecvPropBool( RECVINFO( m_bDelayedFire2 ) ),
 	RecvPropBool( RECVINFO( m_bDelayedReload ) ),
 #else
 	SendPropBool( SENDINFO( m_bNeedPump ) ),
 	SendPropBool( SENDINFO( m_bDelayedFire1 ) ),
-	SendPropBool( SENDINFO( m_bDelayedFire2 ) ),
 	SendPropBool( SENDINFO( m_bDelayedReload ) ),
 #endif
 END_NETWORK_TABLE()
@@ -87,7 +79,6 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA( CWeaponSupa7 )
 	DEFINE_PRED_FIELD( m_bNeedPump, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_bDelayedFire1, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
-	DEFINE_PRED_FIELD( m_bDelayedFire2, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_bDelayedReload, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
 END_PREDICTION_DATA()
 #endif
@@ -337,55 +328,6 @@ void CWeaponSupa7::PrimaryAttack( void )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-//
-//
-//-----------------------------------------------------------------------------
-void CWeaponSupa7::SecondaryAttack( void )
-{
-	// Only the player fires this way so we can cast
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
-
-	if (!pPlayer)
-	{
-		return;
-	}
-
-	pPlayer->m_nButtons &= ~IN_ATTACK2;
-	// MUST call sound before removing a round from the clip of a CMachineGun
-	WeaponSound(WPN_DOUBLE);
-
-	pPlayer->DoMuzzleFlash();
-
-	SendWeaponAnim( ACT_VM_SECONDARYATTACK );
-
-	// Don't fire again until fire animation has completed
-	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
-	m_iClip1 -= 2;	// Shotgun uses same clip for primary and secondary attacks
-
-	// player "shoot" animation
-	pPlayer->SetAnimation( PLAYER_ATTACK1 );
-
-	Vector vecSrc	 = pPlayer->Weapon_ShootPosition();
-	Vector vecAiming = pPlayer->GetAutoaimVector( AUTOAIM_10DEGREES );	
-
-	FireBulletsInfo_t info( 12, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
-	info.m_pAttacker = pPlayer;
-
-	// Fire the bullets, and force the first shot to be perfectly accuracy
-	pPlayer->FireBullets( info );
-	pPlayer->ViewPunch( QAngle(SharedRandomFloat( "shotgunsax", -5, 5 ),0,0) );
-
-	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
-	{
-		// HEV suit - indicate out of ammo condition
-		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0); 
-	}
-
-	m_bNeedPump = true;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: Override so shotgun can do mulitple reloads in a row
 //-----------------------------------------------------------------------------
 void CWeaponSupa7::ItemPostFrame( void )
@@ -409,13 +351,6 @@ void CWeaponSupa7::ItemPostFrame( void )
 			m_bInReload		= false;
 			m_bNeedPump		= false;
 			m_bDelayedFire1 = true;
-		}
-		// If I'm secondary firing and have two rounds stop reloading and fire
-		else if ((pOwner->m_nButtons & IN_ATTACK2 ) && (m_iClip1 >=2) && !m_bNeedPump )
-		{
-			m_bInReload		= false;
-			m_bNeedPump		= false;
-			m_bDelayedFire2 = true;
 		}
 		else if (m_flNextPrimaryAttack <= gpGlobals->curtime)
 		{
@@ -451,46 +386,7 @@ void CWeaponSupa7::ItemPostFrame( void )
 		return;
 	}
 	
-	// Shotgun uses same timing and ammo for secondary attack
-	if ((m_bDelayedFire2 || pOwner->m_nButtons & IN_ATTACK2)&&(m_flNextPrimaryAttack <= gpGlobals->curtime))
-	{
-		m_bDelayedFire2 = false;
-		
-		if ( (m_iClip1 <= 1 && UsesClipsForAmmo1()))
-		{
-			// If only one shell is left, do a single shot instead	
-			if ( m_iClip1 == 1 )
-			{
-				PrimaryAttack();
-			}
-			else if (!pOwner->GetAmmoCount(m_iPrimaryAmmoType))
-			{
-				DryFire();
-			}
-			else
-			{
-				StartReload();
-			}
-		}
-
-		// Fire underwater?
-		else if (GetOwner()->GetWaterLevel() == 3 && m_bFiresUnderwater == false)
-		{
-			WeaponSound(EMPTY);
-			m_flNextPrimaryAttack = gpGlobals->curtime + 0.2;
-			return;
-		}
-		else
-		{
-			// If the firing button was just pressed, reset the firing time
-			if ( pOwner->m_afButtonPressed & IN_ATTACK )
-			{
-				 m_flNextPrimaryAttack = gpGlobals->curtime;
-			}
-			SecondaryAttack();
-		}
-	}
-	else if ( (m_bDelayedFire1 || pOwner->m_nButtons & IN_ATTACK) && m_flNextPrimaryAttack <= gpGlobals->curtime)
+	if ( (m_bDelayedFire1 || pOwner->m_nButtons & IN_ATTACK) && m_flNextPrimaryAttack <= gpGlobals->curtime)
 	{
 		m_bDelayedFire1 = false;
 		if ( (m_iClip1 <= 0 && UsesClipsForAmmo1()) || ( !UsesClipsForAmmo1() && !pOwner->GetAmmoCount(m_iPrimaryAmmoType) ) )
@@ -572,12 +468,6 @@ CWeaponSupa7::CWeaponSupa7( void )
 
 	m_bNeedPump		= false;
 	m_bDelayedFire1 = false;
-	m_bDelayedFire2 = false;
-
-	m_fMinRange1		= 0.0;
-	m_fMaxRange1		= 500;
-	m_fMinRange2		= 0.0;
-	m_fMaxRange2		= 200;
 }
 
 //==================================================
