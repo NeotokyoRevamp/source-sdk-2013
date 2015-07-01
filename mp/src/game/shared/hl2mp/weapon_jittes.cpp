@@ -34,7 +34,7 @@ public:
 
 	void	AddViewKick( void );
 
-	float	GetFireRate( void ) { return 0.1f; }
+	float	GetFireRate( void ) { return 0.6f; }
 	Activity	GetPrimaryAttackActivity( void );
 
 	virtual const Vector& GetBulletSpread( void )
@@ -81,7 +81,8 @@ IMPLEMENT_ACTTABLE(CWeaponJitteSilenced);
 //=========================================================
 CWeaponJitteSilenced::CWeaponJitteSilenced( )
 {
-
+	m_bBurst = true;
+	m_nBurstMaxBullets = 3;
 }
 
 //-----------------------------------------------------------------------------
