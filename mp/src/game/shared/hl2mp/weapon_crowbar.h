@@ -16,7 +16,7 @@
 #pragma once
 
 
-#include "weapon_hl2mpbasehlmpcombatweapon.h"
+#include "weapon_hl2mpbase.h"
 #include "weapon_hl2mpbasebasebludgeon.h"
 
 
