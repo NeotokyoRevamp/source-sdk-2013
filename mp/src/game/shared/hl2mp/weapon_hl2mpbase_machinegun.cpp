@@ -32,7 +32,7 @@ END_PREDICTION_DATA()
 BEGIN_DATADESC(CHL2MPMachineGun)
 
 DEFINE_FIELD(m_nShotsFired, FIELD_INTEGER),
-DEFINE_FIELD(m_bBurst, FIELD_BOOLEAN),
+DEFINE_FIELD(m_iFireMode, FIELD_INTEGER),
 DEFINE_FIELD(m_flNextSoundTime, FIELD_TIME),
 
 END_DATADESC()
@@ -64,10 +64,13 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 		return;
 
 	// Abort here to handle burst and auto fire modes
-	if ( (UsesClipsForAmmo1() && m_iClip1 == 0) || ( !UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType) ) )
+	if ((UsesClipsForAmmo1() && m_iClip1 == 0) || (!UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType)))
 		return;
 
-	if (m_bBurst && (m_nShotsFired > GetMaxBurst()))
+	if ((m_iFireMode == FM_BURST) && (m_nShotsFired > GetMaxBurst()))
+		return;
+
+	if ((m_iFireMode == FM_SEMI) && (m_nShotsFired >= 1))
 		return;
 
 	pPlayer->DoMuzzleFlash();
@@ -119,7 +122,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	SendWeaponAnim( GetPrimaryAttackActivity() );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	if (m_bBurst && (m_nShotsFired < GetMaxBurst()))
+	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))
 	{
 		m_flNextPrimaryAttack = gpGlobals->curtime + 0.1;
 	}
@@ -144,51 +147,51 @@ void CHL2MPMachineGun::FireBullets( const FireBulletsInfo_t &info )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHL2MPMachineGun::DoMachineGunKick( CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime )
+void CHL2MPMachineGun::DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime)
 {
-	#define	KICK_MIN_X			0.2f	//Degrees
-	#define	KICK_MIN_Y			0.2f	//Degrees
-	#define	KICK_MIN_Z			0.1f	//Degrees
+#define	KICK_MIN_X			0.2f	//Degrees
+#define	KICK_MIN_Y			0.2f	//Degrees
+#define	KICK_MIN_Z			0.1f	//Degrees
 
 	QAngle vecScratch;
 	int iSeed = CBaseEntity::GetPredictionRandomSeed() & 255;
-	
+
 	//Find how far into our accuracy degradation we are
-	float duration	= ( fireDurationTime > slideLimitTime ) ? slideLimitTime : fireDurationTime;
+	float duration = (fireDurationTime > slideLimitTime) ? slideLimitTime : fireDurationTime;
 	float kickPerc = duration / slideLimitTime;
 
 	// do this to get a hard discontinuity, clear out anything under 10 degrees punch
-	pPlayer->ViewPunchReset( 10 );
+	pPlayer->ViewPunchReset(10);
 
 	//Apply this to the view angles as well
-	vecScratch.x = -( KICK_MIN_X + ( maxVerticleKickAngle * kickPerc ) );
-	vecScratch.y = -( KICK_MIN_Y + ( maxVerticleKickAngle * kickPerc ) ) / 3;
-	vecScratch.z = KICK_MIN_Z + ( maxVerticleKickAngle * kickPerc ) / 8;
+	vecScratch.x = -(KICK_MIN_X + (maxVerticleKickAngle * kickPerc));
+	vecScratch.y = -(KICK_MIN_Y + (maxVerticleKickAngle * kickPerc)) / 3;
+	vecScratch.z = KICK_MIN_Z + (maxVerticleKickAngle * kickPerc) / 8;
 
-	RandomSeed( iSeed );
+	RandomSeed(iSeed);
 
 	//Wibble left and right
-	if ( RandomInt( -1, 1 ) >= 0 )
+	if (RandomInt(-1, 1) >= 0)
 		vecScratch.y *= -1;
 
 	iSeed++;
 
 	//Wobble up and down
-	if ( RandomInt( -1, 1 ) >= 0 )
+	if (RandomInt(-1, 1) >= 0)
 		vecScratch.z *= -1;
 
 	//Clip this to our desired min/max
-	UTIL_ClipPunchAngleOffset( vecScratch, pPlayer->m_Local.m_vecPunchAngle, QAngle( 24.0f, 3.0f, 1.0f ) );
+	UTIL_ClipPunchAngleOffset(vecScratch, pPlayer->m_Local.m_vecPunchAngle, QAngle(24.0f, 3.0f, 1.0f));
 
 	//Add it to the view punch
 	// NOTE: 0.5 is just tuned to match the old effect before the punch became simulated
-	pPlayer->ViewPunch( vecScratch * 0.5 );
+	pPlayer->ViewPunch(vecScratch * 0.5);
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Reset our shots fired
 //-----------------------------------------------------------------------------
-bool CHL2MPMachineGun::Deploy( void )
+bool CHL2MPMachineGun::Deploy(void)
 {
 	m_nShotsFired = 0;
 
@@ -199,7 +202,7 @@ bool CHL2MPMachineGun::Deploy( void )
 // Purpose: Make enough sound events to fill the estimated think interval
 // returns: number of shots needed
 //-----------------------------------------------------------------------------
-int CHL2MPMachineGun::WeaponSoundRealtime( WeaponSound_t shoot_type )
+int CHL2MPMachineGun::WeaponSoundRealtime(WeaponSound_t shoot_type)
 {
 	int numBullets = 0;
 
@@ -210,16 +213,16 @@ int CHL2MPMachineGun::WeaponSoundRealtime( WeaponSound_t shoot_type )
 	}
 
 	// make enough sound events to fill up the next estimated think interval
-	float dt = clamp( m_flAnimTime - m_flPrevAnimTime, 0, 0.2 );
+	float dt = clamp(m_flAnimTime - m_flPrevAnimTime, 0, 0.2);
 	if (m_flNextSoundTime < gpGlobals->curtime + dt)
 	{
-		WeaponSound( SINGLE_NPC, m_flNextSoundTime );
+		WeaponSound(SINGLE_NPC, m_flNextSoundTime);
 		m_flNextSoundTime += GetFireRate();
 		numBullets++;
 	}
 	if (m_flNextSoundTime < gpGlobals->curtime + dt)
 	{
-		WeaponSound( SINGLE_NPC, m_flNextSoundTime );
+		WeaponSound(SINGLE_NPC, m_flNextSoundTime);
 		m_flNextSoundTime += GetFireRate();
 		numBullets++;
 	}
@@ -230,16 +233,27 @@ int CHL2MPMachineGun::WeaponSoundRealtime( WeaponSound_t shoot_type )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHL2MPMachineGun::ItemPostFrame( void )
+void CHL2MPMachineGun::ItemPostFrame(void)
 {
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
-	
-	if ( pOwner == NULL )
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+
+	if (pOwner == NULL)
 		return;
 
-	if (((pOwner->m_nButtons & IN_ATTACK) == false) || (m_bBurst && (m_nShotsFired >= GetMaxBurst())))
+	// Holding down +attack with burst fire
+	if (m_iFireMode == FM_BURST && (m_nShotsFired >= GetMaxBurst()))
 	{
-		m_nShotsFired = 0; 	// Debounce the recoiling counter
+		// Reset shots fored and continue normally with regular rate of fire
+		m_nShotsFired = 0;
+	}
+	// -attack
+	else if ((pOwner->m_nButtons & IN_ATTACK) == false)
+	{
+		if (m_iFireMode == FM_BURST && m_nShotsFired > 0) // Slightly bigger delay to avoid higher DPS with tapping
+			m_flNextPrimaryAttack = gpGlobals->curtime + 0.15;
+
+		// Reset shots fired
+		m_nShotsFired = 0;
 	}
 
 	BaseClass::ItemPostFrame();

@@ -16,6 +16,10 @@
 	#define CHL2MPMachineGun C_HL2MPMachineGun
 #endif
 
+#define FM_AUTO 0
+#define FM_BURST 1
+#define FM_SEMI 2
+
 //=========================================================
 // Machine gun base class
 //=========================================================
@@ -54,7 +58,7 @@ protected:
 
 	int	m_nShotsFired;	// Number of consecutive shots fired
 
-	bool m_bBurst;		// Toggle burst fire
+	int  m_iFireMode;		// Switches fire mode
 
 	float	m_flNextSoundTime;	// real-time clock of when to make next sound
 };

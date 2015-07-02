@@ -84,7 +84,7 @@ IMPLEMENT_ACTTABLE(CWeaponJitteSilenced);
 //=========================================================
 CWeaponJitteSilenced::CWeaponJitteSilenced( )
 {
-	m_bBurst = true;
+	m_iFireMode = FM_BURST;
 }
 
 //-----------------------------------------------------------------------------

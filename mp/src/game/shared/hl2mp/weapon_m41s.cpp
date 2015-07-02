@@ -29,16 +29,10 @@ public:
 
 	CWeaponM41S();
 
-	virtual bool	Reload( void );
-
-
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void SecondaryAttack(void);
 	void AddViewKick( void );
-	bool Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
-	void Drop(const Vector &vecVelocity);
 
 	float	GetFireRate( void ) { return 0.15f; }
 	Activity	GetPrimaryAttackActivity( void );
@@ -55,9 +49,6 @@ public:
 	
 private:
 	CWeaponM41S( const CWeaponM41S & );
-
-	void	ToggleZoom( void );
-	void	CancelZoom( void );
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponM41S, DT_WeaponM41S )
@@ -90,7 +81,7 @@ IMPLEMENT_ACTTABLE(CWeaponM41S);
 //=========================================================
 CWeaponM41S::CWeaponM41S( )
 {
-
+	m_iFireMode = FM_SEMI;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,44 +102,6 @@ Activity CWeaponM41S::GetPrimaryAttackActivity( void )
 	return ACT_VM_RECOIL3;
 }
 
-// Zoom view by changing FOV
-void CWeaponM41S::SecondaryAttack(void)
-{
-	ToggleZoom();
-}
-
-void CWeaponM41S::ToggleZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-	
-	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, 40, 0.2f);
-	}
-	else
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-	}
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
-}
-
-void CWeaponM41S::CancelZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-	if (pPlayer->GetFOV() != pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -165,32 +118,4 @@ void CWeaponM41S::AddViewKick( void )
 		return;
 
 	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
-}
-
-// Disable scope when releading
-bool CWeaponM41S::Reload( void )
-{
-	if ( BaseClass::Reload() )
-	{
-		CancelZoom();
-
-		return true;
-	}
-
-	return false;
-}
-
-// Disable scope when switching weapons
-bool CWeaponM41S::Holster(CBaseCombatWeapon *pSwitchingTo)
-{
-	CancelZoom();
-
-	return BaseClass::Holster(pSwitchingTo);
-}
-
-void CWeaponM41S::Drop(const Vector &vecVelocity)
-{
-	CancelZoom();
-
-	BaseClass::Drop(vecVelocity);
 }
