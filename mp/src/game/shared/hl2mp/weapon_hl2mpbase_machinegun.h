@@ -30,8 +30,7 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void	PrimaryAttack( void );
-	void	FinishBurst(void);
+	void	PrimaryAttack(void);
 	
 	// Default calls through to m_hOwner, but plasma weapons can override and shoot projectiles here.
 	virtual void	ItemPostFrame( void );
@@ -56,10 +55,8 @@ protected:
 	int	m_nShotsFired;	// Number of consecutive shots fired
 
 	bool m_bBurst;		// Toggle burst fire
-	bool m_bFinishBurst; // If true fires all remaining bullets
 
 	int m_nBurstMaxBullets;	// Defines how many bullets to shoot each burst
-	int m_nBurstBullets;	// Keeps track of how many bullets are remaining for this burst
 
 	float	m_flNextSoundTime;	// real-time clock of when to make next sound
 };
