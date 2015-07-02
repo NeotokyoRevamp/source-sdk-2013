@@ -56,8 +56,6 @@ protected:
 
 	bool m_bBurst;		// Toggle burst fire
 
-	int m_nBurstMaxBullets;	// Defines how many bullets to shoot each burst
-
 	float	m_flNextSoundTime;	// real-time clock of when to make next sound
 };
 

@@ -33,7 +33,6 @@ BEGIN_DATADESC(CHL2MPMachineGun)
 
 DEFINE_FIELD(m_nShotsFired, FIELD_INTEGER),
 DEFINE_FIELD(m_bBurst, FIELD_BOOLEAN),
-DEFINE_FIELD(m_nBurstMaxBullets, FIELD_INTEGER),
 DEFINE_FIELD(m_flNextSoundTime, FIELD_TIME),
 
 END_DATADESC()
@@ -68,7 +67,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	if ( (UsesClipsForAmmo1() && m_iClip1 == 0) || ( !UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType) ) )
 		return;
 
-	if (m_bBurst && (m_nShotsFired > m_nBurstMaxBullets))
+	if (m_bBurst && (m_nShotsFired > GetMaxBurst()))
 		return;
 
 	pPlayer->DoMuzzleFlash();
@@ -120,13 +119,13 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	SendWeaponAnim( GetPrimaryAttackActivity() );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	if (m_bBurst && (m_nShotsFired < m_nBurstMaxBullets))
+	if (m_bBurst && (m_nShotsFired < GetMaxBurst()))
 	{
 		m_flNextPrimaryAttack = gpGlobals->curtime + 0.1;
 	}
 	else
 	{
-		m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
+		m_flNextPrimaryAttack = gpGlobals->curtime + fireRate;
 	}
 }
 
@@ -238,7 +237,7 @@ void CHL2MPMachineGun::ItemPostFrame( void )
 	if ( pOwner == NULL )
 		return;
 
-	if (((pOwner->m_nButtons & IN_ATTACK) == false) || (m_bBurst && (m_nShotsFired >= m_nBurstMaxBullets)))
+	if (((pOwner->m_nButtons & IN_ATTACK) == false) || (m_bBurst && (m_nShotsFired >= GetMaxBurst())))
 	{
 		m_nShotsFired = 0; 	// Debounce the recoiling counter
 	}
