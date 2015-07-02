@@ -18,21 +18,23 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-IMPLEMENT_NETWORKCLASS_ALIASED( HL2MPMachineGun, DT_HL2MPMachineGun )
+IMPLEMENT_NETWORKCLASS_ALIASED(HL2MPMachineGun, DT_HL2MPMachineGun)
 
-BEGIN_NETWORK_TABLE( CHL2MPMachineGun, DT_HL2MPMachineGun )
+BEGIN_NETWORK_TABLE(CHL2MPMachineGun, DT_HL2MPMachineGun)
 END_NETWORK_TABLE()
 
-BEGIN_PREDICTION_DATA( CHL2MPMachineGun )
+BEGIN_PREDICTION_DATA(CHL2MPMachineGun)
 END_PREDICTION_DATA()
 
 //=========================================================
 //	>> CHLSelectFireMachineGun
 //=========================================================
-BEGIN_DATADESC( CHL2MPMachineGun )
+BEGIN_DATADESC(CHL2MPMachineGun)
 
-	DEFINE_FIELD( m_nShotsFired,	FIELD_INTEGER ),
-	DEFINE_FIELD( m_flNextSoundTime, FIELD_TIME ),
+DEFINE_FIELD(m_nShotsFired, FIELD_INTEGER),
+DEFINE_FIELD(m_bBurst, FIELD_BOOLEAN),
+DEFINE_FIELD(m_nBurstMaxBullets, FIELD_INTEGER),
+DEFINE_FIELD(m_flNextSoundTime, FIELD_TIME),
 
 END_DATADESC()
 
@@ -61,12 +63,13 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
 	if (!pPlayer)
 		return;
-	
+
 	// Abort here to handle burst and auto fire modes
 	if ( (UsesClipsForAmmo1() && m_iClip1 == 0) || ( !UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType) ) )
 		return;
 
-	m_nShotsFired++;
+	if (m_bBurst && (m_nShotsFired > m_nBurstMaxBullets))
+		return;
 
 	pPlayer->DoMuzzleFlash();
 
@@ -80,6 +83,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 		// MUST call sound before removing a round from the clip of a CHLMachineGun
 		WeaponSound(SINGLE, m_flNextPrimaryAttack);
 		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+		m_nShotsFired++;
 		iBulletsToFire++;
 	}
 
@@ -93,7 +97,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 
 	CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer( pPlayer );
 
-		// Fire the bullets
+	// Fire the bullets
 	FireBulletsInfo_t info;
 	info.m_iShots = iBulletsToFire;
 	info.m_vecSrc = pHL2MPPlayer->Weapon_ShootPosition( );
@@ -115,6 +119,15 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 
 	SendWeaponAnim( GetPrimaryAttackActivity() );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+
+	if (m_bBurst && (m_nShotsFired < m_nBurstMaxBullets))
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.1;
+	}
+	else
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -183,8 +196,6 @@ bool CHL2MPMachineGun::Deploy( void )
 	return BaseClass::Deploy();
 }
 
-
-
 //-----------------------------------------------------------------------------
 // Purpose: Make enough sound events to fill the estimated think interval
 // returns: number of shots needed
@@ -217,9 +228,6 @@ int CHL2MPMachineGun::WeaponSoundRealtime( WeaponSound_t shoot_type )
 	return numBullets;
 }
 
-
-
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -230,13 +238,23 @@ void CHL2MPMachineGun::ItemPostFrame( void )
 	if ( pOwner == NULL )
 		return;
 
-	// Debounce the recoiling counter
-	if ( ( pOwner->m_nButtons & IN_ATTACK ) == false )
+	if (((pOwner->m_nButtons & IN_ATTACK) == false) || (m_bBurst && (m_nShotsFired >= m_nBurstMaxBullets)))
 	{
-		m_nShotsFired = 0;
+		m_nShotsFired = 0; 	// Debounce the recoiling counter
 	}
 
 	BaseClass::ItemPostFrame();
 }
 
+// TODO: Unscoping can be done here as well
+void CHL2MPMachineGun::Drop(const Vector &vecVelocity)
+{
+	return BaseClass::Drop(vecVelocity);
+}
 
+bool CHL2MPMachineGun::Reload(void)
+{
+	m_nShotsFired = 0;
+
+	return BaseClass::Reload();
+}
