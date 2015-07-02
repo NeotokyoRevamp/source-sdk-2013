@@ -33,6 +33,7 @@ BEGIN_DATADESC(CHL2MPMachineGun)
 
 DEFINE_FIELD(m_nShotsFired, FIELD_INTEGER),
 DEFINE_FIELD(m_iFireMode, FIELD_INTEGER),
+DEFINE_FIELD(m_bScope, FIELD_BOOLEAN),
 DEFINE_FIELD(m_flNextSoundTime, FIELD_TIME),
 
 END_DATADESC()
@@ -132,6 +133,46 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	}
 }
 
+void CHL2MPMachineGun::SecondaryAttack(void)
+{
+	if (!m_bScope)
+		return;
+
+	// TODO: Handle zooming/pseudo iron sights for other guns here
+
+	ToggleScope(false);
+
+	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+}
+
+void CHL2MPMachineGun::ToggleScope(bool disable)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+#ifndef CLIENT_DLL
+
+	// Send a message to show the scope
+	CSingleUserRecipientFilter filter(pPlayer);
+	UserMessageBegin(filter, "ShowScope");
+
+	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV() && !disable)
+	{
+		pPlayer->SetFOV(pPlayer, 40, 0.2f);
+		WRITE_BYTE(1); //Show scope
+	}
+	else
+	{
+		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
+		WRITE_BYTE(0);
+	}
+	
+	MessageEnd();
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &info - 
@@ -188,15 +229,7 @@ void CHL2MPMachineGun::DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, fl
 	pPlayer->ViewPunch(vecScratch * 0.5);
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: Reset our shots fired
-//-----------------------------------------------------------------------------
-bool CHL2MPMachineGun::Deploy(void)
-{
-	m_nShotsFired = 0;
 
-	return BaseClass::Deploy();
-}
 
 //-----------------------------------------------------------------------------
 // Purpose: Make enough sound events to fill the estimated think interval
@@ -259,15 +292,44 @@ void CHL2MPMachineGun::ItemPostFrame(void)
 	BaseClass::ItemPostFrame();
 }
 
+
+//-----------------------------------------------------------------------------
+// Purpose: Reset our shots fired
+//-----------------------------------------------------------------------------
+bool CHL2MPMachineGun::Deploy(void)
+{
+	m_nShotsFired = 0;
+
+	return BaseClass::Deploy();
+}
+
+// Disable scope when switching weapons
+bool CHL2MPMachineGun::Holster(CBaseCombatWeapon *pSwitchingTo)
+{
+	if (m_bScope)
+		ToggleScope(true);
+
+	return BaseClass::Holster(pSwitchingTo);
+}
+
 // TODO: Unscoping can be done here as well
 void CHL2MPMachineGun::Drop(const Vector &vecVelocity)
 {
+	if (m_bScope)
+		ToggleScope(true);
+
 	return BaseClass::Drop(vecVelocity);
 }
 
 bool CHL2MPMachineGun::Reload(void)
 {
+	if (!BaseClass::Reload())
+		return false;
+
 	m_nShotsFired = 0;
 
-	return BaseClass::Reload();
+	if (m_bScope)
+		ToggleScope(true);
+
+	return true;
 }

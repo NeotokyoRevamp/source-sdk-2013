@@ -29,17 +29,10 @@ public:
 
 	CWeaponSRS();
 
-	virtual bool	Reload( void );
-
-
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void SecondaryAttack(void);
 	void AddViewKick( void );
-	bool Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
-	void Drop(const Vector &vecVelocity);
-
 
 	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
@@ -56,9 +49,6 @@ public:
 	
 private:
 	CWeaponSRS( const CWeaponSRS & );
-
-	void	ToggleZoom( void );
-	void	CancelZoom( void );
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponSRS, DT_WeaponSRS )
@@ -91,7 +81,8 @@ IMPLEMENT_ACTTABLE(CWeaponSRS);
 //=========================================================
 CWeaponSRS::CWeaponSRS( )
 {
-
+	m_iFireMode = FM_SEMI;
+	m_bScope = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,62 +95,6 @@ Activity CWeaponSRS::GetPrimaryAttackActivity( void )
 
 	// TODO: Bolt action animation (ACT_VM_PULLBACK) and sound ("Weapon_SRS.Charge")
 	// And animations (acttable?)
-}
-
-// Zoom view by changing FOV
-void CWeaponSRS::SecondaryAttack(void)
-{
-	ToggleZoom();
-}
-
-void CWeaponSRS::ToggleZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-#ifndef CLIENT_DLL
-	// Send a message to show the scope
-	CSingleUserRecipientFilter filter(pPlayer);
-	UserMessageBegin(filter, "ShowScope");
-	
-	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, 40, 0.2f);
-		WRITE_BYTE(1); //Show scope
-	}
-	else
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-		WRITE_BYTE(0); //Hide scope
-	}
-
-	MessageEnd();
-#endif
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
-}
-
-void CWeaponSRS::CancelZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-#ifndef CLIENT_DLL
-	if (pPlayer->GetFOV() != pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-
-		// Send a message to hide the scope
-		CSingleUserRecipientFilter filter(pPlayer);
-		UserMessageBegin(filter, "ShowScope");
-		WRITE_BYTE(0);
-		MessageEnd();
-	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -178,32 +113,4 @@ void CWeaponSRS::AddViewKick( void )
 		return;
 
 	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
-}
-
-// Disable scope when releading
-bool CWeaponSRS::Reload( void )
-{
-	if ( BaseClass::Reload() )
-	{
-		CancelZoom();
-
-		return true;
-	}
-
-	return false;
-}
-
-// Disable scope when switching weapons
-bool CWeaponSRS::Holster(CBaseCombatWeapon *pSwitchingTo)
-{
-	CancelZoom();
-
-	return BaseClass::Holster(pSwitchingTo);
-}
-
-void CWeaponSRS::Drop(const Vector &vecVelocity)
-{
-	CancelZoom();
-
-	BaseClass::Drop(vecVelocity);
 }

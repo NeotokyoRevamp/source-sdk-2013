@@ -29,16 +29,10 @@ public:
 
 	CWeaponM41L();
 
-	virtual bool	Reload( void );
-
-
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void SecondaryAttack(void);
 	void AddViewKick( void );
-	bool Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
-	void Drop(const Vector &vecVelocity);
 
 	float	GetFireRate( void ) { return 1.0f; }
 	Activity	GetPrimaryAttackActivity( void );
@@ -55,9 +49,6 @@ public:
 	
 private:
 	CWeaponM41L( const CWeaponM41L & );
-
-	void	ToggleZoom( void );
-	void	CancelZoom( void );
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponM41L, DT_WeaponM41L )
@@ -91,6 +82,7 @@ IMPLEMENT_ACTTABLE(CWeaponM41L);
 CWeaponM41L::CWeaponM41L( )
 {
 	m_iFireMode = FM_SEMI;
+	m_bScope = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,62 +103,6 @@ Activity CWeaponM41L::GetPrimaryAttackActivity( void )
 	return ACT_VM_RECOIL3;
 }
 
-// Zoom view by changing FOV
-void CWeaponM41L::SecondaryAttack(void)
-{
-	ToggleZoom();
-}
-
-void CWeaponM41L::ToggleZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-#ifndef CLIENT_DLL
-	// Send a message to show the scope
-	CSingleUserRecipientFilter filter(pPlayer);
-	UserMessageBegin(filter, "ShowScope");
-	
-	if (pPlayer->GetFOV() == pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, 40, 0.2f);
-		WRITE_BYTE(1); //Show scope
-	}
-	else
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-		WRITE_BYTE(0); //Hide scope
-	}
-
-	MessageEnd();
-#endif
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
-}
-
-void CWeaponM41L::CancelZoom( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-#ifndef CLIENT_DLL
-	if (pPlayer->GetFOV() != pPlayer->GetDefaultFOV())
-	{
-		pPlayer->SetFOV(pPlayer, pPlayer->GetDefaultFOV(), 0.2f);
-
-		// Send a message to hide the scope
-		CSingleUserRecipientFilter filter(pPlayer);
-		UserMessageBegin(filter, "ShowScope");
-		WRITE_BYTE(0);
-		MessageEnd();
-	}
-#endif
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -183,32 +119,4 @@ void CWeaponM41L::AddViewKick( void )
 		return;
 
 	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
-}
-
-// Disable scope when releading
-bool CWeaponM41L::Reload( void )
-{
-	if ( BaseClass::Reload() )
-	{
-		CancelZoom();
-
-		return true;
-	}
-
-	return false;
-}
-
-// Disable scope when switching weapons
-bool CWeaponM41L::Holster(CBaseCombatWeapon *pSwitchingTo)
-{
-	CancelZoom();
-
-	return BaseClass::Holster(pSwitchingTo);
-}
-
-void CWeaponM41L::Drop(const Vector &vecVelocity)
-{
-	CancelZoom();
-
-	BaseClass::Drop(vecVelocity);
 }
