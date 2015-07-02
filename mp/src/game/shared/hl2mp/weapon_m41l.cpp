@@ -118,5 +118,5 @@ void CWeaponM41L::AddViewKick( void )
 	if ( pPlayer == NULL )
 		return;
 
-	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 5.0f, SLIDE_LIMIT );
+	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, 1.0f, SLIDE_LIMIT );
 }

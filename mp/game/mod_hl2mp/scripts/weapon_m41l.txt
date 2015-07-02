@@ -4,8 +4,8 @@ WeaponData
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
 	"printname"				"M41L"
-	"viewmodel"				"models/weapons/v_jinrai_mosok41.mdl" // TODO: Import M41L model
-	"playermodel"			"models/weapons/w_mosok41.mdl" // TODO: Import M41L model
+	"viewmodel"				"models/weapons/v_jinrai_mosok41l.mdl"
+	"playermodel"			"models/weapons/w_mosok41l.mdl"
 	"anim_prefix"			"smg2"
 	"bucket"				"0"
 	"bucket_position"		"13"
