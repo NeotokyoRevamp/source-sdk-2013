@@ -22,6 +22,8 @@ CHL2MPSWeaponInfo::CHL2MPSWeaponInfo()
 	m_vecVMPosOffset = vec3_origin;
 	m_angVMAngOffset.Init();
 
+	m_iAimType = 0;
+
 	m_flAimFov = 54.0f;
 	m_flAimZoom = 54.0f;
 
