@@ -23,14 +23,30 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"14" // Assault mid body damage: 14hp / 1 bullet
 
+	ViewModelOffset
+	{
+		"fov"		"54.0"
+		"forward"	"25.0"
+		"right"		"9.0"
+		"up"		"0.0"
+		"yaw"		"-2.0"
+	}
+
+	IronSightOffset
+	{
+
+		"fov"		"32.0"
+		"forward"	"-1.5"
+		"right"		"1.31"
+		"up"		"2.53"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"reload"			"Weapon_Jitte.Reload"
-		"reload_npc"		"Weapon_Jitte.NPC_Reload"
 		"empty"				"Weapon_Jitte.Empty"
 		"single_shot"		"Weapon_Jittes.Single"
-		"single_shot_npc"	"Weapon_Jittes.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

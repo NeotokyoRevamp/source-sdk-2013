@@ -25,21 +25,17 @@ public:
 	
 	virtual void Parse( ::KeyValues *pKeyValuesData, const char *szWeaponName );
 
-
 public:
 
 	int m_iPlayerDamage;
 
-	float m_flVMFov;
-	float m_flVMForward;
-	float m_flVMRight;
-	float m_flVMUp;
-	float m_flVMYaw;
+	float	m_flVMFov;
+	Vector	m_vecVMPosOffset;
+	QAngle	m_angVMAngOffset;
 
-	float m_flVMAimFov;
-	float m_flVMAimForward;
-	float m_flVMAimRight;
-	float m_flVMAimUp;
+	float	m_flAimFov;
+	Vector	m_vecAimPosOffset;
+	QAngle	m_angAimAngOffset;
 };
 
 
