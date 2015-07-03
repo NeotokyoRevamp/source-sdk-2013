@@ -1,6 +1,7 @@
 #include "cbase.h"
 
 #include "hl2mp_baseviewmodel_shared.h"
+#include "weapon_hl2mpbase.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -17,9 +18,30 @@ CBaseHL2MPViewModel::~CBaseHL2MPViewModel()
 
 void CBaseHL2MPViewModel::CalcViewModelView(CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles)
 {
-	// TODO: Fix origin and use ironsights if needed
+	CWeaponHL2MPBase *pWeapon = static_cast<CWeaponHL2MPBase*> (GetOwningWeapon()); // Is there are nicer way to do this?
 
-	BaseClass::CalcViewModelView(owner, eyePosition, eyeAngles);
+	if (!pWeapon)
+		return;
+
+	CHL2MPSWeaponInfo data = pWeapon->GetHL2MPWpnData();
+
+	Vector vForward, vRight, vUp, newPos, vOffset;
+	QAngle newAng, angOffset;
+
+	newAng = eyeAngles;
+	newPos = eyePosition;
+
+	AngleVectors(newAng, &vForward, &vRight, &vUp);
+
+	vOffset = data.m_vecVMPosOffset;
+	angOffset = data.m_angVMAngOffset;
+
+	newPos += vForward * vOffset.x;
+	newPos += vRight * vOffset.y;
+	newPos += vUp * vOffset.z;
+	newAng += angOffset;
+
+	BaseClass::CalcViewModelView(owner, newPos, newAng);
 }
 
 LINK_ENTITY_TO_CLASS(hl2mp_viewmodel, CBaseHL2MPViewModel);

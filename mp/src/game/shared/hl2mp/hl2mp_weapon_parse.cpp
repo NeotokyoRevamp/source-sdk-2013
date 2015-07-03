@@ -18,36 +18,46 @@ CHL2MPSWeaponInfo::CHL2MPSWeaponInfo()
 {
 	m_iPlayerDamage = 0;
 
-	// Viewmodel offset
-	m_flVMFov = 54.0;
-	m_flVMForward = 0.0;
-	m_flVMRight = 0.0;
-	m_flVMUp = 0.0;
-	m_flVMYaw = 0.0;
+	m_flVMFov = 54.0f;
+	m_vecVMPosOffset = vec3_origin;
+	m_angVMAngOffset.Init();
 
-	// Viewmodel aiming offset
-	m_flVMAimFov = 54.0;
-	m_flVMAimForward = 0.0;
-	m_flVMAimRight = 0.0;
-	m_flVMAimUp = 0.0;
+	m_flAimFov = 54.0f;
+	m_vecAimPosOffset = vec3_origin;
+	m_angAimAngOffset.Init();
 }
 
 void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponName )
 {
-	BaseClass::Parse( pKeyValuesData, szWeaponName );
+	BaseClass::Parse(pKeyValuesData, szWeaponName);
 
 	m_iPlayerDamage = pKeyValuesData->GetInt("damage", 0);
 
-	m_flVMFov = pKeyValuesData->GetFloat("VMFov");
-	m_flVMForward = pKeyValuesData->GetFloat("VMOffsetForward");
-	m_flVMRight = pKeyValuesData->GetFloat("VMOffsetRight");
-	m_flVMUp = pKeyValuesData->GetFloat("VMOffsetUp");
-	m_flVMYaw = pKeyValuesData->GetFloat("VMAngleYaw");
+	KeyValues *pViewModel = pKeyValuesData->FindKey("ViewModelOffset");
+	if (pViewModel)
+	{
+		m_flVMFov = pViewModel->GetFloat("fov", 0.0f);
 
-	m_flVMAimFov = pKeyValuesData->GetFloat("VMAimFov");
-	m_flVMAimForward = pKeyValuesData->GetFloat("VMAimOffsetForward");
-	m_flVMAimRight = pKeyValuesData->GetFloat("VMAimOffsetRight");
-	m_flVMAimUp = pKeyValuesData->GetFloat("VMAimOffsetUp");
+		m_vecVMPosOffset.x = pViewModel->GetFloat("forward", 0.0f);
+		m_vecVMPosOffset.y = pViewModel->GetFloat("right", 0.0f);
+		m_vecVMPosOffset.z = pViewModel->GetFloat("up", 0.0f);
+
+		m_angVMAngOffset[PITCH] = pViewModel->GetFloat("pitch", 0.0f);
+		m_angVMAngOffset[YAW] = pViewModel->GetFloat("yaw", 0.0f);
+		m_angVMAngOffset[ROLL] = pViewModel->GetFloat("roll", 0.0f);
+	}
+
+	KeyValues *pIronSight = pKeyValuesData->FindKey("IronSightOffset");
+	if (pIronSight)
+	{
+		m_flAimFov = pIronSight->GetFloat("fov", 0.0f);
+
+		m_vecAimPosOffset.x = pIronSight->GetFloat("forward", 0.0f);
+		m_vecAimPosOffset.y = pIronSight->GetFloat("right", 0.0f);
+		m_vecAimPosOffset.z = pIronSight->GetFloat("up", 0.0f);
+
+		m_angAimAngOffset[PITCH] = pIronSight->GetFloat("pitch", 0.0f);
+		m_angAimAngOffset[YAW] = pIronSight->GetFloat("yaw", 0.0f);
+		m_angAimAngOffset[ROLL] = pIronSight->GetFloat("roll", 0.0f);
+	}
 }
-
-
