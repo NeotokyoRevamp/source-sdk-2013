@@ -11,7 +11,7 @@
 #include "game.h"
 #include "gamerules.h"
 #include "hl2mp_player_shared.h"
-#include "predicted_viewmodel.h"
+#include "hl2mp_baseviewmodel_shared.h"
 #include "in_buttons.h"
 #include "hl2mp_gamerules.h"
 #include "KeyValues.h"
@@ -1064,7 +1064,7 @@ void CHL2MP_Player::CreateViewModel( int index /*=0*/ )
 	if ( GetViewModel( index ) )
 		return;
 
-	CPredictedViewModel *vm = ( CPredictedViewModel * )CreateEntityByName( "predicted_viewmodel" );
+	CBaseHL2MPViewModel *vm = (CBaseHL2MPViewModel *)CreateEntityByName("hl2mp_viewmodel");
 	if ( vm )
 	{
 		vm->SetAbsOrigin( GetAbsOrigin() );

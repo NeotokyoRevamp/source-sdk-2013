@@ -4,14 +4,14 @@
 #pragma once
 #endif
 
-#include "baseviewmodel_shared.h"
+#include "predicted_viewmodel.h"
 
 #if defined( CLIENT_DLL )
 #define CBaseHL2MPViewModel C_BaseHL2MPViewModel
 #define CBaseHL2MPCombatWeapon C_BaseHL2MPCombatWeapon
 #endif
 
-class CBaseHL2MPViewModel : public CBaseViewModel
+class CBaseHL2MPViewModel : public CPredictedViewModel
 {
 	DECLARE_CLASS(CBaseHL2MPViewModel, CBaseViewModel);
 public:
