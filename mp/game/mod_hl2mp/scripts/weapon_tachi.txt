@@ -18,7 +18,7 @@ WeaponData
 	"item_flags"		"0"
 	"damage"			"16" // 16 is assault mid body damage per bullet
 
-	ViewModelOffset
+	ViewModelData
 	{
 		"fov"		"65.0"
 		"forward"	"5.0"
@@ -26,9 +26,10 @@ WeaponData
 		"up"		"0.0"
 	}
 
-	IronSightOffset
+	IronSightData
 	{
-
+		"type"		"1"
+		"aimfov"	"28.0"
 		"fov"		"40.0"
 		"forward"	"-5.0"
 		"right"		"-3.425"
