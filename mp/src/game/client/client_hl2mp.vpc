@@ -126,6 +126,8 @@ $Project "Client (HL2MP)"
 			$File	"$SRCDIR\game\shared\hl2mp\hl2mp_player_shared.h"
 			$File	"$SRCDIR\game\shared\hl2mp\hl2mp_weapon_parse.cpp"
 			$File	"$SRCDIR\game\shared\hl2mp\hl2mp_weapon_parse.h"
+			$File	"$SRCDIR\game\shared\hl2mp\hl2mp_baseviewmodel_shared.h"
+			$File	"$SRCDIR\game\shared\hl2mp\hl2mp_baseviewmodel_shared.cpp"
 
 			$Folder	"Weapons"
 			{
