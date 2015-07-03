@@ -17,6 +17,11 @@ WeaponData
 	"weight"				"0"
 	"item_flags"			"0"
 
+	ViewModelOffset
+	{
+		"fov"		"70.0"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{

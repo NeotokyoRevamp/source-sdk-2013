@@ -1,4 +1,4 @@
-// Tachi pistol. Uses the hl2mp pistol as base.
+// Tachi 
 
 WeaponData
 {
@@ -18,15 +18,30 @@ WeaponData
 	"item_flags"		"0"
 	"damage"			"16" // 16 is assault mid body damage per bullet
 
+	ViewModelOffset
+	{
+		"fov"		"65.0"
+		"forward"	"5.0"
+		"right"		"5.0"
+		"up"		"0.0"
+	}
+
+	IronSightOffset
+	{
+
+		"fov"		"40.0"
+		"forward"	"-5.0"
+		"right"		"-3.425"
+		"up"		"7.825"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 
 		"reload"		"Weapon_Tachi.Reload"
-		"reload_npc"	"Weapon_Tachi.NPC_Reload"
 		"empty"			"Weapon_Tachi.Empty"
 		"single_shot"	"Weapon_Tachi.Single"
-		"single_shot_npc"	"Weapon_Tachi.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
