@@ -17,7 +17,7 @@ WeaponData
 	"weight"				"0"
 	"item_flags"			"0"
 
-	ViewModelOffset
+	ViewModelData
 	{
 		"fov"		"70.0"
 	}

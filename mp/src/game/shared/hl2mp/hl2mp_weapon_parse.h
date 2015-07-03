@@ -33,6 +33,8 @@ public:
 	Vector	m_vecVMPosOffset;
 	QAngle	m_angVMAngOffset;
 
+	int		m_iAimType;
+	float	m_flAimZoom;
 	float	m_flAimFov;
 	Vector	m_vecAimPosOffset;
 	QAngle	m_angAimAngOffset;

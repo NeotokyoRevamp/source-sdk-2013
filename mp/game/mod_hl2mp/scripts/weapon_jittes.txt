@@ -23,7 +23,7 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"14" // Assault mid body damage: 14hp / 1 bullet
 
-	ViewModelOffset
+	ViewModelData
 	{
 		"fov"		"54.0"
 		"forward"	"25.0"
@@ -32,9 +32,10 @@ WeaponData
 		"yaw"		"-2.0"
 	}
 
-	IronSightOffset
+	IronSightData
 	{
-
+		"type"		"1"
+		"aimfov"	"28.0"
 		"fov"		"32.0"
 		"forward"	"-1.5"
 		"right"		"1.31"

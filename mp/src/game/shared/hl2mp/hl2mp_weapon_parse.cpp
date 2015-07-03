@@ -23,6 +23,8 @@ CHL2MPSWeaponInfo::CHL2MPSWeaponInfo()
 	m_angVMAngOffset.Init();
 
 	m_flAimFov = 54.0f;
+	m_flAimZoom = 54.0f;
+
 	m_vecAimPosOffset = vec3_origin;
 	m_angAimAngOffset.Init();
 }
@@ -33,7 +35,7 @@ void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponNa
 
 	m_iPlayerDamage = pKeyValuesData->GetInt("damage", 0);
 
-	KeyValues *pViewModel = pKeyValuesData->FindKey("ViewModelOffset");
+	KeyValues *pViewModel = pKeyValuesData->FindKey("ViewModelData");
 	if (pViewModel)
 	{
 		m_flVMFov = pViewModel->GetFloat("fov", 0.0f);
@@ -47,9 +49,12 @@ void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponNa
 		m_angVMAngOffset[ROLL] = pViewModel->GetFloat("roll", 0.0f);
 	}
 
-	KeyValues *pIronSight = pKeyValuesData->FindKey("IronSightOffset");
+	KeyValues *pIronSight = pKeyValuesData->FindKey("IronSightData");
 	if (pIronSight)
 	{
+		m_iAimType = pIronSight->GetInt("type", 0);
+		m_flAimZoom = pIronSight->GetFloat("aimfov", 0.0f);
+
 		m_flAimFov = pIronSight->GetFloat("fov", 0.0f);
 
 		m_vecAimPosOffset.x = pIronSight->GetFloat("forward", 0.0f);
