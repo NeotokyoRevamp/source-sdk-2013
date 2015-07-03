@@ -1,0 +1,62 @@
+// Ghost
+
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"			"Ghost"
+	"viewmodel"			"models/gameplay/v_jinrai_ghost.mdl"
+	"playermodel"		"models/gameplay/w_ghost.mdl"
+	"anim_prefix"		"Ghost"
+	"bucket"			"0"
+	"bucket_position"	"0"
+
+	"clip_size"				"-1"
+	"clip2_size"			"-1"
+	"default_clip"			"-1"
+	"default_clip2"			"-1"
+
+	"primary_ammo"			"None"
+	"secondary_ammo"		"None"
+
+	"weight"				"1"
+	"damage"				"1"
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"single_shot"	"common/null.wav"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"d"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"d"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIcons"
+				"character"	"p"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"			"48"
+				"y"			"72"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}
