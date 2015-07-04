@@ -70,5 +70,17 @@ CWeaponDetpack::CWeaponDetpack()
 
 void CWeaponDetpack::PrimaryAttack(void)
 {
+	// Only the player fires this way so we can cast
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
+	if (!pPlayer)
+		return;
+
+	// player "shoot" animation
+	pPlayer->SetAnimation(PLAYER_ATTACK1);
+
+	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+	WeaponSound(SINGLE);
+
+	m_flNextPrimaryAttack = gpGlobals->curtime + 3.5f;
 }
