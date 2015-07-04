@@ -762,7 +762,7 @@ void CWeaponHL2MPBase::EnableIronsights(void)
 
 	m_bIsIronsighted = true;
 
-	if (pOwner->SetFOV(this, GetIronSightFOV(), 0.4f)) //modify the last value to adjust how fast the fov is applied
+	if (pOwner->SetFOV(this, GetIronSightFOV(), 0.3f)) //modify the last value to adjust how fast the fov is applied
 	{
 		SetIronsightTime();
 	}
@@ -772,7 +772,10 @@ void CWeaponHL2MPBase::EnableIronsights(void)
 
 	// TODO: View is blocked by model so hide the viewmodel
 
+	SetWeaponVisible(false);
+
 #ifndef CLIENT_DLL
+
 	// Send a message to show the scope
 	CSingleUserRecipientFilter filter(pOwner);
 	UserMessageBegin(filter, "ShowScope");
@@ -795,7 +798,9 @@ void CWeaponHL2MPBase::DisableIronsights(void)
 	if (!pOwner)
 		return;
 
-	if (pOwner->SetFOV(this, 0, 0.4f)) //modify the last value to adjust how fast the fov is applied
+	SetWeaponVisible(true); // FIXME: When scoped weapon is dropped next weapon stays invisible
+
+	if (pOwner->SetFOV(this, 0, 0.3f)) //modify the last value to adjust how fast the fov is applied
 	{
 		m_bIsIronsighted = false;
 		SetIronsightTime();
@@ -824,13 +829,15 @@ void CWeaponHL2MPBase::SecondaryAttack(void)
 
 	ToggleIronsights();
 
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+	m_flNextSecondaryAttack = gpGlobals->curtime + 0.4f;
 }
 
 bool CWeaponHL2MPBase::Holster(CBaseCombatWeapon *pSwitchingTo)
 {
 	if (m_bIsIronsighted)
 		DisableIronsights();
+
+	StopWeaponSound(RELOAD);
 
 	return BaseClass::Holster(pSwitchingTo);
 }
@@ -839,6 +846,8 @@ void CWeaponHL2MPBase::Drop(const Vector &vecVelocity)
 {
 	if (m_bIsIronsighted)
 		DisableIronsights();
+
+	StopWeaponSound(RELOAD);
 
 	return BaseClass::Drop(vecVelocity);
 }
