@@ -23,7 +23,8 @@ void CBaseHL2MPViewModel::CalcViewModelView(CBasePlayer *owner, const Vector& ey
 	if (!pWeapon)
 		return;
 
-	CHL2MPSWeaponInfo data = pWeapon->GetHL2MPWpnData();
+	// TODO: Smooth the origin changes
+	// TODO: Handle the weapon fov
 
 	Vector vForward, vRight, vUp, newPos, vOffset;
 	QAngle newAng, angOffset;
@@ -33,8 +34,8 @@ void CBaseHL2MPViewModel::CalcViewModelView(CBasePlayer *owner, const Vector& ey
 
 	AngleVectors(newAng, &vForward, &vRight, &vUp);
 
-	vOffset = data.m_vecVMPosOffset;
-	angOffset = data.m_angVMAngOffset;
+	vOffset = pWeapon->GetViewModelPositionOffset();
+	angOffset = pWeapon->GetViewModelAngleOffset();
 
 	newPos += vForward * vOffset.x;
 	newPos += vRight * vOffset.y;
