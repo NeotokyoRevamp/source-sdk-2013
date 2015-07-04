@@ -82,6 +82,10 @@ public:
 
 	virtual void	FireBullets( const FireBulletsInfo_t &info );
 	virtual void	FallInit( void );
+	virtual void	SecondaryAttack(void);
+	virtual bool	Holster(CBaseCombatWeapon *pSwitchingTo);
+	virtual void	Drop(const Vector &vecVelocity);
+	virtual bool	Reload(void);
 
 	#if defined( CLIENT_DLL )
 		
@@ -101,6 +105,21 @@ public:
 
 	Vector			GetOriginalSpawnOrigin( void ) { return m_vOriginalSpawnOrigin;	}
 	QAngle			GetOriginalSpawnAngles( void ) { return m_vOriginalSpawnAngles;	}
+
+	CNetworkVar(bool, m_bIsIronsighted);
+	CNetworkVar(float, m_flIronsightedTime);
+
+	Vector					GetViewModelPositionOffset(void) const;
+	QAngle					GetViewModelAngleOffset(void) const;
+	float					GetViewModelFOV(void) const;
+	float					GetIronSightFOV(void) const;
+
+	bool					HasIronsights(void);
+	bool					IsIronsighted(void);
+	void					ToggleIronsights(void);
+	void					EnableIronsights(void);
+	void					DisableIronsights(void);
+	void					SetIronsightTime(void);
 
 protected:
 	bool			m_bLowered;			// Whether the viewmodel is raised or lowered

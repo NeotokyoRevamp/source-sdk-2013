@@ -135,6 +135,9 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 
 void CHL2MPMachineGun::SecondaryAttack(void)
 {
+	// Disable scope for now until the code is moved to base class
+	return BaseClass::SecondaryAttack();
+
 	if (!m_bScope)
 		return;
 
