@@ -18,15 +18,31 @@ WeaponData
 	"item_flags"		"0"
 	"damage"			"16" // Assault mid damage is 16hp per 1 shot
 
+	ViewModelData
+	{
+		"fov"		"65.0"
+		"forward"	"5.0"
+		"right"		"5.0"
+		"up"		"0.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"55.0"
+		"fov"		"40.0"
+		"forward"	"-8.0"
+		"right"		"-3.425"
+		"up"		"6.6"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 
 		"reload"		"Weapon_Milso.Reload"
-		"reload_npc"	"Weapon_Milso.NPC_Reload"
 		"empty"			"Weapon_Milso.Empty"
 		"single_shot"	"Weapon_Milso.Single"
-		"single_shot_npc"	"Weapon_Milso.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
