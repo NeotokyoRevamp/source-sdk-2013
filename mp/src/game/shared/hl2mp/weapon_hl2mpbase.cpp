@@ -7,6 +7,7 @@
 
 #include "cbase.h"
 #include "in_buttons.h"
+#include "dt_recv.h"
 #include "takedamageinfo.h"
 #include "ammodef.h"
 #include "hl2mp_gamerules.h"
@@ -20,7 +21,7 @@ extern IVModelInfo* modelinfo;
 
 
 #if defined( CLIENT_DLL )
-
+	#include "prediction.h"
 	#include "vgui/ISurface.h"
 	#include "vgui_controls/Controls.h"
 	#include "c_hl2mp_player.h"
@@ -60,20 +61,25 @@ static const char * s_WeaponAliasInfo[] =
 // CWeaponHL2MPBase tables.
 // ----------------------------------------------------------------------------- //
 
-IMPLEMENT_NETWORKCLASS_ALIASED( WeaponHL2MPBase, DT_WeaponHL2MPBase )
+IMPLEMENT_NETWORKCLASS_ALIASED(WeaponHL2MPBase, DT_WeaponHL2MPBase)
 
-BEGIN_NETWORK_TABLE( CWeaponHL2MPBase, DT_WeaponHL2MPBase )
+BEGIN_NETWORK_TABLE(CWeaponHL2MPBase, DT_WeaponHL2MPBase)
+
 
 #ifdef CLIENT_DLL
 //	RecvPropInt( RECVINFO( m_bReflectViewModelAnimations ) ),
+RecvPropInt( RECVINFO( m_bIsIronsighted )),//, 0, RecvProxy_ToggleSights ), //note: RecvPropBool is actually RecvPropInt (see its implementation), but we need a proxy
+RecvPropFloat(RECVINFO(m_flIronsightedTime)),
 #else
-	// world weapon models have no aminations
-  //	SendPropExclude( "DT_AnimTimeMustBeFirst", "m_flAnimTime" ),
+// world weapon models have no aminations
+//	SendPropExclude( "DT_AnimTimeMustBeFirst", "m_flAnimTime" ),
 //	SendPropExclude( "DT_BaseAnimating", "m_nSequence" ),
 //	SendPropExclude( "DT_LocalActiveWeaponData", "m_flTimeWeaponIdle" ),
 //	SendPropInt( SENDINFO( m_bReflectViewModelAnimations ), 1, SPROP_UNSIGNED ),
+SendPropBool(SENDINFO(m_bIsIronsighted)),
+SendPropFloat(SENDINFO(m_flIronsightedTime)),
 #endif
-	
+
 END_NETWORK_TABLE()
 
 #if !defined( CLIENT_DLL )
@@ -83,16 +89,18 @@ END_NETWORK_TABLE()
 //---------------------------------------------------------
 // Save/Restore
 //---------------------------------------------------------
-BEGIN_DATADESC( CWeaponHL2MPBase )
+BEGIN_DATADESC(CWeaponHL2MPBase)
 
-	DEFINE_FIELD( m_bLowered,			FIELD_BOOLEAN ),
-	DEFINE_FIELD( m_flRaiseTime,		FIELD_TIME ),
+DEFINE_FIELD(m_bLowered, FIELD_BOOLEAN),
+DEFINE_FIELD(m_flRaiseTime, FIELD_TIME),
 
 END_DATADESC()
 
 #endif
 
-BEGIN_PREDICTION_DATA( CWeaponHL2MPBase ) 
+BEGIN_PREDICTION_DATA(CWeaponHL2MPBase)
+//DEFINE_PRED_FIELD(m_bIsIronsighted, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+//DEFINE_PRED_FIELD(m_flIronsightedTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( weapon_hl2mp_base, CWeaponHL2MPBase );
@@ -106,6 +114,9 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 	AddSolidFlags( FSOLID_TRIGGER ); // Nothing collides with these but it gets touches.
 
 	m_flNextResetCheckTime = 0.0f;
+
+	m_bIsIronsighted = false;
+	m_flIronsightedTime = 0.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -690,3 +701,134 @@ void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &c
 
 #endif
 
+Vector CWeaponHL2MPBase::GetViewModelPositionOffset(void) const
+{
+	if (m_bIsIronsighted)
+		return GetHL2MPWpnData().m_vecAimPosOffset;
+
+	return GetHL2MPWpnData().m_vecVMPosOffset;
+}
+
+QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
+{
+	if (m_bIsIronsighted)
+		return GetHL2MPWpnData().m_angAimAngOffset;
+
+	return GetHL2MPWpnData().m_angVMAngOffset;
+}
+
+float CWeaponHL2MPBase::GetViewModelFOV(void) const
+{
+	if (m_bIsIronsighted)
+		return GetHL2MPWpnData().m_flAimFov;
+
+	return GetHL2MPWpnData().m_flVMFov;
+}
+
+float CWeaponHL2MPBase::GetIronSightFOV(void) const
+{
+	return GetHL2MPWpnData().m_flVMFov;
+}
+
+bool CWeaponHL2MPBase::HasIronsights(void)
+{
+	if (GetHL2MPWpnData().m_iAimType > 0)
+		return true;
+
+	return false;
+}
+
+void CWeaponHL2MPBase::ToggleIronsights(void)
+{
+	if (m_bIsIronsighted)
+		DisableIronsights();
+	else
+		EnableIronsights();
+}
+
+void CWeaponHL2MPBase::EnableIronsights(void)
+{
+#ifdef CLIENT_DLL
+	if (!prediction->IsFirstTimePredicted())
+		return;
+#endif
+	if (!HasIronsights() || m_bIsIronsighted)
+		return;
+
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+
+	if (!pOwner)
+		return;
+
+	m_bIsIronsighted = true;
+
+	if (pOwner->SetFOV(this, GetIronSightFOV(), 0.4f)) //modify the last value to adjust how fast the fov is applied
+	{
+		SetIronsightTime();
+	}
+}
+
+void CWeaponHL2MPBase::DisableIronsights(void)
+{
+#ifdef CLIENT_DLL
+	if (!prediction->IsFirstTimePredicted())
+		return;
+#endif
+	if (!HasIronsights() || !m_bIsIronsighted)
+		return;
+
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+
+	if (!pOwner)
+		return;
+
+	if (pOwner->SetFOV(this, 0, 0.4f)) //modify the last value to adjust how fast the fov is applied
+	{
+		m_bIsIronsighted = false;
+		SetIronsightTime();
+	}
+}
+
+void CWeaponHL2MPBase::SetIronsightTime(void)
+{
+	m_flIronsightedTime = gpGlobals->curtime;
+}
+
+void CWeaponHL2MPBase::SecondaryAttack(void)
+{
+	if (!HasIronsights())
+		return;
+
+	// TODO: Handle zooming/pseudo iron sights for other guns here
+
+	ToggleIronsights();
+
+	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+}
+
+bool CWeaponHL2MPBase::Holster(CBaseCombatWeapon *pSwitchingTo)
+{
+	if (m_bIsIronsighted)
+		DisableIronsights();
+
+	return BaseClass::Holster(pSwitchingTo);
+}
+
+void CWeaponHL2MPBase::Drop(const Vector &vecVelocity)
+{
+	if (m_bIsIronsighted)
+		DisableIronsights();
+
+	return BaseClass::Drop(vecVelocity);
+}
+
+bool CWeaponHL2MPBase::Reload(void)
+{
+	if (!BaseClass::Reload())
+		return false;
+
+	if (m_bIsIronsighted)
+		DisableIronsights();
+
+	return true;
+}
