@@ -23,14 +23,30 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"21" // Assault mid body damage: 21hp / 1 bullet
 
+	ViewModelData
+	{
+		"fov"		"60.0"
+		"forward"	"10.0"
+		"right"		"8.0"
+		"up"		"0.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"55.0"
+		"fov"		"45.0"
+		"forward"	"-3.5"
+		"right"		"1.04"
+		"up"		"3.45"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"reload"			"Weapon_ZR68.Reload"
-		"reload_npc"		"Weapon_ZR68.NPC_Reload"
 		"empty"				"Weapon_ZR68.Empty"
 		"single_shot"		"Weapon_ZR68s.Single"
-		"single_shot_npc"	"Weapon_ZR68s.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

@@ -20,6 +20,24 @@ WeaponData
 
 	"damage"		"42" // Assault mid body damage is 42hp per shot
 
+	ViewModelData
+	{
+		"fov"		"65.0"
+		"forward"	"-1.0"
+		"right"		"5.0"
+		"up"		"0.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"55.0"
+		"fov"		"40.0"
+		"forward"	"-2.0"
+		"right"		"-3.475"
+		"up"		"6.9"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
