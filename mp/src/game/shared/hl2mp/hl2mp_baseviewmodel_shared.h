@@ -13,7 +13,7 @@
 
 class CBaseHL2MPViewModel : public CPredictedViewModel
 {
-	DECLARE_CLASS(CBaseHL2MPViewModel, CBaseViewModel);
+	DECLARE_CLASS(CBaseHL2MPViewModel, CPredictedViewModel);
 public:
 
 	DECLARE_NETWORKCLASS();

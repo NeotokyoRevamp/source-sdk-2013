@@ -82,7 +82,6 @@ IMPLEMENT_ACTTABLE(CWeaponM41L);
 CWeaponM41L::CWeaponM41L( )
 {
 	m_iFireMode = FM_SEMI;
-	m_bScope = true;
 }
 
 //-----------------------------------------------------------------------------

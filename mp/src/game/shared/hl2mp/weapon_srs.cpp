@@ -82,7 +82,6 @@ IMPLEMENT_ACTTABLE(CWeaponSRS);
 CWeaponSRS::CWeaponSRS( )
 {
 	m_iFireMode = FM_SEMI;
-	m_bScope = true;
 }
 
 //-----------------------------------------------------------------------------
