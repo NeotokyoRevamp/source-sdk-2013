@@ -766,6 +766,19 @@ void CWeaponHL2MPBase::EnableIronsights(void)
 	{
 		SetIronsightTime();
 	}
+
+	if (GetHL2MPWpnData().m_iAimType < 2)
+		return; // Not using scope
+
+	// TODO: View is blocked by model so hide the viewmodel
+
+#ifndef CLIENT_DLL
+	// Send a message to show the scope
+	CSingleUserRecipientFilter filter(pOwner);
+	UserMessageBegin(filter, "ShowScope");
+	WRITE_BYTE(1); // Show scope
+	MessageEnd();
+#endif
 }
 
 void CWeaponHL2MPBase::DisableIronsights(void)
@@ -787,6 +800,14 @@ void CWeaponHL2MPBase::DisableIronsights(void)
 		m_bIsIronsighted = false;
 		SetIronsightTime();
 	}
+
+#ifndef CLIENT_DLL
+	// Send a message to show the scope
+	CSingleUserRecipientFilter filter(pOwner);
+	UserMessageBegin(filter, "ShowScope");
+	WRITE_BYTE(0); // Hide scope
+	MessageEnd();
+#endif
 }
 
 void CWeaponHL2MPBase::SetIronsightTime(void)

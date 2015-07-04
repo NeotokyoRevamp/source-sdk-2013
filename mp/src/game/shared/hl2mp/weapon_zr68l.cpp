@@ -82,7 +82,6 @@ IMPLEMENT_ACTTABLE(CWeaponZRLong);
 CWeaponZRLong::CWeaponZRLong( )
 {
 	m_iFireMode = FM_SEMI;
-	m_bScope = true;
 }
 
 //-----------------------------------------------------------------------------

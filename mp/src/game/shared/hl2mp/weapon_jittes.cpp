@@ -38,8 +38,6 @@ public:
 
 	int		GetMaxBurst() { return 3; }
 
-	Activity	GetPrimaryAttackActivity( void );
-
 	virtual const Vector& GetBulletSpread( void )
 	{
 		static const Vector cone = VECTOR_CONE_2DEGREES;
@@ -85,24 +83,6 @@ IMPLEMENT_ACTTABLE(CWeaponJitteSilenced);
 CWeaponJitteSilenced::CWeaponJitteSilenced( )
 {
 	m_iFireMode = FM_BURST;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Output : Activity
-//-----------------------------------------------------------------------------
-Activity CWeaponJitteSilenced::GetPrimaryAttackActivity( void )
-{
-	if ( m_nShotsFired < 2 )
-		return ACT_VM_PRIMARYATTACK;
-
-	if ( m_nShotsFired < 3 )
-		return ACT_VM_RECOIL1;
-	
-	if ( m_nShotsFired < 4 )
-		return ACT_VM_RECOIL2;
-
-	return ACT_VM_RECOIL3;
 }
 
 //-----------------------------------------------------------------------------
