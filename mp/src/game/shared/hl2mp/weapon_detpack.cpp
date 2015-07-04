@@ -1,13 +1,12 @@
 #include "cbase.h"
-
 #include "weapon_hl2mpbase.h"
+
+// memdbgon must be the last include file in a .cpp file!!!
+#include "tier0/memdbgon.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponDetpack C_WeaponDetpack
 #endif
-
-// memdbgon must be the last include file in a .cpp file!!!
-#include "tier0/memdbgon.h"
 
 class CWeaponDetpack : public CWeaponHL2MPBase
 {
@@ -21,6 +20,8 @@ public:
 	DECLARE_NETWORKCLASS();
 	DECLARE_PREDICTABLE();
 
+	CNetworkVar(bool, m_bDetonatorArmed);
+
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 #endif
@@ -29,13 +30,18 @@ private:
 	CWeaponDetpack(const CWeaponDetpack &);
 };
 
-
 IMPLEMENT_NETWORKCLASS_ALIASED(WeaponDetpack, DT_WeaponDetpack)
 
 BEGIN_NETWORK_TABLE(CWeaponDetpack, DT_WeaponDetpack)
+#ifdef CLIENT_DLL
+RecvPropBool(RECVINFO(m_bDetonatorArmed)),
+#else
+SendPropBool(SENDINFO(m_bDetonatorArmed)),
+#endif
 END_NETWORK_TABLE()
 
 BEGIN_PREDICTION_DATA(CWeaponDetpack)
+
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS(weapon_detpack, CWeaponDetpack);
