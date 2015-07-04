@@ -35,7 +35,6 @@ public:
 	void	AddViewKick( void );
 
 	float	GetFireRate( void ) { return 0.080f; }
-	Activity	GetPrimaryAttackActivity( void );
 
 	virtual const Vector& GetBulletSpread( void )
 	{
@@ -82,24 +81,6 @@ IMPLEMENT_ACTTABLE(CWeaponSRMSilenced);
 CWeaponSRMSilenced::CWeaponSRMSilenced( )
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Output : Activity
-//-----------------------------------------------------------------------------
-Activity CWeaponSRMSilenced::GetPrimaryAttackActivity( void )
-{
-	if ( m_nShotsFired < 2 )
-		return ACT_VM_PRIMARYATTACK;
-
-	if ( m_nShotsFired < 3 )
-		return ACT_VM_RECOIL1;
-	
-	if ( m_nShotsFired < 4 )
-		return ACT_VM_RECOIL2;
-
-	return ACT_VM_RECOIL3;
 }
 
 //-----------------------------------------------------------------------------
