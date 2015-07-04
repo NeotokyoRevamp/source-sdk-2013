@@ -10,7 +10,7 @@ WeaponData
 	"bucket"				"0"
 	"bucket_position"		"17"
 
-	"clip_size"				"15"
+	"clip_size"				"90"
 	"clip2_size"			"-1"
 
 	"default_clip"			"100"
@@ -23,15 +23,31 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"15" // Weapon stats are a mystery!
 
+	ViewModelData
+	{
+		"fov"		"54.0"
+		"forward"	"15.0"
+		"right"		"6.0"
+		"up"		"-7.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"50.0"
+		"fov"		"45.0"
+		"forward"	"15.0"
+		"right"		"6.5"
+		"up"		"6.0"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		// TODO: Replace MPN placeholders with SMAC stuff!
 		"reload"			"Weapon_MPN45.Reload"
-		"reload_npc"		"Weapon_MPN45.NPC_Reload"
 		"empty"				"Weapon_MPN45.Empty"
 		"single_shot"		"Weapon_MPN45.Single"
-		"single_shot_npc"	"Weapon_MPN45.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

@@ -23,14 +23,31 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"27" // Assault mid damage 27hp per shot
 
+	ViewModelData
+	{
+		"fov"		"54.0"
+		"forward"	"10.0"
+		"right"		"10.0"
+		"up"		"2.0"
+		"yaw"		"-1.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"45.0"
+		"fov"		"25.0"
+		"forward"	"8.0"
+		"right"		"1.305"
+		"up"		"4.1"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"reload"			"Weapon_M41.Reload"
-		"reload_npc"		"Weapon_M41.NPC_Reload"
 		"empty"				"Weapon_M41.Empty"
 		"single_shot"		"Weapon_M41.Single"
-		"single_shot_npc"	"Weapon_M41.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

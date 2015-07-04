@@ -23,14 +23,31 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"35" // No data at hand. Made equal to ZRL for now (35hp per shot)
 
+	ViewModelData
+	{
+		"fov"		"54.0"
+		"forward"	"10.0"
+		"right"		"10.0"
+		"up"		"2.0"
+		"yaw"		"-1.0"
+	}
+
+	IronSightData
+	{
+		"type"		"2"
+		"aimfov"	"20.0"
+		"fov"		"45.0"
+		"forward"	"-2.0"
+		"right"		"7.0"
+		"up"		"6.0"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"reload"			"Weapon_M41.Reload"
-		"reload_npc"		"Weapon_M41.NPC_Reload"
 		"empty"				"Weapon_M41.Empty"
 		"single_shot"		"Weapon_M41L.Single"
-		"single_shot_npc"	"Weapon_M41L.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

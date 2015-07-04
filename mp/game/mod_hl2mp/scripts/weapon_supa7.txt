@@ -18,15 +18,30 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"17" // 134 hp assault mid / 8 pellets = 16.75hp
 
+	ViewModelData
+	{
+		"fov"		"54.0"
+		"forward"	"15.0"
+		"right"		"12.0"
+		"up"		"1.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"54.0"
+		"fov"		"40.0"
+		"forward"	"-2.0"
+		"right"		"1.275"
+		"up"		"4.75"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-
 		"empty"				"Weapon_SUPA7.Empty"
 		"reload"			"Weapon_SUPA7.Load"
 		"single_shot"		"Weapon_SUPA7.Single"
-		"reload_npc"		"Weapon_SUPA7.NPC_Reload"
-		"single_shot_npc"	"Weapon_SUPA7.NPC_Single"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

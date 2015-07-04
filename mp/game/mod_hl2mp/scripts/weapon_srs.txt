@@ -23,14 +23,30 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"93" // Assault mid body 93hp per shot
 
+	ViewModelData
+	{
+		"fov"		"50.0"
+		"forward"	"25.0"
+		"right"		"12.0"
+		"up"		"0.0"
+	}
+
+	IronSightData
+	{
+		"type"		"2"
+		"aimfov"	"15.0"
+		"fov"		"35.0"
+		"forward"	"3.0"
+		"right"		"0.79"
+		"up"		"3.875"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"reload"			"Weapon_SRS.Reload"
-		"reload_npc"		"Weapon_SRS.NPC_Reload"
 		"empty"				"Weapon_SRS.Empty"
 		"single_shot"		"Weapon_SRS.Single"
-		"single_shot_npc"	"Weapon_SRS.NPC_Single"
 		"charge"			"Weapon_SRS.Charge"
 	}
 
