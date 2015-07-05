@@ -239,6 +239,45 @@ void CWeaponHL2MPBase::WeaponIdle(void)
 	}
 }
 
+//====================================================================================
+// Lower weapon on sprint
+//====================================================================================
+void CWeaponHL2MPBase::ItemPostFrame(void)
+{
+	CHL2MP_Player *pOwner = GetHL2MPPlayerOwner();
+	if (!pOwner)
+		return;
+
+	if (!m_bLowered && pOwner->IsSprinting())
+	{
+		Lower();
+	}
+	else if (m_bLowered && !pOwner->IsSprinting())
+	{
+		Ready();
+
+		// Reset next attack time
+		m_flNextPrimaryAttack = MAX(m_flNextPrimaryAttack, gpGlobals->curtime);
+		m_flNextSecondaryAttack = MAX(m_flNextSecondaryAttack, gpGlobals->curtime);
+	}
+
+	// Don't allow firing etc. while lowered.
+	if (m_bLowered || GetActivity() == ACT_VM_IDLE_LOWERED)
+	{
+		// Allow reload to finish
+		if (UsesClipsForAmmo1())
+		{
+			CheckReload();
+		}
+
+		WeaponIdle();
+
+		return;
+	}
+
+	BaseClass::ItemPostFrame();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Override for mag toss
 //-----------------------------------------------------------------------------

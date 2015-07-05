@@ -58,6 +58,8 @@ public:
 	virtual bool	Deploy( void );
 	virtual void	WeaponIdle( void );
 
+	virtual void	ItemPostFrame(void);
+
 	virtual void	FinishReload(void);
 
 	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
