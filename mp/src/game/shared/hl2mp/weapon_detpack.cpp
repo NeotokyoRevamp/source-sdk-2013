@@ -7,6 +7,12 @@
 
 #ifdef CLIENT_DLL
 #define CWeaponDetpack C_WeaponDetpack
+#include "c_hl2mp_player.h"
+#else
+#include "hl2mp_player.h"
+#include "grenade_detpack.h"
+#include "entitylist.h"
+#include "eventqueue.h"
 #endif
 
 class CWeaponDetpack : public CWeaponHL2MPBase
@@ -137,7 +143,31 @@ void CWeaponDetpack::DropDetpack(void)
 
 	SendWeaponAnim(ACT_VM_THROW);
 
-	// TODO: Actually create grenade_detpack
+#ifndef CLIENT_DLL
+
+	// Only the player fires this way so we can cast
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	Vector vecSrc = pPlayer->WorldSpaceCenter();
+	Vector vecFacing = pPlayer->BodyDirection3D();
+	vecSrc = vecSrc + vecFacing * 18.0;
+	// BUGBUG: is this because vecSrc is not from Weapon_ShootPosition()???
+	vecSrc.z += 24.0f;
+
+	Vector vecThrow;
+	GetOwner()->GetVelocity(&vecThrow, NULL);
+	vecThrow += vecFacing * 100;
+
+	CDetpack *pDetpack = (CDetpack*)Create("grenade_detpack", vecSrc, vec3_angle, GetOwner());
+
+	if (pDetpack)
+	{
+		pDetpack->SetThrower(GetOwner());
+		pDetpack->ApplyAbsVelocityImpulse(vecThrow);
+		pDetpack->SetLocalAngularVelocity(QAngle(0, 400, 0));
+		pDetpack->m_bIsLive = true;
+	}
+#endif
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 }
@@ -149,8 +179,18 @@ void CWeaponDetpack::DetonateDetpack(void)
 
 	SendWeaponAnim(ACT_VM_PRIMARYATTACK_DEPLOYED);
 
-	// TODO: Detonate grenade_detpack
-	WeaponSound(SPECIAL1); // Placeholder sound for the much needed explosion sound!
+#ifndef CLIENT_DLL
+	CBaseEntity *pEntity = NULL;
+
+	while ((pEntity = gEntList.FindEntityByClassname(pEntity, "grenade_detpack")) != NULL)
+	{
+		CDetpack *pDetpack = dynamic_cast<CDetpack *>(pEntity);
+		if (pDetpack->m_bIsLive && pDetpack->GetThrower() && GetOwner() && pDetpack->GetThrower() == GetOwner())
+		{
+			g_EventQueue.AddEvent(pDetpack, "Explode", 0.20, GetOwner(), GetOwner());
+		}
+	}
+#endif
 
 	m_bDetonatorArmed = false;
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
