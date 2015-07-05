@@ -703,26 +703,70 @@ void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &c
 
 Vector CWeaponHL2MPBase::GetViewModelPositionOffset(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_vecAimPosOffset;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta >= 1.0f)
+	{
+		if (m_bIsIronsighted)
+			return GetHL2MPWpnData().m_vecAimPosOffset;
+		return GetHL2MPWpnData().m_vecVMPosOffset;
+	}
 
-	return GetHL2MPWpnData().m_vecVMPosOffset;
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+
+	Vector posOffset;
+	Vector start = GetHL2MPWpnData().m_vecAimPosOffset;
+	Vector direction = GetHL2MPWpnData().m_vecVMPosOffset - start;
+	VectorMA(start, delta, direction, posOffset);
+
+	return posOffset;
 }
 
 QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_angAimAngOffset;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta >= 1.0f)
+	{
+		if (m_bIsIronsighted)
+			return GetHL2MPWpnData().m_angAimAngOffset;
+		return GetHL2MPWpnData().m_angVMAngOffset;
+	}
 
-	return GetHL2MPWpnData().m_angVMAngOffset;
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+
+	QAngle angOffset;
+	QAngle start = GetHL2MPWpnData().m_angAimAngOffset;
+	QAngle direction = GetHL2MPWpnData().m_angVMAngOffset - start;
+	VectorMA(start, delta, direction, angOffset);
+
+	return angOffset;
 }
 
 float CWeaponHL2MPBase::GetViewModelFOV(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_flAimFov;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta > 1.0f)
+	{
+		if (m_bIsIronsighted)
+			return GetHL2MPWpnData().m_flAimFov;
+		return GetHL2MPWpnData().m_flVMFov;
+	}
 
-	return GetHL2MPWpnData().m_flVMFov;
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+
+	float start = GetHL2MPWpnData().m_flAimFov;
+	float direction = GetHL2MPWpnData().m_flVMFov - start;
+	float fov = start + direction * delta;
+
+	return fov;
 }
 
 float CWeaponHL2MPBase::GetIronSightFOV(void) const

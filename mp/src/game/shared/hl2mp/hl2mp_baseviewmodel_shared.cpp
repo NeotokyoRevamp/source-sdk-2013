@@ -6,6 +6,13 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+LINK_ENTITY_TO_CLASS(hl2mp_viewmodel, CBaseHL2MPViewModel);
+
+IMPLEMENT_NETWORKCLASS_ALIASED(BaseHL2MPViewModel, DT_BaseHL2MPViewModel)
+
+BEGIN_NETWORK_TABLE(CBaseHL2MPViewModel, DT_BaseHL2MPViewModel)
+END_NETWORK_TABLE()
+
 CBaseHL2MPViewModel::CBaseHL2MPViewModel()
 {
 
@@ -44,13 +51,3 @@ void CBaseHL2MPViewModel::CalcViewModelView(CBasePlayer *owner, const Vector& ey
 
 	BaseClass::CalcViewModelView(owner, newPos, newAng);
 }
-
-LINK_ENTITY_TO_CLASS(hl2mp_viewmodel, CBaseHL2MPViewModel);
-
-IMPLEMENT_NETWORKCLASS_ALIASED(BaseHL2MPViewModel, DT_BaseHL2MPViewModel)
-
-BEGIN_NETWORK_TABLE_NOBASE(CBaseHL2MPViewModel, DT_BaseHL2MPViewModel)
-END_NETWORK_TABLE()
-
-BEGIN_PREDICTION_DATA(CBaseHL2MPViewModel)
-END_PREDICTION_DATA()
