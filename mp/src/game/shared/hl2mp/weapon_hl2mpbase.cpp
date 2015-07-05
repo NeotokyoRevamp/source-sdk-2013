@@ -35,7 +35,7 @@ extern IVModelInfo* modelinfo;
 
 #include "weapon_hl2mpbase.h"
 
-ConVar ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_ARCHIVE);
+ConVar ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_ARCHIVE | FCVAR_CLIENTDLL);
 
 // ----------------------------------------------------------------------------- //
 // Global functions.
