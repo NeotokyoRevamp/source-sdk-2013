@@ -35,7 +35,8 @@ public:
 
 	CNetworkVar(bool, m_bArming);
 	CNetworkVar(bool, m_bDetonatorArmed);
-
+	CNetworkVar(bool, m_bDetonated);
+	
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 	DECLARE_DATADESC();
@@ -55,9 +56,11 @@ BEGIN_NETWORK_TABLE(CWeaponDetpack, DT_WeaponDetpack)
 #ifdef CLIENT_DLL
 RecvPropBool(RECVINFO(m_bArming)),
 RecvPropBool(RECVINFO(m_bDetonatorArmed)),
+RecvPropBool(RECVINFO(m_bDetonated)),
 #else
 SendPropBool(SENDINFO(m_bArming)),
 SendPropBool(SENDINFO(m_bDetonatorArmed)),
+SendPropBool(SENDINFO(m_bDetonated)),
 #endif
 END_NETWORK_TABLE()
 
@@ -65,6 +68,7 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA(CWeaponDetpack)
 DEFINE_PRED_FIELD(m_bArming, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 DEFINE_PRED_FIELD(m_bDetonatorArmed, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_bDetonated, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif 
 
@@ -76,6 +80,7 @@ PRECACHE_WEAPON_REGISTER(weapon_detpack);
 BEGIN_DATADESC(CWeaponDetpack)
 DEFINE_FIELD(m_bArming, FIELD_BOOLEAN),
 DEFINE_FIELD(m_bDetonatorArmed, FIELD_BOOLEAN),
+DEFINE_FIELD(m_bDetonated, FIELD_BOOLEAN),
 END_DATADESC()
 
 acttable_t	CWeaponDetpack::m_acttable[] =
@@ -165,6 +170,8 @@ void CWeaponDetpack::DropDetpack(void)
 		pDetpack->SetThrower(GetOwner());
 		pDetpack->ApplyAbsVelocityImpulse(vecThrow);
 		pDetpack->SetLocalAngularVelocity(QAngle(0, 400, 0));
+		pDetpack->SetDamage(500);
+		pDetpack->SetDamageRadius(256); // Just guessing
 		pDetpack->m_bIsLive = true;
 	}
 #endif
@@ -193,6 +200,7 @@ void CWeaponDetpack::DetonateDetpack(void)
 #endif
 
 	m_bDetonatorArmed = false;
+	m_bDetonated = true;
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 }
 
@@ -208,6 +216,16 @@ void CWeaponDetpack::ItemPostFrame(void)
 		{
 			// Detpack is ready to be dropped
 			DropDetpack();
+		}
+		else if (m_bDetonated)
+		{
+			// Detonation animation ended we can remove the detpack from player
+			#ifndef CLIENT_DLL
+			UTIL_Remove(this);
+			#endif
+
+			// Switch to another weapon
+			pOwner->SwitchToNextBestWeapon(this);
 		}
 		else if ((pOwner->m_nButtons & IN_ATTACK))
 		{
