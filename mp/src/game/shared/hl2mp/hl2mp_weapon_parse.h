@@ -38,6 +38,10 @@ public:
 	float	m_flAimFov;
 	Vector	m_vecAimPosOffset;
 	QAngle	m_angAimAngOffset;
+	
+	float	m_flZoomFov;
+	Vector	m_vecZoomPosOffset;
+	QAngle	m_angZoomAngOffset;
 };
 
 

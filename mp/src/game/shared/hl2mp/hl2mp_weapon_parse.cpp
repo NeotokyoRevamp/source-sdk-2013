@@ -67,4 +67,18 @@ void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponNa
 		m_angAimAngOffset[YAW] = pIronSight->GetFloat("yaw", 0.0f);
 		m_angAimAngOffset[ROLL] = pIronSight->GetFloat("roll", 0.0f);
 	}
+
+	KeyValues *pZoom = pKeyValuesData->FindKey("ZoomData");
+	if (pZoom)
+	{
+		m_flZoomFov = pZoom->GetFloat("fov", 0.0f);
+
+		m_vecZoomPosOffset.x = pZoom->GetFloat("forward", 0.0f);
+		m_vecZoomPosOffset.y = pZoom->GetFloat("right", 0.0f);
+		m_vecZoomPosOffset.z = pZoom->GetFloat("up", 0.0f);
+
+		m_angZoomAngOffset[PITCH] = pZoom->GetFloat("pitch", 0.0f);
+		m_angZoomAngOffset[YAW] = pZoom->GetFloat("yaw", 0.0f);
+		m_angZoomAngOffset[ROLL] = pZoom->GetFloat("roll", 0.0f);
+	}
 }

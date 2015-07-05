@@ -19,7 +19,6 @@ extern IVModelInfoClient* modelinfo;
 extern IVModelInfo* modelinfo;
 #endif
 
-
 #if defined( CLIENT_DLL )
 	#include "prediction.h"
 	#include "vgui/ISurface.h"
@@ -36,6 +35,7 @@ extern IVModelInfo* modelinfo;
 
 #include "weapon_hl2mpbase.h"
 
+ConVar ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_ARCHIVE);
 
 // ----------------------------------------------------------------------------- //
 // Global functions.
@@ -707,7 +707,12 @@ Vector CWeaponHL2MPBase::GetViewModelPositionOffset(void) const
 	if (delta >= 1.0f)
 	{
 		if (m_bIsIronsighted)
-			return GetHL2MPWpnData().m_vecAimPosOffset;
+		{
+			if (ironsights_enabled.GetBool()) // Using ironsights
+				return GetHL2MPWpnData().m_vecAimPosOffset;
+			else // Using classic zoom
+				return GetHL2MPWpnData().m_vecZoomPosOffset;
+		}
 		return GetHL2MPWpnData().m_vecVMPosOffset;
 	}
 
@@ -730,7 +735,13 @@ QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
 	if (delta >= 1.0f)
 	{
 		if (m_bIsIronsighted)
-			return GetHL2MPWpnData().m_angAimAngOffset;
+		{
+			if (ironsights_enabled.GetBool()) // Using ironsights
+				return GetHL2MPWpnData().m_angAimAngOffset;
+			else // Using classic zoom
+				return GetHL2MPWpnData().m_angZoomAngOffset;
+		}
+
 		return GetHL2MPWpnData().m_angVMAngOffset;
 	}
 
@@ -753,7 +764,12 @@ float CWeaponHL2MPBase::GetViewModelFOV(void) const
 	if (delta > 1.0f)
 	{
 		if (m_bIsIronsighted)
-			return GetHL2MPWpnData().m_flAimFov;
+		{
+			if (ironsights_enabled.GetBool()) // Using ironsights
+				return GetHL2MPWpnData().m_flAimFov;
+			else
+				return GetHL2MPWpnData().m_flZoomFov;
+		}
 		return GetHL2MPWpnData().m_flVMFov;
 	}
 
