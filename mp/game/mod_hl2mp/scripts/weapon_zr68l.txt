@@ -21,7 +21,9 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"35" // Assault mid body damage: 35hp / 1 bullet
+
+	"damage"				"37"
+	"cycletime"				"0.5"
 
 	ViewModelData
 	{

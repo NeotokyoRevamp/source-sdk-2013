@@ -21,7 +21,9 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"35" // No data at hand. Made equal to ZRL for now (35hp per shot)
+	
+	"damage"				"45"
+	"cycletime"				"0.5"
 
 	ViewModelData
 	{

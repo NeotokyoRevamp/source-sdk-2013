@@ -16,7 +16,9 @@ WeaponData
 
 	"weight"				"4"
 	"item_flags"			"0"
-	"damage"				"23" // 117hp assault mid / 5 pellets = 23.4hp
+	
+	"damage"				"25" // *5
+	"cycletime"				"0.333"
 
 	ViewModelData
 	{
