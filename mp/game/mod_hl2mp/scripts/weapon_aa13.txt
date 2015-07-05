@@ -18,13 +18,29 @@ WeaponData
 	"item_flags"			"0"
 	"damage"				"23" // 117hp assault mid / 5 pellets = 23.4hp
 
+	ViewModelData
+	{
+		"fov"		"54.0"
+		"forward"	"15.0"
+		"right"		"12.0"
+		"up"		"1.0"
+	}
+
+	IronSightData
+	{
+		"type"		"1"
+		"aimfov"	"54.0"
+		"fov"		"35.0"
+		"forward"	"30.0"
+		"right"		"1.16"
+		"up"		"1.1"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
 		"single_shot"		"Weapon_AA13.Single"
-		"single_shot_npc"	"Weapon_AA13.NPC_Single"
 		"reload"			"Weapon_AA13.Reload"
-		"reload_npc"		"Weapon_AA13.NPC_Reload"
 		"empty"				"Weapon_AA13.Empty"
 	}
 
