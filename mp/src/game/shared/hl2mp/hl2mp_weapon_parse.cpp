@@ -18,14 +18,14 @@ CHL2MPSWeaponInfo::CHL2MPSWeaponInfo()
 {
 	m_iPlayerDamage = 0;
 
-	m_flVMFov = 54.0f;
+	m_flVMFov = 54.0f; // Viewmodel fov
 	m_vecVMPosOffset = vec3_origin;
 	m_angVMAngOffset.Init();
 
-	m_iAimType = 0;
+	m_iAimType = 0; // 0 - no aiming, 1 - ironsights, 2 - scope
 
-	m_flAimFov = 54.0f;
-	m_flAimZoom = 54.0f;
+	m_flAimFov = 54.0f; // Aimed model FOV
+	m_flAimZoom = 75.0f; // Game fov for zoom effect
 
 	m_vecAimPosOffset = vec3_origin;
 	m_angAimAngOffset.Init();
