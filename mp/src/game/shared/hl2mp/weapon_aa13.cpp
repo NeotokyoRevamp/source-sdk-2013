@@ -164,9 +164,4 @@ void CWeaponAA13::PrimaryAttack( void )
 CWeaponAA13::CWeaponAA13( void )
 {
 	m_bReloadsSingly = false;
-
-	m_fMinRange1		= 0.0;
-	m_fMaxRange1		= 500;
-	m_fMinRange2		= 0.0;
-	m_fMaxRange2		= 200;
 }
