@@ -1,4 +1,5 @@
 #include "cbase.h"
+#include "explode.h"
 #include "grenade_detpack.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -34,11 +35,13 @@ void CDetpack::Spawn(void)
 void CDetpack::Precache(void)
 {
 	PrecacheModel("models/weapons/w_detpack.mdl");
+	PrecacheSound("Weapon_Detpack.Special1");
 }
 
 void CDetpack::InputExplode(inputdata_t &inputdata)
 {
-	//TODO: Makes things go boom
+	ExplosionCreate(GetAbsOrigin() + Vector(0, 0, 16), GetAbsAngles(), GetThrower(), GetDamage(), GetDamageRadius(),
+		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
 
 	EmitSound("Weapon_Detpack.Special1");
 
