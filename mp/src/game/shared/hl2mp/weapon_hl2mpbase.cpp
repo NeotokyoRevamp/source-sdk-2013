@@ -727,7 +727,7 @@ float CWeaponHL2MPBase::GetViewModelFOV(void) const
 
 float CWeaponHL2MPBase::GetIronSightFOV(void) const
 {
-	return GetHL2MPWpnData().m_flVMFov;
+	return GetHL2MPWpnData().m_flAimZoom;
 }
 
 bool CWeaponHL2MPBase::HasIronsights(void)
