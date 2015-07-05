@@ -576,6 +576,9 @@ void C_HL2MP_Player::StartSprinting( void )
 		return;
 	}
 
+	// TODO: Properly predict aux power
+	m_HL2Local.m_bitsActiveDevices |= bits_SUIT_DEVICE_SPRINT;
+
 	CPASAttenuationFilter filter( this );
 	filter.UsePredictionRules();
 	EmitSound( filter, entindex(), "HL2Player.SprintStart" );
@@ -589,6 +592,8 @@ void C_HL2MP_Player::StartSprinting( void )
 //-----------------------------------------------------------------------------
 void C_HL2MP_Player::StopSprinting( void )
 {
+	// TODO: Properly predict aux power
+	m_HL2Local.m_bitsActiveDevices &= ~bits_SUIT_DEVICE_SPRINT;
 	SetMaxSpeed( HL2_NORM_SPEED );
 	m_fIsSprinting = false;
 }
