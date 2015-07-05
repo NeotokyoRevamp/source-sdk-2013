@@ -41,6 +41,14 @@ WeaponData
 		"up"		"2.46"
 	}
 
+	ZoomData
+	{
+		"fov"		"54.0"
+		"forward"	"-10.0"
+		"right"		"1.5"
+		"up"		"2.0"
+	}
+
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{

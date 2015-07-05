@@ -34,11 +34,19 @@ WeaponData
 	IronSightData
 	{
 		"type"		"1"
-		"aimfov"	"55.0"
+		"aimfov"	"45.0"
 		"fov"		"45.0"
 		"forward"	"-3.5"
 		"right"		"1.04"
 		"up"		"3.45"
+	}
+
+	ZoomData
+	{
+		"fov"		"40.0"
+		"forward"	"5.0"
+		"right"		"5.0"
+		"up"		"2.5"
 	}
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
