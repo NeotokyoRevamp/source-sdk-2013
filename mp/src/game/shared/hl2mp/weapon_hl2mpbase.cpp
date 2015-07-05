@@ -35,8 +35,6 @@ extern IVModelInfo* modelinfo;
 
 #include "weapon_hl2mpbase.h"
 
-ConVar ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_ARCHIVE | FCVAR_CLIENTDLL | FCVAR_USERINFO);
-
 // ----------------------------------------------------------------------------- //
 // Global functions.
 // ----------------------------------------------------------------------------- //
@@ -740,42 +738,53 @@ void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &c
 
 #endif
 
+bool CWeaponHL2MPBase::UsesIronsights(void) const
+{
+#ifdef CLIENT_DLL
+	if (GetHL2MPPlayerOwner()->IronSightsEnabled()) // Using ironsights
+		return true;
+#endif
+	return false;
+}
+
 Vector CWeaponHL2MPBase::GetViewModelPositionOffset(void) const
 {
+	Vector posOffset;
+
 	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
 	if (delta >= 1.0f)
 	{
 		if (m_bIsIronsighted)
 		{
-			if (ironsights_enabled.GetBool()) // Using ironsights
+			if (UsesIronsights()) // Using ironsights
 				return GetHL2MPWpnData().m_vecAimPosOffset;
 			else // Using classic zoom
 				return GetHL2MPWpnData().m_vecZoomPosOffset;
+
 		}
 		return GetHL2MPWpnData().m_vecVMPosOffset;
 	}
-
+	
 	delta = clamp(delta, 0.0f, 1.0f);
 
 	if (m_bIsIronsighted)
 		delta = 1.0f - delta;
-
-	Vector posOffset;
-	Vector start = GetHL2MPWpnData().m_vecAimPosOffset;
+	
+	Vector start = UsesIronsights() ? GetHL2MPWpnData().m_vecAimPosOffset : GetHL2MPWpnData().m_vecZoomPosOffset;
 	Vector direction = GetHL2MPWpnData().m_vecVMPosOffset - start;
 	VectorMA(start, delta, direction, posOffset);
-
 	return posOffset;
 }
 
 QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
 {
+	QAngle angOffset;
 	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
 	if (delta >= 1.0f)
 	{
 		if (m_bIsIronsighted)
 		{
-			if (ironsights_enabled.GetBool()) // Using ironsights
+			if (UsesIronsights()) // Using ironsights
 				return GetHL2MPWpnData().m_angAimAngOffset;
 			else // Using classic zoom
 				return GetHL2MPWpnData().m_angZoomAngOffset;
@@ -789,11 +798,9 @@ QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
 	if (m_bIsIronsighted)
 		delta = 1.0f - delta;
 
-	QAngle angOffset;
-	QAngle start = GetHL2MPWpnData().m_angAimAngOffset;
+	QAngle start = UsesIronsights() ? GetHL2MPWpnData().m_angAimAngOffset : GetHL2MPWpnData().m_angZoomAngOffset;
 	QAngle direction = GetHL2MPWpnData().m_angVMAngOffset - start;
 	VectorMA(start, delta, direction, angOffset);
-
 	return angOffset;
 }
 
@@ -804,11 +811,12 @@ float CWeaponHL2MPBase::GetViewModelFOV(void) const
 	{
 		if (m_bIsIronsighted)
 		{
-			if (ironsights_enabled.GetBool()) // Using ironsights
+			if (UsesIronsights()) // Using ironsights
 				return GetHL2MPWpnData().m_flAimFov;
 			else
 				return GetHL2MPWpnData().m_flZoomFov;
 		}
+		
 		return GetHL2MPWpnData().m_flVMFov;
 	}
 
@@ -817,10 +825,9 @@ float CWeaponHL2MPBase::GetViewModelFOV(void) const
 	if (m_bIsIronsighted)
 		delta = 1.0f - delta;
 
-	float start = GetHL2MPWpnData().m_flAimFov;
+	float start = UsesIronsights() ? GetHL2MPWpnData().m_flAimFov : GetHL2MPWpnData().m_flZoomFov;
 	float direction = GetHL2MPWpnData().m_flVMFov - start;
 	float fov = start + direction * delta;
-
 	return fov;
 }
 

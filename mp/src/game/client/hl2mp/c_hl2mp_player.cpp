@@ -20,6 +20,8 @@
 #undef CHL2MP_Player	
 #endif
 
+const ConVar cl_ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_CLIENTDLL, "Use ironsights or classic zoom");
+
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
 IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
@@ -41,7 +43,7 @@ END_PREDICTION_DATA()
 #define	HL2_SPRINT_SPEED 320
 
 static ConVar cl_playermodel( "cl_playermodel", "none", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_SERVER_CAN_EXECUTE, "Default Player Model");
-static ConVar cl_defaultweapon( "cl_defaultweapon", "weapon_physcannon", FCVAR_USERINFO | FCVAR_ARCHIVE, "Default Spawn Weapon");
+static ConVar cl_defaultweapon( "cl_defaultweapon", "weapon_knife", FCVAR_USERINFO | FCVAR_ARCHIVE, "Default Spawn Weapon");
 
 void SpawnBlood (Vector vecSpot, const Vector &vecDir, int bloodColor, float flDamage);
 
@@ -63,6 +65,11 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 C_HL2MP_Player::~C_HL2MP_Player( void )
 {
 	ReleaseFlashlight();
+}
+
+bool C_HL2MP_Player::IronSightsEnabled(void)
+{
+	return cl_ironsights_enabled.GetBool();
 }
 
 int C_HL2MP_Player::GetIDTarget() const

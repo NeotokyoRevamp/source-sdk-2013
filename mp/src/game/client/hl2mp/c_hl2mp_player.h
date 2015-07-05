@@ -83,6 +83,7 @@ public:
 	void StartWalking( void );
 	void StopWalking( void );
 	bool IsWalking( void ) { return m_fIsWalking; }
+	bool IronSightsEnabled(void);
 
 	virtual void PostThink( void );
 

@@ -115,7 +115,8 @@ public:
 	QAngle					GetViewModelAngleOffset(void) const;
 	float					GetViewModelFOV(void) const;
 	float					GetIronSightFOV(void) const;
-
+	
+	bool					UsesIronsights(void) const;
 	bool					HasIronsights(void);
 	bool					IsIronsighted(void);
 	void					ToggleIronsights(void);
