@@ -17,11 +17,6 @@ class CBaseHL2MPViewModel : public CPredictedViewModel
 public:
 
 	DECLARE_NETWORKCLASS();
-	DECLARE_PREDICTABLE();
-
-#if !defined( CLIENT_DLL )
-	//DECLARE_DATADESC(); // Can't compile I assume because there isn't anything declared in network tables
-#endif
 
 	CBaseHL2MPViewModel(void);
 	~CBaseHL2MPViewModel(void);
