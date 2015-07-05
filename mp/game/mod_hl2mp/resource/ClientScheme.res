@@ -11,12 +11,13 @@
 Scheme
 {
 	//////////////////////// COLORS ///////////////////////////
+	//////////////////////// COLORS ///////////////////////////
 	Colors
 	{
 		// base colors
-		"Orange"			"255 176 0 255"
-		"OrangeDim"			"255 176 0 120"
-		"LightOrange"		"188 112 0 128"
+		"Orange"			"200 200 200 255"
+		"OrangeDim"			"155 155 155 120"
+		"LightOrange"		"255 255 255 128"
 		
 		"Red"				"192 28 0 140"
 		"Black"				"0 0 0 196"
@@ -35,30 +36,30 @@ Scheme
 	// controls use these to determine their settings
 	BaseSettings
 	{
-		"FgColor"			"255 220 0 100"
-		"BgColor"			"0 0 0 76"
+		"FgColor"			"255 255 255 100"
+		"BgColor"			"0 0 0 80"
 
-		"Panel.FgColor"			"255 220 0 100"
-		"Panel.BgColor"			"0 0 0 76"
+		"Panel.FgColor"			"255 255 255 100"
+		"Panel.BgColor"			"0 0 0 80"
 		
-		"BrightFg"		"255 220 0 255"
+		"BrightFg"		"255 255 255 255"
 
 		"DamagedBg"			"180 0 0 200"
 		"DamagedFg"			"180 0 0 230"
 		"BrightDamagedFg"		"255 0 0 255"
 
 		// weapon selection colors
-		"SelectionNumberFg"		"255 220 0 255"
-		"SelectionTextFg"		"255 220 0 255"
+		"SelectionNumberFg"		"255 255 255 255"
+		"SelectionTextFg"		"255 255 255 255"
 		"SelectionEmptyBoxBg" 	"0 0 0 80"
 		"SelectionBoxBg" 		"0 0 0 80"
 		"SelectionSelectedBoxBg" "0 0 0 80"
 		
-		"ZoomReticleColor"	"255 220 0 255"
+		"ZoomReticleColor"	"255 255 255 255"
 
 		// HL1-style HUD colors
-		"Yellowish"			"255 160 0 255"
-		"Normal"			"255 208 64 255"
+		"Yellowish"			"255 255 255 255" // "255 160 0 255"
+		"Normal"			"200 200 200 255" // "255 208 64 255"
 		"Caution"			"255 48 0 255"
 
 		// Top-left corner of the "Half-Life 2" on the main screen
@@ -756,8 +757,8 @@ Scheme
 		{
 			"1"
 			{
-				"name"  "HL2MP"
-				"tall"  "46"
+				"name"  "neotokyo_press_N"
+				"tall"  "60"
 				"weight" "0"
 				"additive" "0"
 				"antialias" "1"
@@ -1577,6 +1578,8 @@ Scheme
 		"1"		"resource/HALFLIFE2.ttf"
 		"1"		"resource/HL2MP.ttf"
 		"2"		"resource/HL2crosshairs.ttf"
+		"3"		"resource/neotokyo_press_n.ttf"
+		"4"		"resource/X-SCALE_.TTF"
 	}
 
 }

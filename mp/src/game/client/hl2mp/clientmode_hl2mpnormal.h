@@ -37,6 +37,8 @@ public:
 
 	virtual void	Init();
 	virtual int		GetDeathMessageStartHeight( void );
+
+	virtual float	GetViewModelFOV(void);
 };
 
 extern IClientMode *GetClientModeNormal();
