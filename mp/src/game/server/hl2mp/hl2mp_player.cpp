@@ -33,6 +33,10 @@ CBaseEntity	 *g_pLastCombineSpawn = NULL;
 CBaseEntity	 *g_pLastRebelSpawn = NULL;
 extern CBaseEntity				*g_pLastSpawn;
 
+//cloaking
+ConVar player_cloak_custom( "player_cloak_custom", "0", FCVAR_CHEAT, "Enable cloak factor modification" );
+ConVar player_cloak_factor( "player_cloak_factor", "0.0", FCVAR_CHEAT, "Cloak factor" );
+
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade );
@@ -55,6 +59,10 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 //	SendPropExclude( "DT_ServerAnimationData" , "m_flCycle" ),	
 //	SendPropExclude( "DT_AnimTimeMustBeFirst" , "m_flAnimTime" ),
 	
+	//Cloak data
+	SendPropInt( SENDINFO( m_intCloakStatus ) ),
+	SendPropFloat( SENDINFO ( m_floatCloakFactor ) ),
+
 END_SEND_TABLE()
 
 BEGIN_DATADESC( CHL2MP_Player )
@@ -107,6 +115,10 @@ CHL2MP_Player::CHL2MP_Player() : m_PlayerAnimState( this )
 
 	m_iSpawnInterpCounter = 0;
 
+	//init cloak variables
+	m_intCloakStatus.Set( 0 );
+	m_floatCloakFactor.Set( 0.0f );
+
     m_bEnterObserver = false;
 	m_bReady = false;
 
@@ -117,7 +129,9 @@ CHL2MP_Player::CHL2MP_Player() : m_PlayerAnimState( this )
 
 CHL2MP_Player::~CHL2MP_Player( void )
 {
-
+	//reset the cloak state
+	m_intCloakStatus.Set( 0 );
+	m_floatCloakFactor.Set( 0.0f );
 }
 
 void CHL2MP_Player::UpdateOnRemove( void )
@@ -556,6 +570,8 @@ void CHL2MP_Player::PreThink( void )
 			DropActiveWeapon();
 		}
 	}
+
+	UpdateCloak();
 }
 
 void CHL2MP_Player::PostThink( void )
@@ -1148,6 +1164,44 @@ void CHL2MP_Player::CreateRagdollEntity( void )
 
 	// ragdolls will be removed on round restart automatically
 	m_hRagdoll = pRagdoll;
+}
+//-----------------------------------------------------------------------------
+// Cloak
+//-----------------------------------------------------------------------------
+void CHL2MP_Player::UpdateCloak()
+{
+	//Cloak effects
+	if ( !engine->IsPaused() )
+	{
+		if ( player_cloak_custom.GetInt() == 0 )
+		{
+			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() == 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() )
+				SetCloakStatus( 0 );
+			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() == 1.0f || GetCloakStatus() == 3 && m_floatCloakFactor.Get() >= 1.0f )
+				SetCloakStatus( 2 );
+			if ( GetCloakStatus() == 0 )
+			{
+				m_floatCloakFactor.Set( 0.0f );
+				RemoveEffects( EF_NOSHADOW );
+			}
+			if ( GetCloakStatus() == 2 )
+			{
+				m_floatCloakFactor.Set( 1.0f );
+				AddEffects( EF_NOSHADOW );
+			}
+			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
+			{
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - 0.005f  );
+			}
+			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != 1.0f || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
+			{
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + 0.005f  );
+			}
+		}
+
+		if ( player_cloak_custom.GetInt() == 1 )
+			m_floatCloakFactor = player_cloak_factor.GetFloat();
+	}
 }
 
 //-----------------------------------------------------------------------------

@@ -86,6 +86,13 @@ public:
 
 	virtual void PostThink( void );
 
+	//Cloak functions
+	int    GetCloakStatus( void )    {    return m_intCloakStatus;    }
+	float    GetCloakFactor( void )    {    return    m_floatCloakFactor;    }
+
+	//Cloak variables
+	int                m_intCloakStatus;
+	float            m_floatCloakFactor;
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

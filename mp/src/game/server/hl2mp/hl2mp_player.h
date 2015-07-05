@@ -138,7 +138,23 @@ public:
 
 	virtual bool	CanHearAndReadChatFrom( CBasePlayer *pPlayer );
 
-		
+
+	//Cloak
+	CNetworkVar( int, m_intCloakStatus );
+	CNetworkVar( float, m_floatCloakFactor );
+	
+	int		GetCloakStatus( void )	{	return	m_intCloakStatus;	}
+	void	SetCloakStatus( int cloakstatus )
+	{
+		SetTransmitState( FL_EDICT_ALWAYS );
+		m_intCloakStatus.Set( cloakstatus );
+	}
+	float	GetCloakFactor( void )	{ return m_floatCloakFactor;	}
+	void	SetCloakFactor( float cloakfactor )
+	{
+		SetTransmitState( FL_EDICT_ALWAYS );
+		m_floatCloakFactor.Set( cloakfactor );
+	}
 private:
 
 	CNetworkQAngle( m_angEyeAngles );
@@ -164,6 +180,8 @@ private:
 
     bool m_bEnterObserver;
 	bool m_bReady;
+
+	void UpdateCloak ();
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )
