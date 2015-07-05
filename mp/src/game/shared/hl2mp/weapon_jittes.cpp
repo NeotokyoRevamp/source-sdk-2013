@@ -34,8 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	float	GetFireRate( void ) { return 0.3f; }
-
 	int		GetMaxBurst() { return 3; }
 
 	virtual const Vector& GetBulletSpread( void )

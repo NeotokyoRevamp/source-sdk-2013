@@ -34,7 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	float	GetFireRate( void ) { return 0.075f; }	// 13.3hz
 	Activity	GetPrimaryAttackActivity( void );
 
 	virtual const Vector& GetBulletSpread( void )

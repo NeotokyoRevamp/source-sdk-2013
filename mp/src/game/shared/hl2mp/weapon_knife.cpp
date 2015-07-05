@@ -19,7 +19,6 @@
 #include "tier0/memdbgon.h"
 
 #define	KNIFE_RANGE	 48.0f + 3.0f // Neotokyo range is 48 units ish. However, we need about 3 units more for the NT reach, possibly because viewmodel positioning? (Rain)
-#define	KNIFE_REFIRE 0.534f // Neotokyo refire rate is ~0.534 seconds
 #define KNIFE_DAMAGE 25.0f // Assault class base damage of 25hp
 
 #ifdef CLIENT_DLL
@@ -45,7 +44,6 @@ public:
 	CWeaponKnife();
 
 	float		GetRange(void) { return	KNIFE_RANGE; }
-	float		GetFireRate(void) { return	KNIFE_REFIRE; }
 	float		GetDamageForActivity(Activity hitActivity) { return KNIFE_DAMAGE; }
 	void		PrimaryAttack(void);
 	void		SecondaryAttack(void)	{ return; }

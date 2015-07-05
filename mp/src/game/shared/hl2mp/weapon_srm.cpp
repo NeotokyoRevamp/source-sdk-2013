@@ -34,8 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	float	GetFireRate( void ) { return 0.040f; }
-
 	virtual const Vector& GetBulletSpread( void )
 	{
 		static const Vector cone = VECTOR_CONE_6DEGREES;

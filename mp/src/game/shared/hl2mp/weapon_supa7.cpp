@@ -49,7 +49,6 @@ public:
 	void ItemPostFrame( void );
 	void PrimaryAttack( void );
 	void DryFire( void );
-	virtual float GetFireRate( void ) { return 0.7; };
 
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
