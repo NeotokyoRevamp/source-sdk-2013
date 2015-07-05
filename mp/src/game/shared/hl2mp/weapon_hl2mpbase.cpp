@@ -511,6 +511,11 @@ const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetDefaultProficiencyValues()
 
 #endif
 
+float CWeaponHL2MPBase::GetFireRate(void)
+{
+	return GetHL2MPWpnData().m_flCycleTime;
+}
+
 bool CWeaponHL2MPBase::IsPredicted() const
 { 
 	return true;

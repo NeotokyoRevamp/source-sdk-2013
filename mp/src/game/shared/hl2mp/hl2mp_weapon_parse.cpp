@@ -17,6 +17,7 @@ FileWeaponInfo_t* CreateWeaponInfo()
 CHL2MPSWeaponInfo::CHL2MPSWeaponInfo()
 {
 	m_iPlayerDamage = 0;
+	m_flCycleTime = 0.1; // Rate of fire
 
 	m_flVMFov = 54.0f; // Viewmodel fov without sights
 	m_flAimFov = 54.0f; //  Aimed viewmodel FOV with ironsigths
@@ -43,6 +44,7 @@ void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponNa
 	BaseClass::Parse(pKeyValuesData, szWeaponName);
 
 	m_iPlayerDamage = pKeyValuesData->GetInt("damage", 0);
+	m_flCycleTime = pKeyValuesData->GetFloat("cycletime", 0.1f);
 
 	KeyValues *pViewModel = pKeyValuesData->FindKey("ViewModelData");
 	if (pViewModel)

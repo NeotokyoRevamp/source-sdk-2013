@@ -28,6 +28,7 @@ public:
 public:
 
 	int m_iPlayerDamage;
+	float m_flCycleTime;
 
 	float	m_flVMFov;
 	Vector	m_vecVMPosOffset;
