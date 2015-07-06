@@ -2433,7 +2433,7 @@
 "Weapon_Detpack.Single"
 {
 	"channel"		"CHAN_WEAPON"
-	"soundlevel"	"SNDLVL_150dB"
+	"soundlevel"		"SNDLVL_150dB"
 	"volume"		"1.0"
 	"pitch"			"98,102"
 	"wave"			"^weapons/detpack/detpack_arm.wav"	
@@ -2442,8 +2442,55 @@
 "Weapon_Detpack.Special1"
 {
 	"channel"		"CHAN_WEAPON"
-	"soundlevel"	"SNDLVL_150dB"
+	"soundlevel"		"SNDLVL_150dB"
 	"volume"		"1.0"
 	"pitch"			"98,102"
 	"wave"			"^weapons/detpack/detpack_explode.wav"		
+}
+
+// --------------------------
+// Frag Grenade
+// --------------------------
+"Default.PullPin_Grenade"
+{
+	"channel"		        "CHAN_ITEM"
+        "soundlevel"		        "SNDLVL_ITEM"
+	"volume"		        "1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"		                "PITCH_NORM"
+	"wave"			        "weapons/pinpull.wav"
+}
+
+"Grenade.Bounce"
+{
+	"channel"		        "CHAN_AUTO"
+        "soundlevel"		        "SNDLVL_ITEM"
+	"volume"		        "1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"			        "PITCH_NORM"
+	"wave"				"weapons/hegrenade/he_bounce-1.wav"
+}
+
+"BaseGrenade.Explode"
+{
+	"channel"		        "CHAN_WEAPON"
+        "soundlevel"  	                "SNDLVL_150dB"
+	"volume"		        "1.0"
+	"pitch"		                "98,102"
+	"wave"				"^weapons/hegrenade/frag_explode.wav"
+}
+
+"BaseExplosionEffect.Sound"
+{
+	"channel"	               "CHAN_STATIC"
+	"volume"	               "0.2"
+	"soundlevel"	               "SNDLVL_85dB"
+	"pitch"		               "80,110"
+
+	"rndwave"
+	{
+		"wave"	"weapons/debris1.wav"
+		"wave"	"weapons/debris2.wav"
+		"wave"	"weapons/debris3.wav"
+	}
 }
