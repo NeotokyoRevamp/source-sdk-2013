@@ -199,7 +199,6 @@ CHL2MPRules::CHL2MPRules()
 	m_flIntermissionEndTime = 0.0f;
 	m_flGameStartTime = 0;
 
-	m_hRespawnableItemsAndWeapons.RemoveAll();
 	m_tmNextPeriodicThink = 0;
 	m_flRestartGameTime = 0;
 	m_bCompleteReset = false;
@@ -247,29 +246,6 @@ void CHL2MPRules::CreateStandardEntities( void )
 	Assert( pEnt );
 #endif
 }
-
-//=========================================================
-// FlWeaponRespawnTime - what is the time in the future
-// at which this weapon may spawn?
-//=========================================================
-float CHL2MPRules::FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon )
-{
-#ifndef CLIENT_DLL
-	if ( weaponstay.GetInt() > 0 )
-	{
-		// make sure it's only certain weapons
-		if ( !(pWeapon->GetWeaponFlags() & ITEM_FLAG_LIMITINWORLD) )
-		{
-			return 0;		// weapon respawns almost instantly
-		}
-	}
-
-	return sv_hl2mp_weapon_respawn_time.GetFloat();
-#endif
-
-	return 0;		// weapon respawns almost instantly
-}
-
 
 bool CHL2MPRules::IsIntermission( void )
 {
@@ -370,9 +346,6 @@ void CHL2MPRules::Think( void )
 		m_flRestartGameTime = gpGlobals->curtime + 5;
 		m_bAwaitingReadyRestart = false;
 	}
-
-	ManageObjectRelocation();
-
 #endif
 }
 
@@ -416,221 +389,6 @@ bool CHL2MPRules::CheckGameOver()
 #endif
 
 	return false;
-}
-
-// when we are within this close to running out of entities,  items 
-// marked with the ITEM_FLAG_LIMITINWORLD will delay their respawn
-#define ENTITY_INTOLERANCE	100
-
-//=========================================================
-// FlWeaponRespawnTime - Returns 0 if the weapon can respawn 
-// now,  otherwise it returns the time at which it can try
-// to spawn again.
-//=========================================================
-float CHL2MPRules::FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon )
-{
-#ifndef CLIENT_DLL
-	if ( pWeapon && (pWeapon->GetWeaponFlags() & ITEM_FLAG_LIMITINWORLD) )
-	{
-		if ( gEntList.NumberOfEntities() < (gpGlobals->maxEntities - ENTITY_INTOLERANCE) )
-			return 0;
-
-		// we're past the entity tolerance level,  so delay the respawn
-		return FlWeaponRespawnTime( pWeapon );
-	}
-#endif
-	return 0;
-}
-
-//=========================================================
-// VecWeaponRespawnSpot - where should this weapon spawn?
-// Some game variations may choose to randomize spawn locations
-//=========================================================
-Vector CHL2MPRules::VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon )
-{
-#ifndef CLIENT_DLL
-	CWeaponHL2MPBase *pHL2Weapon = dynamic_cast< CWeaponHL2MPBase*>( pWeapon );
-
-	if ( pHL2Weapon )
-	{
-		return pHL2Weapon->GetOriginalSpawnOrigin();
-	}
-#endif
-	
-	return pWeapon->GetAbsOrigin();
-}
-
-#ifndef CLIENT_DLL
-
-CItem* IsManagedObjectAnItem( CBaseEntity *pObject )
-{
-	return dynamic_cast< CItem*>( pObject );
-}
-
-CWeaponHL2MPBase* IsManagedObjectAWeapon( CBaseEntity *pObject )
-{
-	return dynamic_cast< CWeaponHL2MPBase*>( pObject );
-}
-
-bool GetObjectsOriginalParameters( CBaseEntity *pObject, Vector &vOriginalOrigin, QAngle &vOriginalAngles )
-{
-	if ( CItem *pItem = IsManagedObjectAnItem( pObject ) )
-	{
-		if ( pItem->m_flNextResetCheckTime > gpGlobals->curtime )
-			 return false;
-		
-		vOriginalOrigin = pItem->GetOriginalSpawnOrigin();
-		vOriginalAngles = pItem->GetOriginalSpawnAngles();
-
-		pItem->m_flNextResetCheckTime = gpGlobals->curtime + sv_hl2mp_item_respawn_time.GetFloat();
-		return true;
-	}
-	else if ( CWeaponHL2MPBase *pWeapon = IsManagedObjectAWeapon( pObject )) 
-	{
-		if ( pWeapon->m_flNextResetCheckTime > gpGlobals->curtime )
-			 return false;
-
-		vOriginalOrigin = pWeapon->GetOriginalSpawnOrigin();
-		vOriginalAngles = pWeapon->GetOriginalSpawnAngles();
-
-		pWeapon->m_flNextResetCheckTime = gpGlobals->curtime + sv_hl2mp_weapon_respawn_time.GetFloat();
-		return true;
-	}
-
-	return false;
-}
-
-void CHL2MPRules::ManageObjectRelocation( void )
-{
-	int iTotal = m_hRespawnableItemsAndWeapons.Count();
-
-	if ( iTotal > 0 )
-	{
-		for ( int i = 0; i < iTotal; i++ )
-		{
-			CBaseEntity *pObject = m_hRespawnableItemsAndWeapons[i].Get();
-			
-			if ( pObject )
-			{
-				Vector vSpawOrigin;
-				QAngle vSpawnAngles;
-
-				if ( GetObjectsOriginalParameters( pObject, vSpawOrigin, vSpawnAngles ) == true )
-				{
-					float flDistanceFromSpawn = (pObject->GetAbsOrigin() - vSpawOrigin ).Length();
-
-					if ( flDistanceFromSpawn > WEAPON_MAX_DISTANCE_FROM_SPAWN )
-					{
-						bool shouldReset = false;
-						IPhysicsObject *pPhysics = pObject->VPhysicsGetObject();
-
-						if ( pPhysics )
-						{
-							shouldReset = pPhysics->IsAsleep();
-						}
-						else
-						{
-							shouldReset = (pObject->GetFlags() & FL_ONGROUND) ? true : false;
-						}
-
-						if ( shouldReset )
-						{
-							pObject->Teleport( &vSpawOrigin, &vSpawnAngles, NULL );
-							pObject->EmitSound( "AlyxEmp.Charge" );
-
-							IPhysicsObject *pPhys = pObject->VPhysicsGetObject();
-
-							if ( pPhys )
-							{
-								pPhys->Wake();
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-//=========================================================
-//AddLevelDesignerPlacedWeapon
-//=========================================================
-void CHL2MPRules::AddLevelDesignerPlacedObject( CBaseEntity *pEntity )
-{
-	if ( m_hRespawnableItemsAndWeapons.Find( pEntity ) == -1 )
-	{
-		m_hRespawnableItemsAndWeapons.AddToTail( pEntity );
-	}
-}
-
-//=========================================================
-//RemoveLevelDesignerPlacedWeapon
-//=========================================================
-void CHL2MPRules::RemoveLevelDesignerPlacedObject( CBaseEntity *pEntity )
-{
-	if ( m_hRespawnableItemsAndWeapons.Find( pEntity ) != -1 )
-	{
-		m_hRespawnableItemsAndWeapons.FindAndRemove( pEntity );
-	}
-}
-
-//=========================================================
-// Where should this item respawn?
-// Some game variations may choose to randomize spawn locations
-//=========================================================
-Vector CHL2MPRules::VecItemRespawnSpot( CItem *pItem )
-{
-	return pItem->GetOriginalSpawnOrigin();
-}
-
-//=========================================================
-// What angles should this item use to respawn?
-//=========================================================
-QAngle CHL2MPRules::VecItemRespawnAngles( CItem *pItem )
-{
-	return pItem->GetOriginalSpawnAngles();
-}
-
-//=========================================================
-// At what time in the future may this Item respawn?
-//=========================================================
-float CHL2MPRules::FlItemRespawnTime( CItem *pItem )
-{
-	return sv_hl2mp_item_respawn_time.GetFloat();
-}
-
-
-//=========================================================
-// CanHaveWeapon - returns false if the player is not allowed
-// to pick up this weapon
-//=========================================================
-bool CHL2MPRules::CanHavePlayerItem( CBasePlayer *pPlayer, CBaseCombatWeapon *pItem )
-{
-	if ( weaponstay.GetInt() > 0 )
-	{
-		if ( pPlayer->Weapon_OwnsThisType( pItem->GetClassname(), pItem->GetSubType() ) )
-			 return false;
-	}
-
-	return BaseClass::CanHavePlayerItem( pPlayer, pItem );
-}
-
-#endif
-
-//=========================================================
-// WeaponShouldRespawn - any conditions inhibiting the
-// respawning of this weapon?
-//=========================================================
-int CHL2MPRules::WeaponShouldRespawn( CBaseCombatWeapon *pWeapon )
-{
-#ifndef CLIENT_DLL
-	if ( pWeapon->HasSpawnFlags( SF_NORESPAWN ) )
-	{
-		return GR_WEAPON_RESPAWN_NO;
-	}
-#endif
-
-	return GR_WEAPON_RESPAWN_YES;
 }
 
 //-----------------------------------------------------------------------------
@@ -727,20 +485,10 @@ void CHL2MPRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &info
 			killer_weapon_name = "physics";
 		}
 
-		if ( strcmp( killer_weapon_name, "prop_combine_ball" ) == 0 )
+		if ( strcmp( killer_weapon_name, "grenade_detpack" ) == 0 )
 		{
-			killer_weapon_name = "combine_ball";
+			killer_weapon_name = "detpack";
 		}
-		else if ( strcmp( killer_weapon_name, "grenade_ar2" ) == 0 )
-		{
-			killer_weapon_name = "smg1_grenade";
-		}
-		else if ( strcmp( killer_weapon_name, "satchel" ) == 0 || strcmp( killer_weapon_name, "tripmine" ) == 0)
-		{
-			killer_weapon_name = "slam";
-		}
-
-
 	}
 
 	IGameEvent *event = gameeventmanager->CreateEvent( "player_death" );
@@ -867,7 +615,7 @@ float CHL2MPRules::GetMapRemainingTime()
 //-----------------------------------------------------------------------------
 void CHL2MPRules::Precache( void )
 {
-	CBaseEntity::PrecacheScriptSound( "AlyxEmp.Charge" );
+	
 }
 
 bool CHL2MPRules::ShouldCollide( int collisionGroup0, int collisionGroup1 )

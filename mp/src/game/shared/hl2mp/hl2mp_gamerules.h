@@ -16,7 +16,7 @@
 #pragma once
 
 #include "gamerules.h"
-#include "teamplay_gamerules.h"
+#include "teamplayroundbased_gamerules.h"
 #include "gamevars_shared.h"
 
 #ifndef CLIENT_DLL
@@ -79,7 +79,7 @@ public:
 	Vector m_vCrouchTraceMax;	
 };
 
-class CHL2MPRules : public CTeamplayRules
+class CHL2MPRules : public CTeamplayRoundBasedRules
 {
 public:
 	DECLARE_CLASS( CHL2MPRules, CTeamplayRules );
@@ -100,10 +100,6 @@ public:
 	virtual bool ShouldCollide( int collisionGroup0, int collisionGroup1 );
 	virtual bool ClientCommand( CBaseEntity *pEdict, const CCommand &args );
 
-	virtual float FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon );
-	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );
-	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
-	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
 	virtual void ClientSettingsChanged( CBasePlayer *pPlayer );
@@ -122,15 +118,8 @@ public:
 	void RestartGame();
 	
 #ifndef CLIENT_DLL
-	virtual Vector VecItemRespawnSpot( CItem *pItem );
-	virtual QAngle VecItemRespawnAngles( CItem *pItem );
-	virtual float	FlItemRespawnTime( CItem *pItem );
-	virtual bool	CanHavePlayerItem( CBasePlayer *pPlayer, CBaseCombatWeapon *pItem );
 	virtual bool FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon );
 
-	void	AddLevelDesignerPlacedObject( CBaseEntity *pEntity );
-	void	RemoveLevelDesignerPlacedObject( CBaseEntity *pEntity );
-	void	ManageObjectRelocation( void );
 	void    CheckChatForReadySignal( CHL2MP_Player *pPlayer, const char *chatmsg );
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
@@ -152,7 +141,6 @@ private:
 	
 	CNetworkVar( bool, m_bTeamPlayEnabled );
 	CNetworkVar( float, m_flGameStartTime );
-	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	float m_tmNextPeriodicThink;
 	float m_flRestartGameTime;
 	bool m_bCompleteReset;
