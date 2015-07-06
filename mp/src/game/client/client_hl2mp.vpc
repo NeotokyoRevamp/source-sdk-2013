@@ -179,6 +179,7 @@ $Project "Client (HL2MP)"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_ghost.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_detpack.cpp"
 				$File	"$SRCDIR\game\shared\hl2mp\weapon_grenade.cpp"
+				$File	"$SRCDIR\game\shared\hl2mp\weapon_smokegrenade.cpp"
 			}
 
 			$Folder	"UI"

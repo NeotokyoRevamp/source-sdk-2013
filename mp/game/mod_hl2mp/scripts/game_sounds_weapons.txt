@@ -2449,7 +2449,7 @@
 }
 
 // --------------------------
-// Frag Grenade
+// Grenade
 // --------------------------
 "Default.PullPin_Grenade"
 {
@@ -2470,6 +2470,10 @@
 	"pitch"			        "PITCH_NORM"
 	"wave"				"weapons/hegrenade/he_bounce-1.wav"
 }
+
+// --------------------------
+// Frag Grenade
+// --------------------------
 
 "BaseGrenade.Explode"
 {
@@ -2493,4 +2497,18 @@
 		"wave"	"weapons/debris2.wav"
 		"wave"	"weapons/debris3.wav"
 	}
+}
+
+// --------------------------
+// Smoke Grenade
+// --------------------------
+
+"Smoke.Explode"
+{
+
+	"channel"		        "CHAN_WEAPON"
+        "soundlevel"		        "SNDLVL_150dB"
+        "volume"		        "1.0"
+	"pitch"			        "98,102"
+        "wave"			        "^weapons/smoke/sg_explode.wav"		
 }
