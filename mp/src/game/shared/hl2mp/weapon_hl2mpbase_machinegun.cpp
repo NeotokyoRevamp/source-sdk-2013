@@ -124,7 +124,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 
 	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))
 	{
-		m_flNextPrimaryAttack = gpGlobals->curtime + 0.1;
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.085; // TODO: GetBurstFireRate()
 	}
 	else
 	{
