@@ -34,12 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	virtual const Vector& GetBulletSpread( void )
-	{
-		static const Vector cone = VECTOR_CONE_6DEGREES;
-		return cone;
-	}
-
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 #endif
