@@ -434,7 +434,7 @@ void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin
 //-----------------------------------------------------------------------------
 Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
 {
-	return BaseClass::GetBulletSpread(proficiency);
+	return GetHL2MPWpnData().m_vecSpread;
 }
 
 //-----------------------------------------------------------------------------
@@ -514,6 +514,16 @@ const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetDefaultProficiencyValues()
 float CWeaponHL2MPBase::GetFireRate(void)
 {
 	return GetHL2MPWpnData().m_flCycleTime;
+}
+
+float CWeaponHL2MPBase::GetRecoilPitch(void)
+{
+	return GetHL2MPWpnData().m_flRecoilPitch;
+}
+
+float CWeaponHL2MPBase::GetRecoilYaw(void)
+{
+	return GetHL2MPWpnData().m_flRecoilYaw;
 }
 
 bool CWeaponHL2MPBase::IsPredicted() const

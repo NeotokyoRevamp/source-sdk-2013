@@ -29,6 +29,10 @@ public:
 
 	int m_iPlayerDamage;
 	float m_flCycleTime;
+	
+	float m_flRecoilPitch;
+	float m_flRecoilYaw;
+	Vector m_vecSpread;
 
 	float	m_flVMFov;
 	Vector	m_vecVMPosOffset;

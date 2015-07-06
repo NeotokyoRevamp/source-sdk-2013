@@ -68,6 +68,8 @@ public:
 	virtual Vector	GetBulletSpread( WeaponProficiency_t proficiency );
 	virtual float	GetSpreadBias( WeaponProficiency_t proficiency );
 	virtual float	GetFireRate(void);
+	virtual float	GetRecoilPitch(void);
+	virtual float	GetRecoilYaw(void);
 
 	virtual const	WeaponProficiencyInfo_t *GetProficiencyValues();
 	static const	WeaponProficiencyInfo_t *GetDefaultProficiencyValues();

@@ -124,8 +124,8 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 #ifdef CLIENT_DLL
-		if (prediction->IsFirstTimePredicted())
-			pHL2MPPlayer->CreateRecoil(1.0); //TODO: Get this value from weapon script
+	if (prediction->IsFirstTimePredicted())
+		pHL2MPPlayer->CreateRecoil(GetRecoilPitch(), GetRecoilYaw());
 #endif
 
 	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))

@@ -94,7 +94,7 @@ public:
 
 	void ApplyRecoil(void);
 	void GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRecoil);
-	void CreateRecoil(float flRecoilAmount);
+	void CreateRecoil(float flRecoilPitch, float flRecoilYaw);
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

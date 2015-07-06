@@ -310,10 +310,10 @@ void C_HL2MP_Player::GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRec
 	m_flRecoilTimeRemaining -= gpGlobals->frametime;
 }
 
-void C_HL2MP_Player::CreateRecoil(float flRecoilAmount)
+void C_HL2MP_Player::CreateRecoil(float flRecoilPitch, float flRecoilYaw)
 {
-	float flPitchRecoil = flRecoilAmount;
-	float flYawRecoil = flRecoilAmount / 4;
+	float flPitchRecoil = flRecoilPitch;
+	float flYawRecoil = flRecoilYaw;
 
 	// Replace the previous recoil
 	m_flAccumulatedPitchRecoil = flPitchRecoil;
