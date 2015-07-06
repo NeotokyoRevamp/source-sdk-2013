@@ -319,12 +319,8 @@ void C_HL2MP_Player::CreateRecoil(float flRecoilPitch, float flRecoilYaw)
 	m_flAccumulatedPitchRecoil = flPitchRecoil;
 
 	// Some randomness
-	flYawRecoil = flYawRecoil * random->RandomFloat(0.7, 1.0);
-
-	if (random->RandomInt(0, 1) <= 0)
-		m_flAccumulatedYawRecoil = flYawRecoil;
-	else
-		m_flAccumulatedYawRecoil = -flYawRecoil;
+	m_flAccumulatedYawRecoil += flYawRecoil * random->RandomFloat(-1.0, 1.0);
+	m_flAccumulatedYawRecoil = clamp(m_flAccumulatedYawRecoil, -flYawRecoil, flYawRecoil);
 
 	m_flRecoilTimeRemaining = 0.1;
 }

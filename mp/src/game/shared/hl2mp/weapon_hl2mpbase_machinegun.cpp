@@ -112,7 +112,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	FireBullets( info );
 
 	//Factor in the view kick
-	//AddViewKick();
+	AddViewKick();
 	
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{
