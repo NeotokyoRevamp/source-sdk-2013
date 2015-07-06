@@ -87,6 +87,14 @@ public:
 
 	virtual void PostThink( void );
 
+	// Recoil stuff
+	float m_flRecoilTimeRemaining;
+	float m_flAccumulatedPitchRecoil;
+	float m_flAccumulatedYawRecoil;
+
+	void ApplyRecoil(void);
+	void GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRecoil);
+	void CreateRecoil(float flRecoilAmount);
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

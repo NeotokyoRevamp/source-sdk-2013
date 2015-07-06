@@ -268,6 +268,65 @@ void C_HL2MP_Player::ClientThink( void )
 	}
 
 	UpdateIDTarget();
+
+	ApplyRecoil();
+}
+
+// Sets the view angle based on current recoil values
+void C_HL2MP_Player::ApplyRecoil(void)
+{
+	QAngle viewangles;
+
+	engine->GetViewAngles(viewangles);
+
+	float flYawRecoil, flPitchRecoil;
+
+	GetRecoilForThisFrame(flPitchRecoil, flYawRecoil);
+
+	if (flPitchRecoil > 0)
+	{
+		viewangles[PITCH] -= flPitchRecoil;
+		viewangles[YAW] += flYawRecoil;
+	}
+
+	engine->SetViewAngles(viewangles);
+}
+
+void C_HL2MP_Player::GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRecoil)
+{
+	if (m_flRecoilTimeRemaining <= 0)
+	{
+		flPitchRecoil = 0.0;
+		flYawRecoil = 0.0;
+		return;
+	}
+
+	float flRemaining = min(m_flRecoilTimeRemaining, gpGlobals->frametime);
+	float flRecoilProportion = (flRemaining / 0.1);
+
+	flPitchRecoil = m_flAccumulatedPitchRecoil * flRecoilProportion;
+	flYawRecoil = m_flAccumulatedYawRecoil * flRecoilProportion;
+
+	m_flRecoilTimeRemaining -= gpGlobals->frametime;
+}
+
+void C_HL2MP_Player::CreateRecoil(float flRecoilAmount)
+{
+	float flPitchRecoil = flRecoilAmount;
+	float flYawRecoil = flRecoilAmount / 4;
+
+	// Replace the previous recoil
+	m_flAccumulatedPitchRecoil = flPitchRecoil;
+
+	// Some randomness
+	flYawRecoil = flYawRecoil * random->RandomFloat(0.7, 1.0);
+
+	if (random->RandomInt(0, 1) <= 0)
+		m_flAccumulatedYawRecoil = flYawRecoil;
+	else
+		m_flAccumulatedYawRecoil = -flYawRecoil;
+
+	m_flRecoilTimeRemaining = 0.1;
 }
 
 //-----------------------------------------------------------------------------

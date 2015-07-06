@@ -8,6 +8,7 @@
 
 #if defined( CLIENT_DLL )
 	#include "c_hl2mp_player.h"
+	#include "prediction.h"
 #else
 	#include "hl2mp_player.h"
 #endif
@@ -111,7 +112,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	FireBullets( info );
 
 	//Factor in the view kick
-	AddViewKick();
+	//AddViewKick();
 	
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{
@@ -121,6 +122,11 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 
 	SendWeaponAnim( GetPrimaryAttackActivity() );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+
+#ifdef CLIENT_DLL
+		if (prediction->IsFirstTimePredicted())
+			pHL2MPPlayer->CreateRecoil(1.0); //TODO: Get this value from weapon script
+#endif
 
 	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))
 	{
