@@ -24,7 +24,10 @@ WeaponData
 
 	"damage"				"15"
 	"cycletime"				"0.085"
-
+	"recoil_pitch"			"0.7"
+	"recoil_yaw"			"0.25"
+	"spread"				"1.0"
+	
 	ViewModelData
 	{
 		"fov"		"54.0"
