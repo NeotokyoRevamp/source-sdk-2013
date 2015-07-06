@@ -312,15 +312,12 @@ void C_HL2MP_Player::GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRec
 
 void C_HL2MP_Player::CreateRecoil(float flRecoilPitch, float flRecoilYaw)
 {
-	float flPitchRecoil = flRecoilPitch;
-	float flYawRecoil = flRecoilYaw;
-
 	// Replace the previous recoil
-	m_flAccumulatedPitchRecoil = flPitchRecoil;
+	m_flAccumulatedPitchRecoil = flRecoilPitch;
 
 	// Some randomness
-	m_flAccumulatedYawRecoil += flYawRecoil * random->RandomFloat(-1.0, 1.0);
-	m_flAccumulatedYawRecoil = clamp(m_flAccumulatedYawRecoil, -flYawRecoil, flYawRecoil);
+	m_flAccumulatedYawRecoil += flRecoilYaw * random->RandomFloat(-1.0, 1.0);
+	m_flAccumulatedYawRecoil = clamp(m_flAccumulatedYawRecoil, -flRecoilYaw, flRecoilYaw);
 
 	m_flRecoilTimeRemaining = 0.1;
 }
