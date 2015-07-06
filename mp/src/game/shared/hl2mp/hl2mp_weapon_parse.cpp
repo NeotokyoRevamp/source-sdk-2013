@@ -56,8 +56,8 @@ void CHL2MPSWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponNa
 	float spread = DEG2RAD(pKeyValuesData->GetFloat("spread", 0.1f));
 
 	m_vecSpread.x = spread;
-	m_vecSpread.x = spread;
-	m_vecSpread.x = spread;
+	m_vecSpread.y = spread;
+	m_vecSpread.z = spread;
 
 	KeyValues *pViewModel = pKeyValuesData->FindKey("ViewModelData");
 	if (pViewModel)
