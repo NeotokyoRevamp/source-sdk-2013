@@ -739,15 +739,7 @@ void CWeaponHL2MPBase::FireBullets( const FireBulletsInfo_t &info )
 	modinfo.m_iPlayerDamage = GetHL2MPWpnData().m_iPlayerDamage;
 
 	BaseClass::FireBullets( modinfo );
-
-	/* TODO: Is this even needed?
-	if (CBasePlayer *pPlayer = ToBasePlayer(GetOwner()))
-	{
-		pPlayer->FireBullets(modinfo);
-	}
-	*/
 }
-
 
 #if defined( CLIENT_DLL )
 
