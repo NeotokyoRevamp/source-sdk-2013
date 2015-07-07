@@ -1,0 +1,23 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\zr68_back"
+	"$surfaceprop" "metal"
+        "$bumpmap" "models\weapons\zr68_back_normal" 
+	//"$envmap" "cubemaps/cubemap_cave01"
+	//"$normalmapalphaenvmapmask" 1
+	"$phong" "1"
+	//"$lightwarptexture" "models\neotokyo_lightwarp"
+	"$phongexponenttexture" "models\weapons\zr68_back_exp"
+	"$phongboost" "1"	
+	"$phongfresnelranges"	"[2 3 8]"
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"0"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"1"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}
