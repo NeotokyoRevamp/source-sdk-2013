@@ -289,6 +289,13 @@ void CWeaponHL2MPBase::ItemPostFrame(void)
 		// Reset shots fored and continue normally with regular rate of fire
 		m_nShotsFired = 0;
 	}
+	// Weapon is semi auto and we're still holding +attack after firing
+	else if (m_iFireMode == FM_SEMI && (pOwner->m_nButtons & IN_ATTACK) && m_nShotsFired >= 1)
+	{
+		WeaponIdle();
+
+		return;
+	}
 	// -attack
 	else if ((pOwner->m_nButtons & IN_ATTACK) == false)
 	{
@@ -1049,8 +1056,6 @@ void CWeaponHL2MPBase::SecondaryAttack(void)
 {
 	if (!HasIronsights())
 		return;
-
-	// TODO: Handle zooming/pseudo iron sights for other guns here
 
 	ToggleIronsights();
 
