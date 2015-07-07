@@ -1002,6 +1002,9 @@ void CWeaponHL2MPBase::PrimaryAttack(void)
 		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
 		m_nShotsFired++;
 		iBulletsToFire++;
+
+		if (m_iFireMode == FM_SEMI)
+			break; // Can't fire more than one bullet
 	}
 
 	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
