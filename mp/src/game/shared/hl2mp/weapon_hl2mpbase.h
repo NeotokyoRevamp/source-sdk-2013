@@ -25,6 +25,10 @@
 	void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &clip );
 #endif
 
+#define FM_AUTO 0
+#define FM_BURST 1
+#define FM_SEMI 2
+
 // These are the names of the ammo types that go in the CAmmoDefs and that the 
 // weapon script files reference.
 
@@ -66,6 +70,7 @@ public:
 	virtual	float	CalcViewmodelBob( void );
 
 	virtual Vector	GetBulletSpread( WeaponProficiency_t proficiency );
+	virtual const Vector&	GetBulletSpread(void);
 	virtual float	GetSpreadBias( WeaponProficiency_t proficiency );
 	virtual float	GetFireRate(void);
 	virtual float	GetRecoilPitch(void);
@@ -87,6 +92,7 @@ public:
 
 	virtual void	FireBullets( const FireBulletsInfo_t &info );
 	virtual void	FallInit( void );
+	virtual void	PrimaryAttack(void);
 	virtual void	SecondaryAttack(void);
 	virtual bool	Holster(CBaseCombatWeapon *pSwitchingTo);
 	virtual void	Drop(const Vector &vecVelocity);
@@ -127,10 +133,18 @@ public:
 	void					DisableIronsights(void);
 	void					SetIronsightTime(void);
 
+	virtual Activity		GetPrimaryAttackActivity(void);
+	int						WeaponSoundRealtime(WeaponSound_t shoot_type);
+
+	// utility function
+	static void DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime);
+
 protected:
 	bool			m_bLowered;			// Whether the viewmodel is raised or lowered
 	float			m_flRaiseTime;		// If lowered, the time we should raise the viewmodel
-
+	int				m_nShotsFired;		// Number of consecutive shots fired
+	int				m_iFireMode;		// Switches fire mode
+	float			m_flNextSoundTime;	// real-time clock of when to make next sound
 private:
 
 	CWeaponHL2MPBase( const CWeaponHL2MPBase & );

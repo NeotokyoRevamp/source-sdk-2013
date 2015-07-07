@@ -13,7 +13,6 @@
 #endif
 
 #include "weapon_hl2mpbase.h"
-#include "weapon_hl2mpbase_machinegun.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponM41S C_WeaponM41S
@@ -22,10 +21,10 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-class CWeaponM41S : public CHL2MPMachineGun
+class CWeaponM41S : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponM41S, CHL2MPMachineGun );
+	DECLARE_CLASS( CWeaponM41S, CWeaponHL2MPBase );
 
 	CWeaponM41S();
 
