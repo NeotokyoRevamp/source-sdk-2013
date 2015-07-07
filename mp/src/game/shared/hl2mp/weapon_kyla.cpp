@@ -117,7 +117,7 @@ void CWeaponKyla::PrimaryAttack( void )
 	SendWeaponAnim( ACT_VM_PRIMARYATTACK );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	float f_rateOfFire = 0.35; // Kyla's RoF in Neotokyo: 0.35 seconds / 1 shot
+	float f_rateOfFire = GetFireRate();
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + f_rateOfFire;
 	m_flNextSecondaryAttack = gpGlobals->curtime + f_rateOfFire;

@@ -28,6 +28,11 @@ public:
 public:
 
 	int m_iPlayerDamage;
+	float m_flCycleTime;
+	
+	float m_flRecoilPitch;
+	float m_flRecoilYaw;
+	Vector m_vecSpread;
 
 	float	m_flVMFov;
 	Vector	m_vecVMPosOffset;
@@ -38,6 +43,10 @@ public:
 	float	m_flAimFov;
 	Vector	m_vecAimPosOffset;
 	QAngle	m_angAimAngOffset;
+	
+	float	m_flZoomFov;
+	Vector	m_vecZoomPosOffset;
+	QAngle	m_angZoomAngOffset;
 };
 
 

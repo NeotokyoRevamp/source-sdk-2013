@@ -34,14 +34,6 @@ public:
 
 	void	AddViewKick( void );
 
-	float	GetFireRate( void ) { return 0.080f; }
-
-	virtual const Vector& GetBulletSpread( void )
-	{
-		static const Vector cone = VECTOR_CONE_4DEGREES;
-		return cone;
-	}
-
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 #endif

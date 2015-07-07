@@ -83,8 +83,10 @@ public:
 	void StartWalking( void );
 	void StopWalking( void );
 	bool IsWalking( void ) { return m_fIsWalking; }
+	bool IronSightsEnabled(void);
 
 	virtual void PostThink( void );
+
 
 	//Cloak functions
 	int    GetCloakStatus( void )    {    return m_intCloakStatus;    }
@@ -93,6 +95,16 @@ public:
 	//Cloak variables
 	int                m_intCloakStatus;
 	float            m_floatCloakFactor;
+
+	// Recoil stuff
+	float m_flRecoilTimeRemaining;
+	float m_flAccumulatedPitchRecoil;
+	float m_flAccumulatedYawRecoil;
+
+	void ApplyRecoil(void);
+	void GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRecoil);
+	void CreateRecoil(float flRecoilPitch, float flRecoilYaw);
+
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

@@ -13,7 +13,7 @@ WeaponData
 	"clip_size"				"90"
 	"clip2_size"			"-1"
 
-	"default_clip"			"100"
+	"default_clip"			"90"
 	"default_clip2"			"-1"
 
 	"primary_ammo"			"smg"
@@ -21,7 +21,9 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"15" // Weapon stats are a mystery!
+
+	"damage"				"15"
+	"cycletime"				"0.085"
 
 	ViewModelData
 	{
@@ -35,6 +37,14 @@ WeaponData
 	{
 		"type"		"1"
 		"aimfov"	"50.0"
+		"fov"		"45.0"
+		"forward"	"15.0"
+		"right"		"6.5"
+		"up"		"6.0"
+	}
+
+	ZoomData
+	{
 		"fov"		"45.0"
 		"forward"	"15.0"
 		"right"		"6.5"

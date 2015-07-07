@@ -21,8 +21,13 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"35" // No data at hand. Made equal to ZRL for now (35hp per shot)
-
+	
+	"damage"				"45"
+	"cycletime"				"0.5"
+	"recoil_pitch"			"2.0"
+	"recoil_yaw"			"0.3"
+	"spread"				"0.5"
+	
 	ViewModelData
 	{
 		"fov"		"54.0"
@@ -41,6 +46,15 @@ WeaponData
 		"right"		"7.0"
 		"up"		"6.0"
 	}
+
+	ZoomData
+	{
+		"fov"		"45.0"
+		"forward"	"-2.0"
+		"right"		"7.0"
+		"up"		"6.0"
+	}
+
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData

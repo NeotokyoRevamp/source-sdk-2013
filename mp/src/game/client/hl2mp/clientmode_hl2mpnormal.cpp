@@ -18,6 +18,7 @@
 #include "hl2mpclientscoreboard.h"
 #include "hl2mptextwindow.h"
 #include "ienginevgui.h"
+#include "weapon_hl2mpbase.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -124,5 +125,17 @@ void ClientModeHL2MPNormal::Init()
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Use correct view model FOV
+//-----------------------------------------------------------------------------
+float ClientModeHL2MPNormal::GetViewModelFOV()
+{
+	CWeaponHL2MPBase *pWeapon = dynamic_cast<CWeaponHL2MPBase*>(GetActiveWeapon());
+	if (pWeapon)
+	{
+		return pWeapon->GetViewModelFOV();
+	}
 
+	return BaseClass::GetViewModelFOV();
+}
 

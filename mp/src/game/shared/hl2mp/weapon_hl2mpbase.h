@@ -58,6 +58,8 @@ public:
 	virtual bool	Deploy( void );
 	virtual void	WeaponIdle( void );
 
+	virtual void	ItemPostFrame(void);
+
 	virtual void	FinishReload(void);
 
 	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
@@ -65,6 +67,9 @@ public:
 
 	virtual Vector	GetBulletSpread( WeaponProficiency_t proficiency );
 	virtual float	GetSpreadBias( WeaponProficiency_t proficiency );
+	virtual float	GetFireRate(void);
+	virtual float	GetRecoilPitch(void);
+	virtual float	GetRecoilYaw(void);
 
 	virtual const	WeaponProficiencyInfo_t *GetProficiencyValues();
 	static const	WeaponProficiencyInfo_t *GetDefaultProficiencyValues();
@@ -113,7 +118,8 @@ public:
 	QAngle					GetViewModelAngleOffset(void) const;
 	float					GetViewModelFOV(void) const;
 	float					GetIronSightFOV(void) const;
-
+	
+	bool					UsesIronsights(void) const;
 	bool					HasIronsights(void);
 	bool					IsIronsighted(void);
 	void					ToggleIronsights(void);

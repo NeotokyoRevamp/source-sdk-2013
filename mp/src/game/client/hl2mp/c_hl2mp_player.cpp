@@ -20,6 +20,8 @@
 #undef CHL2MP_Player	
 #endif
 
+const ConVar cl_ironsights_enabled("cl_ironsights_enabled", "1", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_CLIENTDLL, "Use ironsights or classic zoom");
+
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
 IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
@@ -47,7 +49,7 @@ END_PREDICTION_DATA()
 #define	HL2_SPRINT_SPEED 320
 
 static ConVar cl_playermodel( "cl_playermodel", "none", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_SERVER_CAN_EXECUTE, "Default Player Model");
-static ConVar cl_defaultweapon( "cl_defaultweapon", "weapon_physcannon", FCVAR_USERINFO | FCVAR_ARCHIVE, "Default Spawn Weapon");
+static ConVar cl_defaultweapon( "cl_defaultweapon", "weapon_knife", FCVAR_USERINFO | FCVAR_ARCHIVE, "Default Spawn Weapon");
 
 void SpawnBlood (Vector vecSpot, const Vector &vecDir, int bloodColor, float flDamage);
 
@@ -69,6 +71,11 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 C_HL2MP_Player::~C_HL2MP_Player( void )
 {
 	ReleaseFlashlight();
+}
+
+bool C_HL2MP_Player::IronSightsEnabled(void)
+{
+	return cl_ironsights_enabled.GetBool();
 }
 
 int C_HL2MP_Player::GetIDTarget() const
@@ -267,6 +274,58 @@ void C_HL2MP_Player::ClientThink( void )
 	}
 
 	UpdateIDTarget();
+
+	ApplyRecoil();
+}
+
+// Sets the view angle based on current recoil values
+void C_HL2MP_Player::ApplyRecoil(void)
+{
+	QAngle viewangles;
+
+	engine->GetViewAngles(viewangles);
+
+	float flYawRecoil, flPitchRecoil;
+
+	GetRecoilForThisFrame(flPitchRecoil, flYawRecoil);
+
+	if (flPitchRecoil > 0)
+	{
+		viewangles[PITCH] -= flPitchRecoil;
+		viewangles[YAW] += flYawRecoil;
+	}
+
+	engine->SetViewAngles(viewangles);
+}
+
+void C_HL2MP_Player::GetRecoilForThisFrame(float &flPitchRecoil, float &flYawRecoil)
+{
+	if (m_flRecoilTimeRemaining <= 0)
+	{
+		flPitchRecoil = 0.0;
+		flYawRecoil = 0.0;
+		return;
+	}
+
+	float flRemaining = min(m_flRecoilTimeRemaining, gpGlobals->frametime);
+	float flRecoilProportion = (flRemaining / 0.1);
+
+	flPitchRecoil = m_flAccumulatedPitchRecoil * flRecoilProportion;
+	flYawRecoil = m_flAccumulatedYawRecoil * flRecoilProportion;
+
+	m_flRecoilTimeRemaining -= gpGlobals->frametime;
+}
+
+void C_HL2MP_Player::CreateRecoil(float flRecoilPitch, float flRecoilYaw)
+{
+	// Replace the previous recoil
+	m_flAccumulatedPitchRecoil = flRecoilPitch;
+
+	// Some randomness
+	m_flAccumulatedYawRecoil += flRecoilYaw * random->RandomFloat(-1.0, 1.0);
+	m_flAccumulatedYawRecoil = clamp(m_flAccumulatedYawRecoil, -flRecoilYaw, flRecoilYaw);
+
+	m_flRecoilTimeRemaining = 0.1;
 }
 
 //-----------------------------------------------------------------------------
@@ -582,6 +641,9 @@ void C_HL2MP_Player::StartSprinting( void )
 		return;
 	}
 
+	// TODO: Properly predict aux power
+	m_HL2Local.m_bitsActiveDevices |= bits_SUIT_DEVICE_SPRINT;
+
 	CPASAttenuationFilter filter( this );
 	filter.UsePredictionRules();
 	EmitSound( filter, entindex(), "HL2Player.SprintStart" );
@@ -595,6 +657,8 @@ void C_HL2MP_Player::StartSprinting( void )
 //-----------------------------------------------------------------------------
 void C_HL2MP_Player::StopSprinting( void )
 {
+	// TODO: Properly predict aux power
+	m_HL2Local.m_bitsActiveDevices &= ~bits_SUIT_DEVICE_SPRINT;
 	SetMaxSpeed( HL2_NORM_SPEED );
 	m_fIsSprinting = false;
 }

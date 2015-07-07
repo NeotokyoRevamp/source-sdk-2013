@@ -21,7 +21,12 @@ WeaponData
 
 	"weight"				"3"
 	"item_flags"			"0"
-	"damage"				"26" // Assault mid body damage: 26hp / 1 bullet
+
+	"damage"				"28"
+	"cycletime"				"0.095"
+	"recoil_pitch"			"1.5"
+	"recoil_yaw"			"0.25"
+	"spread"				"2.5"
 
 	ViewModelData
 	{
@@ -39,6 +44,14 @@ WeaponData
 		"forward"	"0.0"
 		"right"		"0.77"
 		"up"		"2.65"
+	}
+
+	ZoomData
+	{
+		"fov"		"40.0"
+		"forward"	"7.0"
+		"right"		"5.0"
+		"up"		"2.5"
 	}
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)

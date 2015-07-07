@@ -3,7 +3,7 @@
 WeaponData
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
-	"printname"				"SUPA7"
+	"printname"				"MURATA SUPA 7"
 	"viewmodel"				"models/weapons/v_jinrai_shotgun.mdl"
 	"playermodel"			"models/weapons/w_supa7.mdl"
 	"anim_prefix"			"shotgun"
@@ -16,7 +16,9 @@ WeaponData
 
 	"weight"				"4"
 	"item_flags"			"0"
-	"damage"				"17" // 134 hp assault mid / 8 pellets = 16.75hp
+
+	"damage"				"18" //*8
+	"cycletime"				"0.875"
 
 	ViewModelData
 	{
@@ -34,6 +36,15 @@ WeaponData
 		"forward"	"-2.0"
 		"right"		"1.275"
 		"up"		"4.75"
+	}
+
+	ZoomData
+	{
+		"fov"		"45.0"
+		"forward"	"-2.0"
+		"right"		"6.0"
+		"up"		"4.0"
+		"yaw"		"-2.5"
 	}
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)

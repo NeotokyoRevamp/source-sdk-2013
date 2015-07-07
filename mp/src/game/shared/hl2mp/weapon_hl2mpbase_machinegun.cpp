@@ -8,6 +8,7 @@
 
 #if defined( CLIENT_DLL )
 	#include "c_hl2mp_player.h"
+	#include "prediction.h"
 #else
 	#include "hl2mp_player.h"
 #endif
@@ -122,9 +123,14 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 	SendWeaponAnim( GetPrimaryAttackActivity() );
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
+#ifdef CLIENT_DLL
+	if (prediction->IsFirstTimePredicted())
+		pHL2MPPlayer->CreateRecoil(GetRecoilPitch(), GetRecoilYaw());
+#endif
+
 	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))
 	{
-		m_flNextPrimaryAttack = gpGlobals->curtime + 0.1;
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.085; // TODO: GetBurstFireRate()
 	}
 	else
 	{

@@ -16,7 +16,9 @@ WeaponData
 
 	"weight"			"2"
 	"item_flags"		"0"
-	"damage"			"16" // 16 is assault mid body damage per bullet
+
+	"damage"			"33"
+	"cycletime"			"0.12"
 
 	ViewModelData
 	{
@@ -29,11 +31,19 @@ WeaponData
 	IronSightData
 	{
 		"type"		"1"
-		"aimfov"	"28.0"
+		"aimfov"	"55.0"
 		"fov"		"40.0"
 		"forward"	"-5.0"
 		"right"		"-3.425"
 		"up"		"7.825"
+	}
+
+	ZoomData
+	{
+		"fov"		"40.0"
+		"forward"	"-5.0"
+		"right"		"1.0"
+		"up"		"7.0"
 	}
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)

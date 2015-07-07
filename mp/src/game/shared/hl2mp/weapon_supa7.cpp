@@ -49,7 +49,6 @@ public:
 	void ItemPostFrame( void );
 	void PrimaryAttack( void );
 	void DryFire( void );
-	virtual float GetFireRate( void ) { return 0.7; };
 
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
@@ -332,9 +331,42 @@ void CWeaponSupa7::PrimaryAttack( void )
 //-----------------------------------------------------------------------------
 void CWeaponSupa7::ItemPostFrame( void )
 {
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
+	CHL2MP_Player *pOwner = GetHL2MPPlayerOwner();
 	if (!pOwner)
 	{
+		return;
+	}
+
+	// Lower on sprint
+	if (!m_bLowered && pOwner->IsSprinting())
+	{
+		Lower();
+	}
+	else if (m_bLowered && !pOwner->IsSprinting())
+	{
+		Ready();
+
+		// Reset next attack time
+		m_flNextPrimaryAttack = MAX(m_flNextPrimaryAttack, gpGlobals->curtime);
+		m_flNextSecondaryAttack = MAX(m_flNextSecondaryAttack, gpGlobals->curtime);
+	}
+
+	// Don't allow firing etc. while lowered.
+	if (m_bLowered || GetActivity() == ACT_VM_IDLE_LOWERED)
+	{
+		if (m_bInReload && m_flNextPrimaryAttack <= gpGlobals->curtime)
+		{
+			FinishReload();
+			return;
+		}
+
+		if ((m_bNeedPump) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+		{
+			Pump();
+			return;
+		}
+
+		WeaponIdle();
 		return;
 	}
 

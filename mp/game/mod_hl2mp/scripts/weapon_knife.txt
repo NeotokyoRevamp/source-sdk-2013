@@ -1,4 +1,4 @@
-// Crowbar
+// Knife
 
 WeaponData
 {
@@ -16,6 +16,9 @@ WeaponData
 
 	"weight"				"0"
 	"item_flags"			"0"
+
+	"damage"				"15"
+	"cycletime"				"0.5"
 
 	ViewModelData
 	{

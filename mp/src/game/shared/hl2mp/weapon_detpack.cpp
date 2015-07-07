@@ -7,6 +7,12 @@
 
 #ifdef CLIENT_DLL
 #define CWeaponDetpack C_WeaponDetpack
+#include "c_hl2mp_player.h"
+#else
+#include "hl2mp_player.h"
+#include "grenade_detpack.h"
+#include "entitylist.h"
+#include "eventqueue.h"
 #endif
 
 class CWeaponDetpack : public CWeaponHL2MPBase
@@ -29,7 +35,8 @@ public:
 
 	CNetworkVar(bool, m_bArming);
 	CNetworkVar(bool, m_bDetonatorArmed);
-
+	CNetworkVar(bool, m_bDetonated);
+	
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 	DECLARE_DATADESC();
@@ -49,9 +56,11 @@ BEGIN_NETWORK_TABLE(CWeaponDetpack, DT_WeaponDetpack)
 #ifdef CLIENT_DLL
 RecvPropBool(RECVINFO(m_bArming)),
 RecvPropBool(RECVINFO(m_bDetonatorArmed)),
+RecvPropBool(RECVINFO(m_bDetonated)),
 #else
 SendPropBool(SENDINFO(m_bArming)),
 SendPropBool(SENDINFO(m_bDetonatorArmed)),
+SendPropBool(SENDINFO(m_bDetonated)),
 #endif
 END_NETWORK_TABLE()
 
@@ -59,6 +68,7 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA(CWeaponDetpack)
 DEFINE_PRED_FIELD(m_bArming, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 DEFINE_PRED_FIELD(m_bDetonatorArmed, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_bDetonated, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif 
 
@@ -70,6 +80,7 @@ PRECACHE_WEAPON_REGISTER(weapon_detpack);
 BEGIN_DATADESC(CWeaponDetpack)
 DEFINE_FIELD(m_bArming, FIELD_BOOLEAN),
 DEFINE_FIELD(m_bDetonatorArmed, FIELD_BOOLEAN),
+DEFINE_FIELD(m_bDetonated, FIELD_BOOLEAN),
 END_DATADESC()
 
 acttable_t	CWeaponDetpack::m_acttable[] =
@@ -137,7 +148,33 @@ void CWeaponDetpack::DropDetpack(void)
 
 	SendWeaponAnim(ACT_VM_THROW);
 
-	// TODO: Actually create grenade_detpack
+#ifndef CLIENT_DLL
+
+	// Only the player fires this way so we can cast
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+
+	Vector vecSrc = pPlayer->WorldSpaceCenter();
+	Vector vecFacing = pPlayer->BodyDirection3D();
+	vecSrc = vecSrc + vecFacing * 18.0;
+	// BUGBUG: is this because vecSrc is not from Weapon_ShootPosition()???
+	vecSrc.z += 24.0f;
+
+	Vector vecThrow;
+	GetOwner()->GetVelocity(&vecThrow, NULL);
+	vecThrow += vecFacing * 100;
+
+	CDetpack *pDetpack = (CDetpack*)Create("grenade_detpack", vecSrc, vec3_angle, GetOwner());
+
+	if (pDetpack)
+	{
+		pDetpack->SetThrower(GetOwner());
+		pDetpack->ApplyAbsVelocityImpulse(vecThrow);
+		pDetpack->SetLocalAngularVelocity(QAngle(0, 400, 0));
+		pDetpack->SetDamage(500);
+		pDetpack->SetDamageRadius(256); // Just guessing
+		pDetpack->m_bIsLive = true;
+	}
+#endif
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 }
@@ -149,10 +186,21 @@ void CWeaponDetpack::DetonateDetpack(void)
 
 	SendWeaponAnim(ACT_VM_PRIMARYATTACK_DEPLOYED);
 
-	// TODO: Detonate grenade_detpack
-	WeaponSound(SPECIAL1); // Placeholder sound for the much needed explosion sound!
+#ifndef CLIENT_DLL
+	CBaseEntity *pEntity = NULL;
+
+	while ((pEntity = gEntList.FindEntityByClassname(pEntity, "grenade_detpack")) != NULL)
+	{
+		CDetpack *pDetpack = dynamic_cast<CDetpack *>(pEntity);
+		if (pDetpack->m_bIsLive && pDetpack->GetThrower() && GetOwner() && pDetpack->GetThrower() == GetOwner())
+		{
+			g_EventQueue.AddEvent(pDetpack, "Explode", 0.20, GetOwner(), GetOwner());
+		}
+	}
+#endif
 
 	m_bDetonatorArmed = false;
+	m_bDetonated = true;
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 }
 
@@ -168,6 +216,16 @@ void CWeaponDetpack::ItemPostFrame(void)
 		{
 			// Detpack is ready to be dropped
 			DropDetpack();
+		}
+		else if (m_bDetonated)
+		{
+			// Detonation animation ended we can remove the detpack from player
+			#ifndef CLIENT_DLL
+			UTIL_Remove(this);
+			#endif
+
+			// Switch to another weapon
+			pOwner->SwitchToNextBestWeapon(this);
 		}
 		else if ((pOwner->m_nButtons & IN_ATTACK))
 		{

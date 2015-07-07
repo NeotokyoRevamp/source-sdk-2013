@@ -19,7 +19,6 @@ extern IVModelInfoClient* modelinfo;
 extern IVModelInfo* modelinfo;
 #endif
 
-
 #if defined( CLIENT_DLL )
 	#include "prediction.h"
 	#include "vgui/ISurface.h"
@@ -35,7 +34,6 @@ extern IVModelInfo* modelinfo;
 #endif
 
 #include "weapon_hl2mpbase.h"
-
 
 // ----------------------------------------------------------------------------- //
 // Global functions.
@@ -239,6 +237,45 @@ void CWeaponHL2MPBase::WeaponIdle(void)
 	}
 }
 
+//====================================================================================
+// Lower weapon on sprint
+//====================================================================================
+void CWeaponHL2MPBase::ItemPostFrame(void)
+{
+	CHL2MP_Player *pOwner = GetHL2MPPlayerOwner();
+	if (!pOwner)
+		return;
+
+	if (!m_bLowered && pOwner->IsSprinting())
+	{
+		Lower();
+	}
+	else if (m_bLowered && !pOwner->IsSprinting())
+	{
+		Ready();
+
+		// Reset next attack time
+		m_flNextPrimaryAttack = MAX(m_flNextPrimaryAttack, gpGlobals->curtime);
+		m_flNextSecondaryAttack = MAX(m_flNextSecondaryAttack, gpGlobals->curtime);
+	}
+
+	// Don't allow firing etc. while lowered.
+	if (m_bLowered || GetActivity() == ACT_VM_IDLE_LOWERED)
+	{
+		// Allow reload to finish
+		if (UsesClipsForAmmo1())
+		{
+			CheckReload();
+		}
+
+		WeaponIdle();
+
+		return;
+	}
+
+	BaseClass::ItemPostFrame();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Override for mag toss
 //-----------------------------------------------------------------------------
@@ -397,7 +434,7 @@ void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin
 //-----------------------------------------------------------------------------
 Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
 {
-	return BaseClass::GetBulletSpread(proficiency);
+	return GetHL2MPWpnData().m_vecSpread;
 }
 
 //-----------------------------------------------------------------------------
@@ -473,6 +510,21 @@ const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetDefaultProficiencyValues()
 }
 
 #endif
+
+float CWeaponHL2MPBase::GetFireRate(void)
+{
+	return GetHL2MPWpnData().m_flCycleTime;
+}
+
+float CWeaponHL2MPBase::GetRecoilPitch(void)
+{
+	return GetHL2MPWpnData().m_flRecoilPitch;
+}
+
+float CWeaponHL2MPBase::GetRecoilYaw(void)
+{
+	return GetHL2MPWpnData().m_flRecoilYaw;
+}
 
 bool CWeaponHL2MPBase::IsPredicted() const
 { 
@@ -554,8 +606,6 @@ void CWeaponHL2MPBase::Materialize( void )
 	{
 		VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false );
 		SetMoveType( MOVETYPE_VPHYSICS );
-
-		HL2MPRules()->AddLevelDesignerPlacedObject( this );
 	}
 
 	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
@@ -701,33 +751,102 @@ void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &c
 
 #endif
 
+bool CWeaponHL2MPBase::UsesIronsights(void) const
+{
+#ifdef CLIENT_DLL
+	if (GetHL2MPPlayerOwner()->IronSightsEnabled()) // Using ironsights
+		return true;
+#endif
+	return false;
+}
+
 Vector CWeaponHL2MPBase::GetViewModelPositionOffset(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_vecAimPosOffset;
+	Vector posOffset;
 
-	return GetHL2MPWpnData().m_vecVMPosOffset;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta >= 1.0f)
+	{
+		if (m_bIsIronsighted)
+		{
+			if (UsesIronsights()) // Using ironsights
+				return GetHL2MPWpnData().m_vecAimPosOffset;
+			else // Using classic zoom
+				return GetHL2MPWpnData().m_vecZoomPosOffset;
+
+		}
+		return GetHL2MPWpnData().m_vecVMPosOffset;
+	}
+	
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+	
+	Vector start = UsesIronsights() ? GetHL2MPWpnData().m_vecAimPosOffset : GetHL2MPWpnData().m_vecZoomPosOffset;
+	Vector direction = GetHL2MPWpnData().m_vecVMPosOffset - start;
+	VectorMA(start, delta, direction, posOffset);
+	return posOffset;
 }
 
 QAngle CWeaponHL2MPBase::GetViewModelAngleOffset(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_angAimAngOffset;
+	QAngle angOffset;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta >= 1.0f)
+	{
+		if (m_bIsIronsighted)
+		{
+			if (UsesIronsights()) // Using ironsights
+				return GetHL2MPWpnData().m_angAimAngOffset;
+			else // Using classic zoom
+				return GetHL2MPWpnData().m_angZoomAngOffset;
+		}
 
-	return GetHL2MPWpnData().m_angVMAngOffset;
+		return GetHL2MPWpnData().m_angVMAngOffset;
+	}
+
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+
+	QAngle start = UsesIronsights() ? GetHL2MPWpnData().m_angAimAngOffset : GetHL2MPWpnData().m_angZoomAngOffset;
+	QAngle direction = GetHL2MPWpnData().m_angVMAngOffset - start;
+	VectorMA(start, delta, direction, angOffset);
+	return angOffset;
 }
 
 float CWeaponHL2MPBase::GetViewModelFOV(void) const
 {
-	if (m_bIsIronsighted)
-		return GetHL2MPWpnData().m_flAimFov;
+	float delta = (gpGlobals->curtime - m_flIronsightedTime) / 0.2f; //modify this value to adjust how fast the interpolation is
+	if (delta > 1.0f)
+	{
+		if (m_bIsIronsighted)
+		{
+			if (UsesIronsights()) // Using ironsights
+				return GetHL2MPWpnData().m_flAimFov;
+			else
+				return GetHL2MPWpnData().m_flZoomFov;
+		}
+		
+		return GetHL2MPWpnData().m_flVMFov;
+	}
 
-	return GetHL2MPWpnData().m_flVMFov;
+	delta = clamp(delta, 0.0f, 1.0f);
+
+	if (m_bIsIronsighted)
+		delta = 1.0f - delta;
+
+	float start = UsesIronsights() ? GetHL2MPWpnData().m_flAimFov : GetHL2MPWpnData().m_flZoomFov;
+	float direction = GetHL2MPWpnData().m_flVMFov - start;
+	float fov = start + direction * delta;
+	return fov;
 }
 
 float CWeaponHL2MPBase::GetIronSightFOV(void) const
 {
-	return GetHL2MPWpnData().m_flVMFov;
+	return GetHL2MPWpnData().m_flAimZoom;
 }
 
 bool CWeaponHL2MPBase::HasIronsights(void)
