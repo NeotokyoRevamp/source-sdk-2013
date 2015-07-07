@@ -126,6 +126,10 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 //-----------------------------------------------------------------------------
 bool CWeaponHL2MPBase::Lower(void)
 {
+	// Unzoom when starting to sprint
+	if (m_bIsIronsighted)
+		DisableIronsights();
+
 	//Don't bother if we don't have the animation
 	if (SelectWeightedSequence(ACT_VM_IDLE_LOWERED) == ACTIVITY_NOT_AVAILABLE)
 		return false;
