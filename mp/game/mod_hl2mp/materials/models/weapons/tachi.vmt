@@ -1,0 +1,20 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\tachi"
+        "$bumpmap" "models\weapons\tachi_normal" 
+	"$phong" "1"
+	"$phongexponent" "55"
+	"$phongboost" "1"	
+	"$phongfresnelranges"	"[2 4 8]"
+	"$phongexponenttexture" "models\weapons\tachi_exp"
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"0"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"1"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}

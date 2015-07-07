@@ -1,0 +1,21 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\jinrai_armsheet1"
+	"$bumpmap" "models\weapons\jinrai_armsheet1_normal"
+	"$phong" "1"
+	"$lightwarptexture" "models\neotokyo_lightwarp"
+	"$phongboost" "2"	
+	"$phongfresnelranges"	"[2 3 8]"
+	"$phongexponenttexture" "models\weapons\jinrai_armsheet1_exp"
+	"$nocull" 1
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"0"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"1"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}

@@ -1,0 +1,20 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\mpn45_body"
+	"$surfaceprop" "metal"
+        "$bumpmap" "models\weapons\mpn45_body_normal" 
+	"$phong" "1"
+	"$phongexponent" "50"
+	"$phongboost" "2"	
+	"$phongfresnelranges"	"[2 3 8]"
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"0"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"1"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}
