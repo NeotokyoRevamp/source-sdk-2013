@@ -37,6 +37,7 @@ extern CBaseEntity				*g_pLastSpawn;
 ConVar player_cloak_custom( "player_cloak_custom", "0", FCVAR_CHEAT, "Enable cloak factor modification" );
 ConVar player_cloak_factor( "player_cloak_factor", "0.0", FCVAR_CHEAT, "Cloak factor" );
 
+#define CLOAK_FACTOR 0.97
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade );
@@ -1186,14 +1187,14 @@ void CHL2MP_Player::UpdateCloak()
 			}
 			if ( GetCloakStatus() == 2 )
 			{
-				m_floatCloakFactor.Set( 0.9f );
+				m_floatCloakFactor.Set( CLOAK_FACTOR );
 				AddEffects( EF_NOSHADOW );
 			}
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
 			{
 				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - 0.005f  );
 			}
-			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != 0.9f || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
+			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
 			{
 				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + 0.005f  );
 			}
