@@ -91,6 +91,9 @@ BEGIN_DATADESC(CWeaponHL2MPBase)
 
 DEFINE_FIELD(m_bLowered, FIELD_BOOLEAN),
 DEFINE_FIELD(m_flRaiseTime, FIELD_TIME),
+DEFINE_FIELD(m_nShotsFired, FIELD_INTEGER),
+DEFINE_FIELD(m_iFireMode, FIELD_INTEGER),
+DEFINE_FIELD(m_flNextSoundTime, FIELD_TIME),
 
 END_DATADESC()
 
@@ -123,6 +126,10 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 //-----------------------------------------------------------------------------
 bool CWeaponHL2MPBase::Lower(void)
 {
+	// Unzoom when starting to sprint
+	if (m_bIsIronsighted)
+		DisableIronsights();
+
 	//Don't bother if we don't have the animation
 	if (SelectWeightedSequence(ACT_VM_IDLE_LOWERED) == ACTIVITY_NOT_AVAILABLE)
 		return false;
@@ -152,6 +159,9 @@ bool CWeaponHL2MPBase::Ready(void)
 //-----------------------------------------------------------------------------
 bool CWeaponHL2MPBase::Deploy(void)
 {
+	// Reset our shots fired
+	m_nShotsFired = 0;
+
 	// If we should be lowered, deploy in the lowered position
 	// We have to ask the player if the last time it checked, the weapon was lowered
 	if (GetOwner() && GetOwner()->IsPlayer())
@@ -271,6 +281,29 @@ void CWeaponHL2MPBase::ItemPostFrame(void)
 		WeaponIdle();
 
 		return;
+	}
+
+	// Holding down +attack with burst fire
+	if (m_iFireMode == FM_BURST && (m_nShotsFired >= GetMaxBurst()))
+	{
+		// Reset shots fored and continue normally with regular rate of fire
+		m_nShotsFired = 0;
+	}
+	// Weapon is semi auto and we're still holding +attack after firing
+	else if (m_iFireMode == FM_SEMI && (pOwner->m_nButtons & IN_ATTACK) && m_nShotsFired >= 1)
+	{
+		WeaponIdle();
+
+		return;
+	}
+	// -attack
+	else if ((pOwner->m_nButtons & IN_ATTACK) == false)
+	{
+		if (m_iFireMode == FM_BURST && m_nShotsFired > 0) // Slightly bigger delay to avoid higher DPS with tapping
+			m_flNextPrimaryAttack = gpGlobals->curtime + 0.15;
+
+		// Reset shots fired
+		m_nShotsFired = 0;
 	}
 
 	BaseClass::ItemPostFrame();
@@ -432,12 +465,6 @@ void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin
 }
 
 //-----------------------------------------------------------------------------
-Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
-{
-	return GetHL2MPWpnData().m_vecSpread;
-}
-
-//-----------------------------------------------------------------------------
 float CWeaponHL2MPBase::GetSpreadBias(WeaponProficiency_t proficiency)
 {
 	return BaseClass::GetSpreadBias(proficiency);
@@ -465,17 +492,6 @@ float CWeaponHL2MPBase::CalcViewmodelBob(void)
 //-----------------------------------------------------------------------------
 void CWeaponHL2MPBase::AddViewmodelBob(CBaseViewModel *viewmodel, Vector &origin, QAngle &angles)
 {
-}
-
-
-//-----------------------------------------------------------------------------
-Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
-{
-	Vector baseSpread = BaseClass::GetBulletSpread(proficiency);
-
-	const WeaponProficiencyInfo_t *pProficiencyValues = GetProficiencyValues();
-	float flModifier = (pProficiencyValues)[proficiency].spreadscale;
-	return (baseSpread * flModifier);
 }
 
 //-----------------------------------------------------------------------------
@@ -510,6 +526,16 @@ const WeaponProficiencyInfo_t *CWeaponHL2MPBase::GetDefaultProficiencyValues()
 }
 
 #endif
+
+Vector CWeaponHL2MPBase::GetBulletSpread(WeaponProficiency_t proficiency)
+{
+	return GetBulletSpread();
+}
+
+const Vector &CWeaponHL2MPBase::GetBulletSpread(void)
+{
+	return GetHL2MPWpnData().m_vecSpread;
+}
 
 float CWeaponHL2MPBase::GetFireRate(void)
 {
@@ -703,7 +729,7 @@ const CHL2MPSWeaponInfo &CWeaponHL2MPBase::GetHL2MPWpnData() const
 	#else
 		pHL2MPInfo = static_cast< const CHL2MPSWeaponInfo* >( pWeaponInfo );
 	#endif
-
+	
 	return *pHL2MPInfo;
 }
 void CWeaponHL2MPBase::FireBullets( const FireBulletsInfo_t &info )
@@ -715,7 +741,6 @@ void CWeaponHL2MPBase::FireBullets( const FireBulletsInfo_t &info )
 	BaseClass::FireBullets( modinfo );
 }
 
-
 #if defined( CLIENT_DLL )
 
 #include "c_te_effect_dispatch.h"
@@ -726,7 +751,6 @@ bool CWeaponHL2MPBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& o
 {
 	return BaseClass::OnFireEvent( pViewModel, origin, angles, event, options );
 }
-
 
 void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &clip )
 {
@@ -939,12 +963,94 @@ void CWeaponHL2MPBase::SetIronsightTime(void)
 	m_flIronsightedTime = gpGlobals->curtime;
 }
 
+void CWeaponHL2MPBase::PrimaryAttack(void)
+{
+	// Only the player fires this way so we can cast
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+		return;
+
+	// Abort here to handle burst and auto fire modes
+	if ((UsesClipsForAmmo1() && m_iClip1 == 0) || (!UsesClipsForAmmo1() && !pPlayer->GetAmmoCount(m_iPrimaryAmmoType)))
+		return;
+
+	if ((m_iFireMode == FM_BURST) && (m_nShotsFired > GetMaxBurst()))
+		return;
+
+	if ((m_iFireMode == FM_SEMI) && (m_nShotsFired >= 1))
+		return;
+
+	pPlayer->DoMuzzleFlash();
+
+	// To make the firing framerate independent, we may have to fire more than one bullet here on low-framerate systems, 
+	// especially if the weapon we're firing has a really fast rate of fire.
+	int iBulletsToFire = 0;
+	float fireRate = GetFireRate();
+
+	while (m_flNextPrimaryAttack <= gpGlobals->curtime)
+	{
+		// MUST call sound before removing a round from the clip of a CHLMachineGun
+		WeaponSound(SINGLE, m_flNextPrimaryAttack);
+		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+		m_nShotsFired++;
+		iBulletsToFire++;
+
+		if (m_iFireMode == FM_SEMI)
+			break; // Can't fire more than one bullet
+	}
+
+	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
+	if (UsesClipsForAmmo1())
+	{
+		if (iBulletsToFire > m_iClip1)
+			iBulletsToFire = m_iClip1;
+		m_iClip1 -= iBulletsToFire;
+	}
+
+	CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
+	// Fire the bullets
+	FireBulletsInfo_t info;
+	info.m_iShots = iBulletsToFire;
+	info.m_vecSrc = pHL2MPPlayer->Weapon_ShootPosition();
+	info.m_vecDirShooting = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
+	info.m_vecSpread = pHL2MPPlayer->GetAttackSpread(this);
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 2;
+	FireBullets(info);
+
+	//Factor in the view kick
+	AddViewKick();
+
+	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+	{
+		// HEV suit - indicate out of ammo condition
+		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+	}
+
+	SendWeaponAnim(GetPrimaryAttackActivity());
+	pPlayer->SetAnimation(PLAYER_ATTACK1);
+
+#ifdef CLIENT_DLL
+	if (prediction->IsFirstTimePredicted())
+		pHL2MPPlayer->CreateRecoil(GetRecoilPitch(), GetRecoilYaw());
+#endif
+
+	if (m_iFireMode == FM_BURST && (m_nShotsFired < GetMaxBurst()))
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.085; // TODO: GetBurstFireRate()
+	}
+	else
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + fireRate;
+	}
+}
+
 void CWeaponHL2MPBase::SecondaryAttack(void)
 {
 	if (!HasIronsights())
 		return;
-
-	// TODO: Handle zooming/pseudo iron sights for other guns here
 
 	ToggleIronsights();
 
@@ -976,8 +1082,101 @@ bool CWeaponHL2MPBase::Reload(void)
 	if (!BaseClass::Reload())
 		return false;
 
+	m_nShotsFired = 0;
+
 	if (m_bIsIronsighted)
 		DisableIronsights();
 
 	return true;
+}
+
+void CWeaponHL2MPBase::DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime)
+{
+#define	KICK_MIN_X			0.2f	//Degrees
+#define	KICK_MIN_Y			0.2f	//Degrees
+#define	KICK_MIN_Z			0.1f	//Degrees
+
+	QAngle vecScratch;
+	int iSeed = CBaseEntity::GetPredictionRandomSeed() & 255;
+
+	//Find how far into our accuracy degradation we are
+	float duration = (fireDurationTime > slideLimitTime) ? slideLimitTime : fireDurationTime;
+	float kickPerc = duration / slideLimitTime;
+
+	// do this to get a hard discontinuity, clear out anything under 10 degrees punch
+	pPlayer->ViewPunchReset(10);
+
+	//Apply this to the view angles as well
+	vecScratch.x = -(KICK_MIN_X + (maxVerticleKickAngle * kickPerc));
+	vecScratch.y = -(KICK_MIN_Y + (maxVerticleKickAngle * kickPerc)) / 3;
+	vecScratch.z = KICK_MIN_Z + (maxVerticleKickAngle * kickPerc) / 8;
+
+	RandomSeed(iSeed);
+
+	//Wibble left and right
+	if (RandomInt(-1, 1) >= 0)
+		vecScratch.y *= -1;
+
+	iSeed++;
+
+	//Wobble up and down
+	if (RandomInt(-1, 1) >= 0)
+		vecScratch.z *= -1;
+
+	//Clip this to our desired min/max
+	UTIL_ClipPunchAngleOffset(vecScratch, pPlayer->m_Local.m_vecPunchAngle, QAngle(24.0f, 3.0f, 1.0f));
+
+	//Add it to the view punch
+	// NOTE: 0.5 is just tuned to match the old effect before the punch became simulated
+	pPlayer->ViewPunch(vecScratch * 0.5);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Make enough sound events to fill the estimated think interval
+// returns: number of shots needed
+//-----------------------------------------------------------------------------
+int CWeaponHL2MPBase::WeaponSoundRealtime(WeaponSound_t shoot_type)
+{
+	int numBullets = 0;
+
+	// ran out of time, clamp to current
+	if (m_flNextSoundTime < gpGlobals->curtime)
+	{
+		m_flNextSoundTime = gpGlobals->curtime;
+	}
+
+	// make enough sound events to fill up the next estimated think interval
+	float dt = clamp(m_flAnimTime - m_flPrevAnimTime, 0, 0.2);
+	if (m_flNextSoundTime < gpGlobals->curtime + dt)
+	{
+		WeaponSound(SINGLE_NPC, m_flNextSoundTime);
+		m_flNextSoundTime += GetFireRate();
+		numBullets++;
+	}
+	if (m_flNextSoundTime < gpGlobals->curtime + dt)
+	{
+		WeaponSound(SINGLE_NPC, m_flNextSoundTime);
+		m_flNextSoundTime += GetFireRate();
+		numBullets++;
+	}
+
+	return numBullets;
+}
+
+Activity CWeaponHL2MPBase::GetPrimaryAttackActivity(void)
+{
+	if (m_bIsIronsighted)
+		return ACT_VM_DRYFIRE; // Pretty much no recoil in animation for most weapons, should be replaced with custom animation
+
+	// Show the normal recoil while no zoomed in
+	if (m_nShotsFired < 2)
+		return ACT_VM_PRIMARYATTACK;
+
+	if (m_nShotsFired < 3)
+		return ACT_VM_RECOIL1;
+
+	if (m_nShotsFired < 4)
+		return ACT_VM_RECOIL2;
+
+	return ACT_VM_RECOIL3;
 }

@@ -17,7 +17,6 @@
 #endif
 
 #include "weapon_hl2mpbase.h"
-#include "weapon_hl2mpbase_machinegun.h"
 
 #ifdef CLIENT_DLL
 #define CWeaponSMG1 C_WeaponSMG1
@@ -29,10 +28,10 @@
 #define SMG1_GRENADE_DAMAGE 100.0f
 #define SMG1_GRENADE_RADIUS 250.0f
 
-class CWeaponSMG1 : public CHL2MPMachineGun
+class CWeaponSMG1 : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponSMG1, CHL2MPMachineGun );
+	DECLARE_CLASS( CWeaponSMG1, CWeaponHL2MPBase );
 
 	CWeaponSMG1();
 
