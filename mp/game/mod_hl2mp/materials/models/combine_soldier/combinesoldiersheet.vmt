@@ -1,0 +1,24 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" 	"Models/Combine_soldier/combinesoldiersheet"
+	"$envmap" "env_cubemap"	
+	"$envmapmask" "Models/Combine_soldier/combinesoldiersheet_mask"
+	"$envmapcontrast" 1
+	"$surfaceprop" "flesh"
+	"$selfillum" 1
+	"$model" 1
+
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"1"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"0.3"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}
+
+
+

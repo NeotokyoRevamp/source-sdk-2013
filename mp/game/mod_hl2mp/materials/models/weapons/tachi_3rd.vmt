@@ -1,0 +1,15 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\tachi_3rd"
+	"$surfaceprop" "metal"
+	"$cloakpassenabled"	"1"
+	"$cloakfactor"		"0"
+	"$cloakcolortint"	"[1.0 1.0 1.0]"
+	"$refractamount"	"1"
+	"Proxies"
+	{
+		"Invisibility"
+		{
+		}
+	}
+}
