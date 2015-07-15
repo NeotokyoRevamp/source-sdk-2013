@@ -1,9 +1,3 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
-//
-// Purpose: SRS sniper rifle
-//
-//=============================================================================//
-
 #include "cbase.h"
 
 #ifdef CLIENT_DLL
@@ -24,32 +18,45 @@
 class CWeaponSRS : public CWeaponHL2MPBase
 {
 public:
-	DECLARE_CLASS( CWeaponSRS, CWeaponHL2MPBase );
+	DECLARE_CLASS(CWeaponSRS, CWeaponHL2MPBase);
 
 	CWeaponSRS();
 
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-	void AddViewKick( void );
+	void AddViewKick(void);
+	void ItemPostFrame(void);
 
-	Activity	GetPrimaryAttackActivity( void );
+	Activity	GetPrimaryAttackActivity(void);
 
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 #endif
 	
 private:
-	CWeaponSRS( const CWeaponSRS & );
+	CNetworkVar(bool, m_bBoltPull);
+
+	void BoltPull(void);
+
+	CWeaponSRS(const CWeaponSRS &);
 };
 
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponSRS, DT_WeaponSRS )
 
 BEGIN_NETWORK_TABLE( CWeaponSRS, DT_WeaponSRS )
+#ifdef CLIENT_DLL
+RecvPropInt(RECVINFO(m_bBoltPull)),
+#else
+SendPropInt(SENDINFO(m_bBoltPull)),
+#endif
 END_NETWORK_TABLE()
 
+#ifdef CLIENT_DLL
 BEGIN_PREDICTION_DATA( CWeaponSRS )
+DEFINE_PRED_FIELD(m_bBoltPull, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
+#endif
 
 LINK_ENTITY_TO_CLASS( weapon_srs, CWeaponSRS );
 PRECACHE_WEAPON_REGISTER(weapon_srs);
@@ -70,22 +77,43 @@ acttable_t	CWeaponSRS::m_acttable[] =
 IMPLEMENT_ACTTABLE(CWeaponSRS);
 #endif
 
-//=========================================================
 CWeaponSRS::CWeaponSRS( )
 {
 	m_iFireMode = FM_SEMI;
+
+	m_bBoltPull = false;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Output : Activity
-//-----------------------------------------------------------------------------
 Activity CWeaponSRS::GetPrimaryAttackActivity( void )
 {
-	return ACT_VM_RECOIL2;
+	// Called by PrimaryAttack to get recoil animation so we can just set boltpull here
+	m_bBoltPull = true;
 
-	// TODO: Bolt action animation (ACT_VM_PULLBACK) and sound ("Weapon_SRS.Charge")
-	// And animations (acttable?)
+	return ACT_VM_RECOIL2;
+}
+
+void CWeaponSRS::BoltPull(void)
+{
+	SendWeaponAnim(ACT_VM_PULLBACK);
+	WeaponSound(SPECIAL1);
+
+	m_flNextPrimaryAttack = gpGlobals->curtime + (GetFireRate() - 0.05);
+
+	m_bBoltPull = false;
+}
+
+void CWeaponSRS::ItemPostFrame(void)
+{
+	// Start bolt animation 0.05 seconds after shooting
+	if (m_flNextPrimaryAttack <= (gpGlobals->curtime + 0.95) && m_bBoltPull)
+	{
+		BoltPull();
+
+		// Do nothing else this frame
+		return;
+	}
+
+	BaseClass::ItemPostFrame();
 }
 
 //-----------------------------------------------------------------------------

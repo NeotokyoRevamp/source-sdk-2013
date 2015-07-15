@@ -23,7 +23,7 @@ WeaponData
 	"item_flags"			"0"
 
 	"damage"				"100"
-	"cycletime"				"1.0"
+	"cycletime"				"1.3"
 	"recoil_pitch"			"3.0"
 	"recoil_yaw"			"0.3"
 	"spread"				"0.5"
@@ -60,7 +60,7 @@ WeaponData
 		"reload"			"Weapon_SRS.Reload"
 		"empty"				"Weapon_SRS.Empty"
 		"single_shot"		"Weapon_SRS.Single"
-		"charge"			"Weapon_SRS.Charge"
+		"special1"			"Weapon_SRS.Charge"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
