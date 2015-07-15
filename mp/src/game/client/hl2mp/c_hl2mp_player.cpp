@@ -55,6 +55,9 @@ void SpawnBlood (Vector vecSpot, const Vector &vecDir, int bloodColor, float flD
 
 C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles( "C_HL2MP_Player::m_iv_angEyeAngles" )
 {
+	//Add Cloak Material
+	PrecacheMaterial("toc");
+
 	m_iIDEntIndex = 0;
 	m_iSpawnInterpCounterCache = 0;
 
@@ -335,6 +338,14 @@ int C_HL2MP_Player::DrawModel( int flags )
 {
 	if ( !m_bReadyToDraw )
 		return 0;
+
+	if ( GetCloakFactor() ){
+		modelrender->ForcedMaterialOverride(materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER ));
+		int retVal = BaseClass::DrawModel(flags);
+		modelrender->ForcedMaterialOverride(0);
+
+		return retVal;
+	}
 
     return BaseClass::DrawModel(flags);
 }

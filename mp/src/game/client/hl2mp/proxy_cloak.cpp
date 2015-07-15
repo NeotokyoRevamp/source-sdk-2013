@@ -4,11 +4,11 @@
 #include "materialsystem/imaterialproxy.h"
 #include "baseviewmodel_shared.h"
  
-class C_CloakProxy : public IMaterialProxy
+class CProxy_Cloak : public IMaterialProxy
 {
 public:
-    C_CloakProxy();
-    virtual ~C_CloakProxy();
+    CProxy_Cloak();
+    virtual ~CProxy_Cloak();
     virtual bool Init( IMaterial *pMaterial, KeyValues *pKeyValues );
     C_BaseEntity *BindArgToEntity( void *pArg );
     virtual void OnBind( void* C_BaseEntity );
@@ -19,19 +19,19 @@ private:
     IMaterialVar* cloakFactorVar;
 };
  
-C_CloakProxy::C_CloakProxy()
+CProxy_Cloak::CProxy_Cloak()
 {
     cloakFactorVar = NULL;
 }
  
-C_CloakProxy::~C_CloakProxy()
+CProxy_Cloak::~CProxy_Cloak()
 {
 }
  
-bool C_CloakProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
+bool CProxy_Cloak::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
 {
     bool found;
- 
+
     pMaterial->FindVar( "$cloakpassenabled", &found, false );
     if ( !found )
         return false;
@@ -43,13 +43,13 @@ bool C_CloakProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
     return true;
 }
  
-C_BaseEntity *C_CloakProxy::BindArgToEntity( void *pArg )
+C_BaseEntity *CProxy_Cloak::BindArgToEntity( void *pArg )
 {
     IClientRenderable *pRend = (IClientRenderable *)pArg;
     return pRend ? pRend->GetIClientUnknown()->GetBaseEntity() : NULL;
 }
  
-void C_CloakProxy::OnBind( void* pC_BaseEntity )
+void CProxy_Cloak::OnBind( void* pC_BaseEntity )
 {
     if ( !pC_BaseEntity )
         return;
@@ -81,8 +81,8 @@ void C_CloakProxy::OnBind( void* pC_BaseEntity )
     else
         return;
 }
-IMaterial *C_CloakProxy::GetMaterial()
+IMaterial *CProxy_Cloak::GetMaterial()
 {
     return cloakFactorVar->GetOwningMaterial();
 }
-EXPOSE_INTERFACE( C_CloakProxy, IMaterialProxy, "Invisibility" IMATERIAL_PROXY_INTERFACE_VERSION );
+EXPOSE_INTERFACE( CProxy_Cloak, IMaterialProxy, "Invisibility" IMATERIAL_PROXY_INTERFACE_VERSION );
