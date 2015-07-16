@@ -11,6 +11,8 @@
 BEGIN_DATADESC(CHEGrenade)
 END_DATADESC()
 
+LINK_ENTITY_TO_CLASS(grenade_explosive, CHEGrenade);
+
 CHEGrenade::CHEGrenade(void)
 {
 

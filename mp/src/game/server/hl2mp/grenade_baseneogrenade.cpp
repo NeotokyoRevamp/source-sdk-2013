@@ -4,10 +4,10 @@
 #include "basegrenade_shared.h"
 #include "grenade_baseneogrenade.h"
 
-LINK_ENTITY_TO_CLASS(grenade, CBaseNeoGrenade);
-
 BEGIN_DATADESC(CBaseNeoGrenade)
 END_DATADESC()
+
+LINK_ENTITY_TO_CLASS(grenade_base, CBaseNeoGrenade);
 
 CBaseNeoGrenade::CBaseNeoGrenade(void)
 {
