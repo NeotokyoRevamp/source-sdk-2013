@@ -13,6 +13,8 @@ class C_HL2MP_Player;
 #include "c_basehlplayer.h"
 #include "hl2mp_player_shared.h"
 #include "beamdraw.h"
+#include "materialsystem/imaterialvar.h"
+#include "materialsystem/imaterialproxy.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -146,6 +148,9 @@ private:
 	CNetworkVar( HL2MPPlayerState, m_iPlayerState );	
 
 	bool m_fIsWalking;
+
+	//Cloak
+	IMaterial* pCloakMaterial;
 };
 
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

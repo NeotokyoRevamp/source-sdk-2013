@@ -69,6 +69,7 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 	m_blinkTimer.Invalidate();
 
 	m_pFlashlightBeam = NULL;
+	pCloakMaterial = materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER );
 }
 
 C_HL2MP_Player::~C_HL2MP_Player( void )
@@ -339,8 +340,31 @@ int C_HL2MP_Player::DrawModel( int flags )
 	if ( !m_bReadyToDraw )
 		return 0;
 
-	if ( GetCloakFactor() ){
-		modelrender->ForcedMaterialOverride(materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER ));
+	//This is bad, but it works. 
+	float thermoptic =  1 - GetCloakFactor();
+	if ( thermoptic ){
+		bool found;
+		IMaterialVar* refractAmountVar = pCloakMaterial->FindVar("$refractAmount", &found, false);
+		IMaterialVar* refractTintVar = pCloakMaterial->FindVar("$refracttint", &found, false);
+		IMaterialVar* blurAmountVar = pCloakMaterial->FindVar("$bluramount", &found, false);
+
+		//manipulate visibility depending on value of thermoptic
+		float blurstart = 0.2f;
+		float mod = 0.8f;
+		float modtwo = 0.6f;
+
+		float x = 1.0 - ( mod * thermoptic );
+		float y = 1.0 - ( modtwo * thermoptic );
+		float z = 1.0 - ( modtwo * thermoptic );
+		float blur = blurstart + ( 2 * thermoptic);
+
+		//set material vars
+		refractTintVar->SetVecValue(x,y,z);
+		refractAmountVar->SetFloatValue( thermoptic );
+		blurAmountVar->SetFloatValue( blur );
+
+		//render
+		modelrender->ForcedMaterialOverride(pCloakMaterial);
 		int retVal = BaseClass::DrawModel(flags);
 		modelrender->ForcedMaterialOverride(0);
 
