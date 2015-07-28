@@ -22,6 +22,8 @@ public:
 	~CBaseHL2MPViewModel(void);
 
 	void CalcViewModelView(CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles);
+
+	bool ShouldFlipViewModel();
 };
 
 #endif // BASEHL2MPVIEWMODEL_SHARED_H

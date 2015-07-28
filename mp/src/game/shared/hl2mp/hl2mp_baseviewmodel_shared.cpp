@@ -13,6 +13,10 @@ IMPLEMENT_NETWORKCLASS_ALIASED(BaseHL2MPViewModel, DT_BaseHL2MPViewModel)
 BEGIN_NETWORK_TABLE(CBaseHL2MPViewModel, DT_BaseHL2MPViewModel)
 END_NETWORK_TABLE()
 
+#ifdef CLIENT_DLL
+ConVar cl_righthand("cl_righthand", "1", FCVAR_ARCHIVE, "Use right-handed view models.");
+#endif
+
 CBaseHL2MPViewModel::CBaseHL2MPViewModel()
 {
 
@@ -50,4 +54,19 @@ void CBaseHL2MPViewModel::CalcViewModelView(CBasePlayer *owner, const Vector& ey
 	newAng += angOffset;
 
 	BaseClass::CalcViewModelView(owner, newPos, newAng);
+}
+
+bool CBaseHL2MPViewModel::ShouldFlipViewModel()
+{
+#ifdef CLIENT_DLL
+	// If cl_righthand is set, then we want them all right-handed.
+	CBaseCombatWeapon *pWeapon = GetOwningWeapon();
+
+	if (pWeapon)
+	{
+		return !cl_righthand.GetBool();
+	}
+#endif
+
+	return false;
 }
