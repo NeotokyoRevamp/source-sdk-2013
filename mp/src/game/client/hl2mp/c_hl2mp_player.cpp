@@ -14,6 +14,7 @@
 #include "iviewrender_beams.h"			// flashlight beam
 #include "r_efx.h"
 #include "dlight.h"
+#include "model_types.h"				//DrawModel flags
 
 // Don't alias here
 #if defined( CHL2MP_Player )
@@ -341,31 +342,10 @@ int C_HL2MP_Player::DrawModel( int flags )
 		return 0;
 
 	//This is bad, but it works. 
-	float thermoptic =  1 - GetCloakFactor();
+	float thermoptic = GetCloakFactor();
 	if ( thermoptic ){
-		bool found;
-		IMaterialVar* refractAmountVar = pCloakMaterial->FindVar("$refractAmount", &found, false);
-		IMaterialVar* refractTintVar = pCloakMaterial->FindVar("$refracttint", &found, false);
-		IMaterialVar* blurAmountVar = pCloakMaterial->FindVar("$bluramount", &found, false);
-
-		//manipulate visibility depending on value of thermoptic
-		float blurstart = 0.2f;
-		float mod = 0.8f;
-		float modtwo = 0.6f;
-
-		float x = 1.0 - ( mod * thermoptic );
-		float y = 1.0 - ( modtwo * thermoptic );
-		float z = 1.0 - ( modtwo * thermoptic );
-		float blur = blurstart + ( 2 * thermoptic);
-
-		//set material vars
-		refractTintVar->SetVecValue(x,y,z);
-		refractAmountVar->SetFloatValue( thermoptic );
-		blurAmountVar->SetFloatValue( blur );
-
-		//render
 		modelrender->ForcedMaterialOverride(pCloakMaterial);
-		int retVal = BaseClass::DrawModel(flags);
+		int retVal = BaseClass::DrawModel(STUDIO_RENDER);
 		modelrender->ForcedMaterialOverride(0);
 
 		return retVal;

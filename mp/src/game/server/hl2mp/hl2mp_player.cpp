@@ -1192,11 +1192,11 @@ void CHL2MP_Player::UpdateCloak()
 			}
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
 			{
-				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - 0.005f  );
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - 0.01f  );
 			}
 			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
 			{
-				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + 0.005f  );
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + 0.01f  );
 			}
 		}
 

@@ -56,13 +56,13 @@ void CProxy_PlayerTO::OnBind( void* pC_BaseEntity )
     if ( C_BaseViewModel *pViewModel = dynamic_cast< C_BaseViewModel *>(pEntity) )
     {
         C_HL2MP_Player *pPlayer = static_cast<C_HL2MP_Player *>(ToBasePlayer( pViewModel->GetOwner() ));
-        thermopticVar->SetFloatValue( pPlayer->GetCloakFactor() );
+        thermopticVar->SetFloatValue( 1 - pPlayer->GetCloakFactor() );
     }
  
     //If this is a non-player character...
     else if ( C_HL2MP_Player *pNPC = dynamic_cast< C_HL2MP_Player *>(pEntity) )
     {
-        thermopticVar->SetFloatValue( pNPC->GetCloakFactor() );
+        thermopticVar->SetFloatValue( 1 - pNPC->GetCloakFactor() );
     }
  
     //If this is a weapon's worldmodel (under the assumption it's in something's possesion)...
@@ -72,7 +72,7 @@ void CProxy_PlayerTO::OnBind( void* pC_BaseEntity )
         if ( !pOwner )
             return;
  
-        thermopticVar->SetFloatValue( pOwner->GetCloakFactor() );
+        thermopticVar->SetFloatValue( 1 - pOwner->GetCloakFactor() );
     }
     else
         return;
