@@ -954,6 +954,7 @@ void CBaseCombatWeapon::SetPickupTouch( void )
 #if !defined( CLIENT_DLL )
 	SetTouch(&CBaseCombatWeapon::DefaultTouch);
 
+	/* By default remove dropped gun after 30 seconds. Commented out for now. (Rain)
 	if ( gpGlobals->maxClients > 1 )
 	{
 		if ( GetSpawnFlags() & SF_NORESPAWN )
@@ -962,6 +963,7 @@ void CBaseCombatWeapon::SetPickupTouch( void )
 			SetNextThink( gpGlobals->curtime + 30.0f );
 		}
 	}
+	*/
 
 #endif
 }
