@@ -150,7 +150,8 @@ private:
 	bool m_fIsWalking;
 
 	//Cloak
-	IMaterial* pCloakMaterial;
+	IMaterial* pCloakMaterial1;
+	IMaterial* pCloakMaterial2;
 };
 
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

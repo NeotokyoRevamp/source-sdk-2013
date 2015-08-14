@@ -27,12 +27,6 @@
 
 	"Proxies"
 	{
-		"TextureScroll"
-		{
-			"texturescrollvar" "$bumptransform"
-			"texturescrollrate" .05
-			"texturescrollangle" 45.00
-		}
 		"PlayerTO"
 		{
 			"resultvar" "$thermoptic"
@@ -44,16 +38,33 @@
 		}
 		"Multiply"
 		{
-			"srcvar1"	"$two"
+			"srcvar1"	"$mod"
 			"srcvar2"	"$thermoptic"
 			"resultvar"	"$temp"
 		}
-		"Add"
+		"Subtract"
 		{
-			"srcvar1"	"$blurstart"
+			"srcvar1"	"$one"
 			"srcvar2"	"$temp"
-			"resultvar"	"$bluramount"
-		}								
+			"resultvar"	"$refracttint[0]"
+		}
+		"Multiply"
+		{
+			"srcvar1"	"$modtwo"
+			"srcvar2"	"$thermoptic"
+			"resultvar"	"$temp"
+		}		
+		"Subtract"
+		{
+			"srcvar1"	"$one"
+			"srcvar2"	"$temp"
+			"resultvar"	"$refracttint[1]"
+		}		
+		"Subtract"
+		{
+			"srcvar1"	"$one"
+			"srcvar2"	"$temp"
+			"resultvar"	"$refracttint[2]"
+		}						
 	}
-
 }

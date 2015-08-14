@@ -58,6 +58,9 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 {
 	//Add Cloak Material
 	PrecacheMaterial("toc");
+	PrecacheMaterial("toc2");
+	SetRenderMode(kRenderTransColor);
+	SetRenderColorA(255); // just to be safe
 
 	m_iIDEntIndex = 0;
 	m_iSpawnInterpCounterCache = 0;
@@ -70,7 +73,8 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 	m_blinkTimer.Invalidate();
 
 	m_pFlashlightBeam = NULL;
-	pCloakMaterial = materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER );
+	pCloakMaterial1 = materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER );
+	pCloakMaterial2 = materials->FindMaterial( "toc2", TEXTURE_GROUP_OTHER );
 }
 
 C_HL2MP_Player::~C_HL2MP_Player( void )
@@ -344,10 +348,11 @@ int C_HL2MP_Player::DrawModel( int flags )
 	//This is bad, but it works. 
 	float thermoptic = GetCloakFactor();
 	if ( thermoptic ){
-		modelrender->ForcedMaterialOverride(pCloakMaterial);
-		int retVal = BaseClass::DrawModel(STUDIO_RENDER);
+		modelrender->ForcedMaterialOverride(pCloakMaterial2);
+		int retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
+				modelrender->ForcedMaterialOverride(pCloakMaterial1);
+		retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
 		modelrender->ForcedMaterialOverride(0);
-
 		return retVal;
 	}
 
@@ -363,6 +368,10 @@ bool C_HL2MP_Player::ShouldReceiveProjectedTextures( int flags )
 
 	if ( IsEffectActive( EF_NODRAW ) )
 		 return false;
+
+	if ( GetCloakFactor() ){
+		return false;
+	}
 
 	if( flags & SHADOW_FLAGS_FLASHLIGHT )
 	{
@@ -524,6 +533,8 @@ ShadowType_t C_HL2MP_Player::ShadowCastType( void )
 {
 	if ( !IsVisible() )
 		 return SHADOWS_NONE;
+	if ( GetCloakFactor() )
+		return SHADOWS_NONE;
 
 	return SHADOWS_RENDER_TO_TEXTURE_DYNAMIC;
 }

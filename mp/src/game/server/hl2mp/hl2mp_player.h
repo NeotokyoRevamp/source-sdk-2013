@@ -155,6 +155,8 @@ public:
 		SetTransmitState( FL_EDICT_ALWAYS );
 		m_floatCloakFactor.Set( cloakfactor );
 	}
+	void CHL2MP_Player::EnableMaterialGlow(int r, int g, int b);
+	void CHL2MP_Player::StopMaterialGlow();
 private:
 
 	CNetworkQAngle( m_angEyeAngles );
