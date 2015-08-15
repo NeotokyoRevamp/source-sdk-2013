@@ -59,6 +59,8 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 	//Add Cloak Material
 	PrecacheMaterial("toc");
 	PrecacheMaterial("toc2");
+	pCloakMaterial1 = materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER );
+	pCloakMaterial2 = materials->FindMaterial( "toc2", TEXTURE_GROUP_OTHER );
 	SetRenderMode(kRenderTransColor);
 	SetRenderColorA(255); // just to be safe
 
@@ -73,8 +75,7 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 	m_blinkTimer.Invalidate();
 
 	m_pFlashlightBeam = NULL;
-	pCloakMaterial1 = materials->FindMaterial( "toc", TEXTURE_GROUP_OTHER );
-	pCloakMaterial2 = materials->FindMaterial( "toc2", TEXTURE_GROUP_OTHER );
+
 }
 
 C_HL2MP_Player::~C_HL2MP_Player( void )
@@ -345,13 +346,15 @@ int C_HL2MP_Player::DrawModel( int flags )
 	if ( !m_bReadyToDraw )
 		return 0;
 
-	//This is bad, but it works. 
-	float thermoptic = GetCloakFactor();
-	if ( thermoptic ){
+	//Render Cloak
+	if (  GetCloakFactor() ){
+		//Cloak Color
 		modelrender->ForcedMaterialOverride(pCloakMaterial2);
 		int retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
-				modelrender->ForcedMaterialOverride(pCloakMaterial1);
+		//Cloak Distortion
+		modelrender->ForcedMaterialOverride(pCloakMaterial1);
 		retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
+
 		modelrender->ForcedMaterialOverride(0);
 		return retVal;
 	}

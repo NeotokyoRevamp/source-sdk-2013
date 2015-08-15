@@ -1179,46 +1179,37 @@ void CHL2MP_Player::UpdateCloak()
 	{
 		if ( player_cloak_custom.GetInt() == 0 )
 		{
+			//Uncloaking
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() == 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() )
 				SetCloakStatus( 0 );
+			//Cloaking
 			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() == CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() >= CLOAK_FACTOR )
 				SetCloakStatus( 2 );
+			//Uncloaked
 			if ( GetCloakStatus() == 0 )
 			{
 				m_floatCloakFactor.Set( 0.0f );
-				//StopMaterialGlow();
 			}
+			//Cloaked
 			if ( GetCloakStatus() == 2 )
 			{
 				m_floatCloakFactor.Set( CLOAK_FACTOR );
-				EnableMaterialGlow(255,0,0);
 			}
+			//Uncloaking
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
 			{
 				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - (CLOAK_FACTOR / 30)  );
 			}
+			//Cloaking
 			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
 			{
 				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + (CLOAK_FACTOR / 30)  );
 			}
 		}
-
+		//Custom cloak value
 		if ( player_cloak_custom.GetInt() == 1 )
 			m_floatCloakFactor = player_cloak_factor.GetFloat();
 	}
-}
-void CHL2MP_Player::EnableMaterialGlow(int r, int g, int b)
-{
-   SetRenderColorR(r);
-   SetRenderColorG(g);
-   SetRenderColorB(b);
-}
-
-void CHL2MP_Player::StopMaterialGlow()
-{
-   SetRenderColorR(255);
-   SetRenderColorG(255);
-   SetRenderColorB(255);
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
