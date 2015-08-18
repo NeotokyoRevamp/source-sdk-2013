@@ -142,6 +142,7 @@ public:
 	//Cloak
 	CNetworkVar( int, m_intCloakStatus );
 	CNetworkVar( float, m_floatCloakFactor );
+	CNetworkVar( float, m_floatCloakPower );
 	
 	int		GetCloakStatus( void )	{	return	m_intCloakStatus;	}
 	void	SetCloakStatus( int cloakstatus )
@@ -154,6 +155,12 @@ public:
 	{
 		SetTransmitState( FL_EDICT_ALWAYS );
 		m_floatCloakFactor.Set( cloakfactor );
+	}
+	float	GetCloakPower( void )	{ return m_floatCloakPower;	}
+	void	SetCloakPower( float cloakpower )
+	{
+		SetTransmitState( FL_EDICT_ALWAYS );
+		m_floatCloakPower.Set( cloakpower );
 	}
 private:
 

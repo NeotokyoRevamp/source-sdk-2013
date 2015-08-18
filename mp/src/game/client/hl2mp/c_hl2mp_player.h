@@ -93,10 +93,12 @@ public:
 	//Cloak functions
 	int    GetCloakStatus( void )    {    return m_intCloakStatus;    }
 	float    GetCloakFactor( void )    {    return    m_floatCloakFactor;    }
+	float    GetCloakPower( void )    {    return    m_floatCloakPower;    }
 
 	//Cloak variables
 	int                m_intCloakStatus;
 	float            m_floatCloakFactor;
+	float            m_floatCloakPower;
 
 	// Recoil stuff
 	float m_flRecoilTimeRemaining;

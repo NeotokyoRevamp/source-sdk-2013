@@ -39,6 +39,8 @@ ConVar player_cloak_factor( "player_cloak_factor", "0.0", FCVAR_CHEAT, "Cloak fa
 
 #define CLOAK_FACTOR_MOVING 0.9
 #define CLOAK_FACTOR_STILL 0.95
+#define CLOAK_POWER_CHARGE 0.01
+#define CLOAK_POWER_USE 0.02
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade );
@@ -64,6 +66,7 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 	//Cloak data
 	SendPropInt( SENDINFO( m_intCloakStatus ) ),
 	SendPropFloat( SENDINFO ( m_floatCloakFactor ) ),
+	SendPropFloat( SENDINFO ( m_floatCloakPower ) ),
 
 END_SEND_TABLE()
 
@@ -120,6 +123,7 @@ CHL2MP_Player::CHL2MP_Player() : m_PlayerAnimState( this )
 	//init cloak variables
 	m_intCloakStatus.Set( 0 );
 	m_floatCloakFactor.Set( 0.0f );
+	m_floatCloakPower.Set( 5.0f );
 	
 	SetRenderMode(kRenderTransColor);
 	SetRenderColorA(255); // just to be safe
@@ -137,6 +141,7 @@ CHL2MP_Player::~CHL2MP_Player( void )
 	//reset the cloak state
 	m_intCloakStatus.Set( 0 );
 	m_floatCloakFactor.Set( 0.0f );
+	m_floatCloakPower.Set( 5.0f );
 }
 
 void CHL2MP_Player::UpdateOnRemove( void )
@@ -1181,8 +1186,11 @@ void CHL2MP_Player::UpdateCloak()
 		if ( player_cloak_custom.GetInt() == 0 )
 		{
 			//Uncloaking
-			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() == 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() )
+			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() == 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() || m_floatCloakPower.Get() < CLOAK_POWER_USE)
+			{
 				SetCloakStatus( 0 );
+				m_floatCloakPower.Set(CLOAK_POWER_USE);
+			}
 			//Cloaking
 			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() == CLOAK_FACTOR_STILL || GetCloakStatus() == 3 && m_floatCloakFactor.Get() >= CLOAK_FACTOR_STILL )
 				SetCloakStatus( 2 );
@@ -1190,11 +1198,13 @@ void CHL2MP_Player::UpdateCloak()
 			if ( GetCloakStatus() == 0 )
 			{
 				m_floatCloakFactor.Set( 0.0f );
+				m_floatCloakPower.Set(m_floatCloakPower.Get() + CLOAK_POWER_CHARGE);
 			}
 			//Cloaked
 			if ( GetCloakStatus() == 2 )
 			{
 				m_floatCloakFactor.Set( CLOAK_FACTOR_STILL );
+				m_floatCloakPower.Set( m_floatCloakPower.Get() - CLOAK_POWER_USE);
 			}
 			//Uncloaking
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
@@ -1206,11 +1216,10 @@ void CHL2MP_Player::UpdateCloak()
 			{
 				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + (CLOAK_FACTOR_STILL / 30)  );
 			}
-		}
-		//When moving, increase visibility
-		if( !GetAbsVelocity().IsZero() && m_floatCloakFactor >= CLOAK_FACTOR_MOVING )
-			m_floatCloakFactor = CLOAK_FACTOR_MOVING;
+			if ( !GetAbsVelocity().IsZero() && GetCloakStatus() == 2)
+				m_floatCloakFactor.Set(CLOAK_FACTOR_MOVING);
 
+		}
 		//Custom cloak value
 		if ( player_cloak_custom.GetInt() == 1 )
 			m_floatCloakFactor = player_cloak_factor.GetFloat();
