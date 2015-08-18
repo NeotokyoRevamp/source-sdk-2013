@@ -26,7 +26,7 @@
 
 	"$cloakpassenabled"	"1"
 	"$cloakfactor"		"0"
-	"$cloakcolortint"	"[0.3 0.3 0.3]"
+	"$cloakcolortint"	"[0 0 0]"
 	"$refractamount"	"1"
 	"Proxies"
 	{

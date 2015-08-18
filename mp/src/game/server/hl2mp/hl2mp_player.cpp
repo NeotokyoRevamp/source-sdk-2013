@@ -37,7 +37,8 @@ extern CBaseEntity				*g_pLastSpawn;
 ConVar player_cloak_custom( "player_cloak_custom", "0", FCVAR_CHEAT, "Enable cloak factor modification" );
 ConVar player_cloak_factor( "player_cloak_factor", "0.0", FCVAR_CHEAT, "Cloak factor" );
 
-#define CLOAK_FACTOR 0.8
+#define CLOAK_FACTOR_MOVING 0.9
+#define CLOAK_FACTOR_STILL 0.95
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade );
@@ -1183,7 +1184,7 @@ void CHL2MP_Player::UpdateCloak()
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() == 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() )
 				SetCloakStatus( 0 );
 			//Cloaking
-			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() == CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() >= CLOAK_FACTOR )
+			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() == CLOAK_FACTOR_STILL || GetCloakStatus() == 3 && m_floatCloakFactor.Get() >= CLOAK_FACTOR_STILL )
 				SetCloakStatus( 2 );
 			//Uncloaked
 			if ( GetCloakStatus() == 0 )
@@ -1193,19 +1194,23 @@ void CHL2MP_Player::UpdateCloak()
 			//Cloaked
 			if ( GetCloakStatus() == 2 )
 			{
-				m_floatCloakFactor.Set( CLOAK_FACTOR );
+				m_floatCloakFactor.Set( CLOAK_FACTOR_STILL );
 			}
 			//Uncloaking
 			if ( GetCloakStatus() == 1 && m_floatCloakFactor.Get() != 0.0f || GetCloakStatus() == 1 && m_floatCloakFactor.Get() >= 0.0f )
 			{
-				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - (CLOAK_FACTOR / 30)  );
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() - (CLOAK_FACTOR_STILL / 30)  );
 			}
 			//Cloaking
-			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != CLOAK_FACTOR || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
+			if ( GetCloakStatus() == 3 && m_floatCloakFactor.Get() != CLOAK_FACTOR_STILL || GetCloakStatus() == 3 && m_floatCloakFactor.Get() )
 			{
-				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + (CLOAK_FACTOR / 30)  );
+				m_floatCloakFactor.Set( m_floatCloakFactor.Get() + (CLOAK_FACTOR_STILL / 30)  );
 			}
 		}
+		//When moving, increase visibility
+		if( !GetAbsVelocity().IsZero() && m_floatCloakFactor >= CLOAK_FACTOR_MOVING )
+			m_floatCloakFactor = CLOAK_FACTOR_MOVING;
+
 		//Custom cloak value
 		if ( player_cloak_custom.GetInt() == 1 )
 			m_floatCloakFactor = player_cloak_factor.GetFloat();
