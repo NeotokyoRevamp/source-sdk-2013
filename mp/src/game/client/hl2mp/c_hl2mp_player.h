@@ -154,6 +154,9 @@ private:
 	//Cloak
 	IMaterial* pCloakMaterial1;
 	IMaterial* pCloakMaterial2;
+	dlight_t *dl;
+	void CloakFlash();
+	bool isCloaking; //Used to create the cloak flash
 };
 
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

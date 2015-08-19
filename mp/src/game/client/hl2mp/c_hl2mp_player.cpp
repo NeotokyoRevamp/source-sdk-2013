@@ -7,6 +7,7 @@
 #include "cbase.h"
 #include "vcollide_parse.h"
 #include "c_hl2mp_player.h"
+#include "dlight.h"
 #include "view.h"
 #include "takedamageinfo.h"
 #include "hl2mp_gamerules.h"
@@ -77,7 +78,8 @@ C_HL2MP_Player::C_HL2MP_Player() : m_PlayerAnimState( this ), m_iv_angEyeAngles(
 	m_blinkTimer.Invalidate();
 
 	m_pFlashlightBeam = NULL;
-
+	isCloaking = false;
+	dl = effects->CL_AllocDlight( 0 );
 }
 
 C_HL2MP_Player::~C_HL2MP_Player( void )
@@ -339,6 +341,17 @@ void C_HL2MP_Player::CreateRecoil(float flRecoilPitch, float flRecoilYaw)
 
 	m_flRecoilTimeRemaining = 0.1;
 }
+//Create the flash when a cloak activates
+void C_HL2MP_Player::CloakFlash() {
+		isCloaking = true;
+	
+		dl->decay	= 200;
+		dl->radius	= 1000;
+		dl->color.r = 100;
+		dl->color.g = 100;
+		dl->color.b = 255;
+		dl->die		= gpGlobals->curtime + 0.5f;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -350,9 +363,13 @@ int C_HL2MP_Player::DrawModel( int flags )
 
 	//Render Cloak
 	if (  GetCloakFactor() ){
+		if( !isCloaking )
+			CloakFlash();
+		VectorCopy (BaseClass::GetLocalOrigin(), dl->origin);
 		//Cloak Color
 		modelrender->ForcedMaterialOverride(pCloakMaterial2);
 		int retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
+
 		//Cloak Distortion
 		modelrender->ForcedMaterialOverride(pCloakMaterial1);
 		retVal = BaseClass::DrawModel(STUDIO_RENDER|STUDIO_TRANSPARENCY);
@@ -360,6 +377,8 @@ int C_HL2MP_Player::DrawModel( int flags )
 		modelrender->ForcedMaterialOverride(0);
 		return retVal;
 	}
+	else
+		isCloaking = false;
 
     return BaseClass::DrawModel(flags);
 }
