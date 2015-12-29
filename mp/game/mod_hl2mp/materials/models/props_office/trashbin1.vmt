@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/trashbin1" 
+ 	"$surfaceprop" "metalvent"
+	"$bumpmap" "models/props_office/trashbin1_normal"
+	"$phong" "1"
+	"$phongexponent" "32"
+	"$phongboost" "1"	
+	"$phongfresnelranges"	"[1 2 5]"
+}

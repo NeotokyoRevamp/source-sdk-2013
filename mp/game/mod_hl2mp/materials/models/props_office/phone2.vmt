@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/phone2" 
+ 	"$surfaceprop" "plastic"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.02 .02 .02]"
+}

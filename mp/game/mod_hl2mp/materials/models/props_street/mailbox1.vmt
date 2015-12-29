@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_street/mailbox1" 
+ 	"$surfaceprop" "metalvent"
+}

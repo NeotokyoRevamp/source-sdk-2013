@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_street/firebox1" 
+ 	"$surfaceprop" "metalvent"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.09 .09 .09]"
+}
