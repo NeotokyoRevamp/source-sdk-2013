@@ -1,0 +1,10 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "\models\props_vehicles\panelvan_doorsc"
+	"$surfaceprop" "metal"
+        "$envmap" "env_cubemap"
+        "$normalmapalphaenvmapmask" 1
+        "$bumpmap" "\models\props_vehicles\panelvan_doors_normal"
+        "$envmaptint" "[.7 .7 .7]"
+	"$envmapcontrast" "1"
+}

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/shoji03" 
+ 	"$surfaceprop" "wood"
+}

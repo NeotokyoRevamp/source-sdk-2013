@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/shoji05" 
+ 	"$surfaceprop" "wood"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.08 .08 .08]"
+	"$envmapmask" "models/props_office/shoji_mask"
+
+}

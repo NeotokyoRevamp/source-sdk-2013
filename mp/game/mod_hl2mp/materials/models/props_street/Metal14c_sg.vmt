@@ -1,0 +1,7 @@
+"vertexlitGeneric"
+{
+	
+	"$baseTexture" "models\props_street\Metal14c_sg"
+	"$surfaceprop" "metal"
+	"$bumpmap" "models\props_street\Metal14c_sg_normal"
+}

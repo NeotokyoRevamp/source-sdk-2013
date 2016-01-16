@@ -1,0 +1,6 @@
+"vertexlitGeneric"
+{
+	
+	"$baseTexture" "models\props_street\Metal01_sg"
+	"$surfaceprop" "metal"
+}

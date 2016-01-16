@@ -1,0 +1,24 @@
+"vertexlitGeneric"
+{
+	"$baseTexture" "\models\props_building\jumbotron_sign_mat1a_ani"
+	"$surfaceprop" "computer"
+	"$selfillum" 1
+
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar" "$baseTextureTransform"
+			"texturescrollrate" .06
+			"texturescrollangle" 90.00
+		}
+ 		"AnimatedTexture" 
+         	{ 
+            		"animatedTextureVar" "$basetexture" 
+            		"animatedTextureFrameNumVar" "$frame" 
+            		"animatedTextureFrameRate" "1.0" 
+         	}
+	}
+
+}
+

@@ -1,0 +1,7 @@
+"vertexlitGeneric"
+{
+	
+	"$baseTexture" "models\props_street\vend5b"
+	"$surfaceprop" "metalpanel"
+	"$selfillum" 1
+}

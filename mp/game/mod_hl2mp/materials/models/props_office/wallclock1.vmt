@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/wallclock1" 
+ 	"$surfaceprop" "metalvent"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.07 .07 .07]"
+}

@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{ 
+
+	"$basetexture" "models/props_office/ashtray2" 
+ 	"$surfaceprop" "metalvent"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.2 .2 .2]"
+	"$selfillum" "1"
+}
