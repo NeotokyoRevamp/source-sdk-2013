@@ -1,0 +1,14 @@
+"vertexlitGeneric"
+{
+
+	"$baseTexture" "models\props_tech\techboxc"
+	"$surfaceprop" "metal"
+ 	"$bumpmap" "models\props_tech\techboxc_normal" 
+	"$phong" "1"
+	"$phongexponent" "2"
+	"$phongboost" "1"	
+	"$phongfresnelranges"	"[1 2 6]"
+	"$phongexponenttexture" "models\props_tech\techbox_exp"
+	"$selfillum" 1
+}
+
