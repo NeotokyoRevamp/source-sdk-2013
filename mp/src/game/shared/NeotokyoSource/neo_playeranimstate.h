@@ -20,6 +20,20 @@
 	class CNEOPlayer;
 #endif
 
+enum PlayerAnimEvent_t
+{
+	PLAYERANIMEVENT_FIRE_GUN_PRIMARY=0,
+	PLAYERANIMEVENT_FIRE_GUN_SECONDARY,
+	PLAYERANIMEVENT_THROW_GRENADE,
+	PLAYERANIMEVENT_JUMP,
+	PLAYERANIMEVENT_RELOAD,
+	PLAYERANIMEVENT_RELOAD_START,	///< w_model partial reload for shotguns
+	PLAYERANIMEVENT_RELOAD_LOOP,	///< w_model partial reload for shotguns
+	PLAYERANIMEVENT_RELOAD_END,		///< w_model partial reload for shotguns
+	
+	PLAYERANIMEVENT_COUNT
+};
+
 class INEOPlayerAnimState : virtual public IPlayerAnimState
 {
 public:

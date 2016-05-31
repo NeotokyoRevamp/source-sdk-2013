@@ -1,0 +1,46 @@
+//-----------------------------------------------------------------------------
+//	CLIENT_NEOTOKYOSOURCE.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro SRCDIR		"..\.."
+$Macro GAMENAME 	"NeotokyoSource"
+
+$Include "$SRCDIR\game\client\client_base.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories		"$BASE;.\NeotokyoSource,$SRCDIR\game\shared\NeotokyoSource"
+		$PreprocessorDefinitions			"$BASE;NEO_DLL"
+	}
+}
+
+$Project "Client (NeotokyoSource)"
+{
+	$Folder	"Source Files"
+	{
+		-$File	"$SRCDIR\game\shared\weapon_parse_default.cpp"
+
+		$File	"c_team_objectiveresource.cpp"
+		$File	"c_team_objectiveresource.h"
+		$File	"c_team_train_watcher.cpp"
+		$File	"c_team_train_watcher.h"
+		$File	"hud_voicestatus.cpp"
+		$File	"$SRCDIR\game\shared\predicted_viewmodel.cpp"
+		$File	"$SRCDIR\game\shared\predicted_viewmodel.h"
+		$File	"$SRCDIR\game\shared\teamplay_round_timer.cpp"
+		$File	"$SRCDIR\game\shared\teamplay_round_timer.h"
+
+		$Folder	"Neotokyo DLL"
+		{
+			$File	"NeotokyoSource\c_neoplayer.cpp"
+			$File	"NeotokyoSource\c_neoplayer.h"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_playeranimstate.h"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\weapon_neobase.h"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\weapon_neobasefirearm.h"			
+		}
+	}
+}

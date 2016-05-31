@@ -6,9 +6,8 @@
 
 #include "neo_playeranimstate.h"
 #include "c_baseplayer.h"
-
-class C_NEORagdoll;
-class C_NeoMobileArmorBase;
+#include "weapon_neobase.h"
+#include "iviewrender_beams.h"
 
 class C_NEOPlayer : public C_BasePlayer, public INEOPlayerAnimStateHelpers
 {
@@ -19,7 +18,7 @@ public:
 	DECLARE_INTERPOLATION();
 
 	C_NEOPlayer();
-	virtual ~C_NEOPlayer();
+	~C_NEOPlayer();
 
 public:
 	// C_BaseEnity implementantions
@@ -39,7 +38,7 @@ public:
 	virtual void			CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNear, float &zFar, float &fov );
 	virtual void			CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
 
-	virtual void			CreateMove( float flInputSampleTime, CUserCmd *pCmd );
+	virtual bool			CreateMove( float flInputSampleTime, CUserCmd *pCmd );
 
 	virtual IRagdoll*		GetRepresentativeRagdoll() const;
 
@@ -47,76 +46,90 @@ public:
 
 	virtual float			GetFOV();
 	virtual float			GetMinFOV() const;		
+	
+	// INEOPlayerAnimStateHelpers implementations
+	virtual CWeaponNEOBase* NEOAnim_GetActiveWeapon();
+	virtual bool NEOAnim_CanMove();
 
-	// NOW FOR THE REAL SHIT
+	// My own stuff
 	virtual void			NEO_MuzzleFlash();
-	virtual bool			IsWearingMobileArmor(); // I dunno if returns true if he is wearing or owns it.
-													// Either way it doesn't seem to be used by the game. Was this going to be implemented or did it get trashed?
-
-	virtual void			GetEyeVectors( Vector *forward, Vector *right, Vector *up ); // Mobile armor is seen here again, with vehicle aswell.
-	virtual void			GetEyeVectors2( Vector* something, Vector *forward, Vector *right, Vector *up ); // Pretty much the same as GetEyeVectors, but it uses some vector or angles,
-																											 // I'm not sure, and I couldn't bother to reverse it yet
+	virtual void			GetEyeVectors( Vector *forward, Vector *right, Vector *up );
 
 public:
-	bool m_bIsVIP;
+	static C_NEOPlayer* GetLocalNEOPlayer();
 
-	//uint8_t NEOPlayerPad00[ 0x10 ];
+	bool IsLocalNEOPlayer( void ) const;
 
-	int m_iLean;
-	int m_iSprint;	  
-	float m_fSprintNRG;		
-	int m_iThermoptic;
+	CWeaponNEOBase* GetActiveNEOWeapon() const;
 
-	//uint8_t NEOPlayerPad01[ 0x4 ];
+	void UpdateThermoptic();
+	void UpdateGeiger();
+	void UpdateVision();
+	void UpdateInCross();
+	void UpdateSomething( float a1 );
 
-	float m_fThermopticNRG;
+private:
+	CNetworkVar( bool, m_bIsVIP );
 
-	//uint8_t NEOPlayerPad02[ 0x10 ];
+	float m_flUnknown;
+	int m_iUnknown;
+	float m_flUnknown3;
 
-	int m_iClassType;
+	CNetworkVar( int, m_iLean );
+
+	CNetworkVar( int, m_iSprint );
+	CNetworkVar( float, m_fSprintNRG );
+
+	CNetworkVar( int, m_iThermoptic );
+	int m_iOldThermoptic;
+	CNetworkVar( float, m_fThermopticNRG );
+
+	CNetworkVar( int, m_iClassType );
 	int m_iOldClassType;
 
-	int m_iRank;
+	CNetworkVar( int, m_iRank );
 	int m_iOldRank;
 
-	//uint8_t NEOPlayerPad03[ 0x8 ];
+	int m_iInCrossIndex;
+	bool m_bAnyoneInCross;
 
-	IPlayerAnimState* m_pPlayerAnimState;
+	IPlayerAnimState* m_PlayerAnimState;
 
 	QAngle m_angEyeAngles;
 	CInterpolatedVar< QAngle > m_iv_angEyeAngles;
 
-	int m_iShotsFired;
+	CNetworkVar( int, m_iThrowGrenadeCounter );
 
-	CHandle< C_NEORagdoll > m_hRagdoll;
+	CNetworkVar( int, m_iShotsFired );
 
-	int m_iNMFlash;
+	EHANDLE m_hRagdoll;
 
-	//uint8_t NEOPlayerPad04[ 0x8 ];
+	CNetworkVar( int, m_iNMFlash );
+	int m_iOldNMFlash;
 
-	int m_iVision;
+	float m_flUnknown2;
 
-	//uint8_t NEOPlayerPad05[ 0x8 ];
+	CNetworkVar( int, m_iVision);
 
-	int m_iLives;
-	int m_iStar;
+	int m_iOldVision;
 
-	//uint8_t NEOPlayerPad06[ 0x4 ];
+	CNetworkVar( int, m_iReinforceTimer );
 
-	float m_fTurnSpeed;
+	CNetworkVar( int, m_iLives );
+	CNetworkVar( int, m_iStar );
 
-	//uint8_t NEOPlayerPad07[ 0x4 ];
+	CNetworkVar( float, m_fTurnSpeed );
 
-	CHandle< C_NeoMobileArmorBase > m_MobileArmor;
+	float m_flUnknown4;
 
-	//uint8_t NEOPlayerPad08[ 0x4 ];
+	EHANDLE m_MobileArmor;
+
+	Beam_t* m_pBeam;
 
 	bool m_bIsOnDeathScreen;
 
 	float m_fLastDeathTime;
-	float m_fCurrentTime;
-
-	//uint8_t NEOPlayerPad09[ 0x4 ];
+	float m_fLastThinkTime;
 
 private:
 	C_NEOPlayer( const C_NEOPlayer& );

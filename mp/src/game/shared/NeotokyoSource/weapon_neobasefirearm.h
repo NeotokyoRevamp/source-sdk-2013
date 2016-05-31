@@ -6,21 +6,19 @@
 
 #include "weapon_neobase.h"
 
-#if defined( CLIENT_DLL )
-	#define CWeaponNeoBaseGun C_WeaponNeoBaseFirearm
+#ifdef CLIENT_DLL
+#define CWeaponNeoBaseFirearm C_WeaponNeoBaseFirearm
 #else
 #endif
 
-class CWeaponNeoBaseGun : public CWeaponNEOBase
+class CWeaponNeoBaseFirearm : public CWeaponNEOBase
 {
-public:
-	
-	DECLARE_CLASS( CWeaponNeoBaseGun, CWeaponNEOBase );
+public:	
+	DECLARE_CLASS( CWeaponNeoBaseFirearm, CWeaponNEOBase);
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 	
-	CWeaponNeoBaseGun();
-	virtual ~CWeaponNeoBaseGun();
+	CWeaponNeoBaseFirearm();
 
 	// C_BaseCombatWeapon implementations	
 	virtual bool Deploy();
@@ -35,26 +33,18 @@ public:
 
 	virtual void Spawn();
 
-	// C_WeaponNEOBase implementations		 
-	virtual bool IsNotAGrenade();
-
+	// C_WeaponNEOBase implementations	
 	virtual	bool PlayEmptySound();
-
-	virtual bool IHaveNoFuckingClue04();
-
-	virtual void* GetSomethingFromFileWeaponInfo( void* a1 );
 
 	// MY OWN STUFF
 	virtual void PrimaryAttackMobileArmor();
 	virtual void EjectBrass();
 
-public:
-	//uint8_t WeaponNeoBaseFirearmPad00[ 0x14 ]; 
+private:
 	int m_iFireMode; 
-	//uint8_t WeaponNeoBaseFirearmPad01[ 0x8 ];
 
 private:		
-	CWeaponNeoBaseGun( const CWeaponNeoBaseGun & );	   
+	CWeaponNeoBaseFirearm(const CWeaponNeoBaseFirearm& );
 };
 
 
