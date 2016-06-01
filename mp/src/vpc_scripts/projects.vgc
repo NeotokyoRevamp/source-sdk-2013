@@ -16,6 +16,7 @@ $Project "captioncompiler"
 
 $Project "client"
 {
+	"game\client\client_NeotokyoSource.vpc"	[($WIN32) && $NEOTOKYOSOURCE]
 	"game\client\client_hl2mp.vpc"		[($WIN32||$POSIX) && $HL2MP]
 }
 
