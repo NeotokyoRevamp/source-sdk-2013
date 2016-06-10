@@ -62,6 +62,10 @@ public:
 
 	CWeaponNEOBase* GetActiveNEOWeapon() const;
 
+	inline int GetThermoptic() { return m_iThermoptic; }
+	inline int GetVision() { return m_iVision; }
+	inline int GetSprint() { return m_iSprint; }
+
 	void UpdateThermoptic();
 	void UpdateGeiger();
 	void UpdateVision();
@@ -71,7 +75,10 @@ public:
 private:
 	CNetworkVar( bool, m_bIsVIP );
 
+public:
 	float m_flUnknown;
+
+private:
 	int m_iUnknown;
 	float m_flUnknown3;
 

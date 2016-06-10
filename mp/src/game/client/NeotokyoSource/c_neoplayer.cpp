@@ -422,7 +422,7 @@ float C_NEOPlayer::GetFOV()
 	CWeaponNEOBase* activeWeapon = GetActiveNEOWeapon();
 
 	if ( activeWeapon )
-		activeWeapon->GetFOV();
+		activeWeapon->m_fFov;
 	else
 		return 75.f;
 }
