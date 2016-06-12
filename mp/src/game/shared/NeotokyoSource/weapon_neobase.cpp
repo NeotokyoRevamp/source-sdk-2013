@@ -306,9 +306,9 @@ int CWeaponNEOBase::InternalDrawModel( int flags )
 		if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
 			return BaseClass::InternalDrawModel( flags );
 
-		IMaterial* matThermal = g_pMaterialSystem->FindMaterial( "dev/motion", "Other textures" );
+		IMaterial* matMotion = g_pMaterialSystem->FindMaterial( "dev/motion", "Other textures" );
 
-		if ( IsErrorMaterial( matThermal ) )
+		if ( IsErrorMaterial( matMotion ) )
 		{
 			DevMsg( SPEW_MESSAGE, "Fuck me...\n" ); 
 			BaseClass::DrawModel( flags );
@@ -320,7 +320,7 @@ int CWeaponNEOBase::InternalDrawModel( int flags )
 			velocity = 4.f;
 
 		bool found = false;
-		IMaterialVar* matVar = matThermal->FindVar( "$eyevec", &found );
+		IMaterialVar* matVar = matMotion->FindVar( "$eyevec", &found );
 
 		if ( found )
 		{
@@ -329,7 +329,7 @@ int CWeaponNEOBase::InternalDrawModel( int flags )
 			matVar->SetVecValue( forward.x, forward.y, forward.z, velocity );
 		}
 
-		modelrender->ForcedMaterialOverride( matThermal );
+		modelrender->ForcedMaterialOverride( matMotion );
 		int result = BaseClass::InternalDrawModel( flags );
 		modelrender->ForcedMaterialOverride( nullptr );
 

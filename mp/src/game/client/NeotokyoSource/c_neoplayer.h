@@ -72,13 +72,11 @@ public:
 	void UpdateInCross();
 	void UpdateSomething( float a1 );
 
-private:
+public: // Eh let's make it all public for now
 	CNetworkVar( bool, m_bIsVIP );
 
-public:
 	float m_flUnknown;
 
-private:
 	int m_iUnknown;
 	float m_flUnknown3;
 
@@ -135,7 +133,7 @@ private:
 
 	bool m_bIsOnDeathScreen;
 
-	float m_fLastDeathTime;
+	float m_fRagdollCreationTime;
 	float m_fLastThinkTime;
 
 private:
