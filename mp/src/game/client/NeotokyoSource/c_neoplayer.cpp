@@ -8,8 +8,12 @@
 #include "ivieweffects.h"
 #include "materialsystem\imaterialvar.h"
 #include "convar.h"
+#include "view_scene.h"
 
 ConVar cl_nt_ragdoll_lifetime( "cl_nt_ragdoll_lifetime", "60", FCVAR_REPLICATED );
+
+void UpdateThermopticMaterial( IMaterial* material, float a2 );
+IMaterial* GetThermopticMaterial();
 
 #if defined( CNEOPlayer )
 #undef CNEOPlayer
@@ -30,7 +34,7 @@ public:
 
 	virtual bool AddRagdollToFadeQueue() { return true; }
 
-	virtual void ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName );	
+	virtual void ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName );
 	virtual int DrawModel( int flags );
 	virtual void ClientThink();
 
@@ -66,9 +70,9 @@ C_NEORagdoll::~C_NEORagdoll()
 
 int C_NEORagdoll::DrawModel( int flags )
 {
-	C_NEOPlayer *pPlayer = dynamic_cast< C_NEOPlayer* >(m_hPlayer.Get());
+	C_NEOPlayer *pPlayer = dynamic_cast<C_NEOPlayer*>(m_hPlayer.Get());
 
-	if ( pPlayer && ( pPlayer->IsLocalNEOPlayer() || pPlayer->m_bIsOnDeathScreen ) )
+	if ( pPlayer && (pPlayer->IsLocalNEOPlayer() || pPlayer->m_bIsOnDeathScreen) )
 		return 0;
 
 	if ( pPlayer->m_iVision == 3 ) // Thermal vision
@@ -189,7 +193,7 @@ void C_NEORagdoll::CreateNEORagdoll()
 {
 	// First, initialize all our data. If we have the player's entity on our client,
 	// then we can make ourselves start out exactly where the player is.
-	C_NEOPlayer *pPlayer = dynamic_cast< C_NEOPlayer* >(m_hPlayer.Get());
+	C_NEOPlayer *pPlayer = dynamic_cast<C_NEOPlayer*>(m_hPlayer.Get());
 
 	if ( pPlayer && !pPlayer->IsDormant() )
 	{
@@ -430,7 +434,7 @@ void C_NEOPlayer::UpdateVision()
 	if ( !IsLocalNEOPlayer() )
 		return;
 
-	//dword_243ED4F8 = m_iVision;
+	//dword_243ED4F8 = m_iVision; // This is used somewhere in CViewRender to draw the nightvision effect
 
 	if ( m_iVision != m_iOldVision )
 	{
@@ -577,6 +581,184 @@ Vector C_NEOPlayer::EyePosition()
 	return BaseClass::EyePosition();
 }
 
+void C_NEOPlayer::OnDataChanged( DataUpdateType_t updateType )
+{
+	BaseClass::OnDataChanged( updateType );
+
+	if ( updateType == DATA_UPDATE_CREATED )
+		SetNextClientThink( -1293.f );
+
+	UpdateVisibility();
+}
+
+void C_NEOPlayer::PostDataUpdate( DataUpdateType_t updateType )
+{
+	SetNetworkAngles( GetLocalAngles() );
+
+	BaseClass::PostDataUpdate( updateType );
+}
+
+const QAngle& C_NEOPlayer::GetRenderAngles()
+{
+	if ( IsRagdoll() )
+		return vec3_angle;
+
+	else
+		return m_PlayerAnimState->GetRenderAngles();
+}
+
+int C_NEOPlayer::DrawModel( int flags )
+{
+	C_NEOPlayer* localPlayer = C_NEOPlayer::GetLocalNEOPlayer();
+
+	int result = -1;
+
+	if ( localPlayer )
+	{
+		if ( GetTeamNumber() == localPlayer->GetTeamNumber() )
+			m_bUnknown = true;
+
+		if ( m_iOldVision != 3 )
+		{
+			if ( m_bUnknown2 )
+			{
+				m_bUnknown2 = false;
+
+				dlight_t* light = effects->CL_AllocDlight( LIGHT_INDEX_TE_DYNAMIC + index );
+
+				light->origin = GetAbsOrigin();
+				light->radius = 96.f;
+				light->decay = 192.f;
+				light->color.r = 64;
+				light->color.g = 64;
+				light->color.b = 255;
+				light->color.exponent = 10;
+				light->die = gpGlobals->curtime + 0.1f;
+
+				return 0;
+			}
+
+			if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
+				return 0;
+
+			UpdateRefractTexture();
+
+			IMaterial* thermopticMaterial = GetThermopticMaterial();
+
+			UpdateThermopticMaterial( thermopticMaterial, m_flUnknown );
+
+			modelrender->ForcedMaterialOverride( thermopticMaterial );
+			int result = BaseClass::InternalDrawModel( flags );
+			modelrender->ForcedMaterialOverride( nullptr );
+		}		
+
+		else
+		{
+			if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
+				return BaseClass::DrawModel( flags );
+
+			IMaterial* matThermal = g_pMaterialSystem->FindMaterial( "dev/thermal", TEXTURE_GROUP_OTHER );
+
+			if ( IsErrorMaterial( matThermal ) )
+			{
+				DevMsg( SPEW_MESSAGE, "Fuck me...\n" ); // Their message, not mine kek
+				BaseClass::DrawModel( flags );
+			}
+
+			bool found = false;
+			IMaterialVar* matVar = matThermal->FindVar( "$eyevec", &found );
+
+			if ( found )
+			{
+				Vector forward;
+				GetVectors( &forward, nullptr, nullptr );
+				matVar->SetVecValue( forward.x, forward.y, forward.z, 3.f );
+			}
+
+			modelrender->ForcedMaterialOverride( matThermal );
+			result = BaseClass::InternalDrawModel( flags );
+			modelrender->ForcedMaterialOverride( nullptr );
+		}
+
+		if ( m_iThermoptic == 1 )
+		{
+			if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
+				return BaseClass::DrawModel( flags );
+
+			IMaterial* matMotion = g_pMaterialSystem->FindMaterial( "dev/motion", TEXTURE_GROUP_OTHER );
+
+			if ( IsErrorMaterial( matMotion ) )
+			{
+				DevMsg( SPEW_MESSAGE, "Fuck me...\n" );
+				BaseClass::DrawModel( flags );
+			}
+
+			float velocity = localPlayer->GetLocalVelocity().Length() / 75.f;
+
+			if ( velocity > 4.f )
+				velocity = 4.f;
+
+			bool found = false;
+			IMaterialVar* matVar = matMotion->FindVar( "$eyevec", &found );
+
+			if ( found )
+			{
+				Vector forward;
+				GetVectors( &forward, nullptr, nullptr );
+				matVar->SetVecValue( forward.x, forward.y, forward.z, velocity );
+			}
+
+			modelrender->ForcedMaterialOverride( matMotion );
+			int result = BaseClass::InternalDrawModel( flags );
+			modelrender->ForcedMaterialOverride( nullptr );
+		}
+
+		if ( m_iVision == 3 ) // Thermal vision
+		{
+			if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
+				return BaseClass::DrawModel( flags );
+
+			IMaterial* matThermal = g_pMaterialSystem->FindMaterial( "dev/vm_thermal", "Other textures" );
+
+			if ( IsErrorMaterial( matThermal ) )
+			{
+				DevMsg( SPEW_MESSAGE, "Fuck me...\n" );
+				BaseClass::DrawModel( flags );
+			}
+
+			bool found = false;
+			IMaterialVar* matVar = matThermal->FindVar( "$eyevec", &found );
+
+			if ( found )
+			{
+				Vector forward;
+				GetVectors( &forward, nullptr, nullptr );
+				matVar->SetVecValue( forward.x, forward.y, forward.z, 3.f );
+			}
+
+			modelrender->ForcedMaterialOverride( matThermal );
+			result = BaseClass::InternalDrawModel( flags );
+			modelrender->ForcedMaterialOverride( nullptr );
+		}
+
+		if ( m_bUnknown2 )
+			m_bUnknown2 = false;
+
+		if ( result >= 0 )
+			return result;
+	}
+
+	return BaseClass::DrawModel( flags );
+}
+
+ShadowType_t C_NEOPlayer::ShadowCastType()
+{
+	if ( !IsVisible() )
+		return SHADOWS_NONE;
+
+	return m_iThermoptic != 1 ? SHADOWS_RENDER_TO_TEXTURE_DYNAMIC : SHADOWS_NONE;
+}
+
 C_BaseAnimating* C_NEOPlayer::BecomeRagdollOnClient( bool bCopyEntity /*= true*/ )
 {
 	return nullptr;
@@ -595,7 +777,7 @@ void C_NEOPlayer::UpdateClientSideAnimation()
 void C_NEOPlayer::DoMuzzleFlash()
 {
 	C_BaseAnimating::DoMuzzleFlash();
-	//*(bool*) (this + 0x1044) = true;
+	m_bUnknown2 = true;
 }
 
 void C_NEOPlayer::ProcessMuzzleFlashEvent()
@@ -653,9 +835,7 @@ void C_NEOPlayer::CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNear, 
 		UTIL_TraceHull( start, forward, -Vector( 12, 12, 12 ), Vector( 12, 12, 12 ), CONTENTS_MOVEABLE | CONTENTS_GRATE | CONTENTS_AUX | CONTENTS_WINDOW | CONTENTS_SOLID, this, 0, &trace );
 
 		if ( trace.fraction < 1.f )
-		{
-			// I'm not sure what they do in here yet 
-		}
+			forward = trace.endpos;
 
 		if ( gpGlobals->curtime >= (m_fRagdollCreationTime + 10.f) )
 			m_bIsOnDeathScreen = false;

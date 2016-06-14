@@ -159,12 +159,6 @@ void UpdateThermopticMaterial( IMaterial* material, float a2 )
 
 	if ( found )
 	{
-		float v25 = cos( 0.7853981633974483 ) * gpGlobals->curtime * 0.25;
-		float v26 = sin( 0.7853981633974483 ) * gpGlobals->curtime * 0.25;
-
-		if ( v25 < 0.f )
-			v25 = v25 - 1.f - v25;
-
 		VMatrix matrix( 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f );
 
 		if ( bumptransform->GetType() == MATERIAL_VAR_TYPE_MATRIX )
@@ -276,7 +270,7 @@ int CWeaponNEOBase::InternalDrawModel( int flags )
 		if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
 			return BaseClass::InternalDrawModel( flags );
 
-		IMaterial* matThermal = g_pMaterialSystem->FindMaterial( "dev/vm_thermal", "Other textures" );
+		IMaterial* matThermal = g_pMaterialSystem->FindMaterial( "dev/vm_thermal", TEXTURE_GROUP_OTHER );
 
 		if ( IsErrorMaterial( matThermal ) )
 		{
@@ -306,7 +300,7 @@ int CWeaponNEOBase::InternalDrawModel( int flags )
 		if ( !g_pMaterialSystemHardwareConfig->SupportsPixelShaders_2_0() )
 			return BaseClass::InternalDrawModel( flags );
 
-		IMaterial* matMotion = g_pMaterialSystem->FindMaterial( "dev/motion", "Other textures" );
+		IMaterial* matMotion = g_pMaterialSystem->FindMaterial( "dev/motion", TEXTURE_GROUP_OTHER );
 
 		if ( IsErrorMaterial( matMotion ) )
 		{

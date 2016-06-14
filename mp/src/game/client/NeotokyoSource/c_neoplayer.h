@@ -24,7 +24,14 @@ public:
 	// C_BaseEnity implementantions
 	virtual void			AddEntity();
 
-	virtual Vector			EyePosition();	 
+	virtual Vector			EyePosition();	
+
+	virtual void			OnDataChanged( DataUpdateType_t updateType );
+	virtual void			PostDataUpdate( DataUpdateType_t updateType );
+
+	virtual const QAngle&	GetRenderAngles();
+	virtual int				DrawModel( int flags );
+	virtual ShadowType_t	ShadowCastType();
 
 	// C_BaseAnimating implementations
 	virtual C_BaseAnimating* BecomeRagdollOnClient( bool bCopyEntity = true );
@@ -123,6 +130,8 @@ public: // Eh let's make it all public for now
 	CNetworkVar( int, m_iLives );
 	CNetworkVar( int, m_iStar );
 
+	bool m_bUnknown;
+
 	CNetworkVar( float, m_fTurnSpeed );
 
 	float m_flUnknown4;
@@ -135,6 +144,8 @@ public: // Eh let's make it all public for now
 
 	float m_fRagdollCreationTime;
 	float m_fLastThinkTime;
+
+	bool m_bUnknown2;
 
 private:
 	C_NEOPlayer( const C_NEOPlayer& );
