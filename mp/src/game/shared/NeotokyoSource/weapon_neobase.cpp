@@ -171,6 +171,9 @@ void UpdateThermopticMaterial( IMaterial* material, float a2 )
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponNEOBase, DT_WeaponNEOBase )
 
 BEGIN_NETWORK_TABLE( CWeaponNEOBase, DT_WeaponNEOBase )
+	RecvPropBool( RECVINFO( bAimed ) ),
+	RecvPropFloat( RECVINFO( m_fAccuracy ) ),
+	RecvPropInt( RECVINFO( m_iTeam2ViewModelIndex ) )
 END_NETWORK_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_neo_base, CWeaponNEOBase );

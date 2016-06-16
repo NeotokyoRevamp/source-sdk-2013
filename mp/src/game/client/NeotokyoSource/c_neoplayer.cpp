@@ -57,7 +57,7 @@ IMPLEMENT_CLIENTCLASS_DT_NOBASE( C_NEORagdoll, DT_NEORagdoll, CNEORagdoll )
 	RecvPropInt( RECVINFO( m_nModelIndex ) ),
 	RecvPropInt( RECVINFO( m_nForceBone ) ),
 	RecvPropVector( RECVINFO( m_vecForce ) ),
-	RecvPropVector( RECVINFO( m_vecRagdollVelocity ) ),
+	RecvPropVector( RECVINFO( m_vecRagdollVelocity ) )
 END_RECV_TABLE()
 
 C_NEORagdoll::C_NEORagdoll()
@@ -300,7 +300,7 @@ BEGIN_RECV_TABLE_NOBASE( C_NEOPlayer, DT_NEOLocalPlayerExclusive )
 	RecvPropFloat( RECVINFO( m_fThermopticNRG ) ),
 	RecvPropInt( RECVINFO( m_iReinforceTimer ) ),
 	RecvPropInt( RECVINFO( m_iSprint ) ),
-	RecvPropFloat( RECVINFO( m_fTurnSpeed ) ),
+	RecvPropFloat( RECVINFO( m_fTurnSpeed ) )
 END_RECV_TABLE()
 
 IMPLEMENT_CLIENTCLASS_DT( C_NEOPlayer, DT_NEOPlayer, CNEOPlayer )
@@ -317,7 +317,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_NEOPlayer, DT_NEOPlayer, CNEOPlayer )
 	RecvPropInt( RECVINFO( m_iThermoptic ) ),
 	RecvPropInt( RECVINFO( m_iNMFlash ) ),
 	RecvPropInt( RECVINFO( m_iVision ) ),
-	RecvPropInt( RECVINFO( m_bIsVIP ) ),
+	RecvPropInt( RECVINFO( m_bIsVIP ) )
 END_RECV_TABLE()
 
 C_NEOPlayer::C_NEOPlayer() : m_iv_angEyeAngles( "C_NEOPlayer::m_iv_angEyeAngles" )
