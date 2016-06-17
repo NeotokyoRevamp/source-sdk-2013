@@ -15,7 +15,7 @@
 class CNEOGameRulesProxy : public CGameRulesProxy
 {
 public:
-	DECLARE_CLASS( CNEOGameRules, CGameRulesProxy );
+	DECLARE_CLASS( CNEOGameRulesProxy, CGameRulesProxy );
 	DECLARE_NETWORKCLASS();
 };
 

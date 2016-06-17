@@ -1,3 +1,4 @@
+#include "cbase.h"
 #include "neo_gamerules.h"
 
 static CViewVectors g_NEOViewVectors(

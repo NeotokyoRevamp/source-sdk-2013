@@ -362,7 +362,7 @@ bool C_NEOPlayer::IsLocalNEOPlayer( void ) const
 
 CWeaponNEOBase* C_NEOPlayer::GetActiveNEOWeapon() const
 {
-	return dynamic_cast<CWeaponNEOBase*>(GetActiveWeapon());
+	return dynamic_cast< CWeaponNEOBase* >( GetActiveWeapon() );
 }
 
 void C_NEOPlayer::UpdateThermoptic()
@@ -648,7 +648,7 @@ int C_NEOPlayer::DrawModel( int flags )
 			UpdateThermopticMaterial( thermopticMaterial, m_flUnknown );
 
 			modelrender->ForcedMaterialOverride( thermopticMaterial );
-			int result = BaseClass::InternalDrawModel( flags );
+			result = BaseClass::InternalDrawModel( flags );
 			modelrender->ForcedMaterialOverride( nullptr );
 		}		
 
@@ -709,7 +709,7 @@ int C_NEOPlayer::DrawModel( int flags )
 			}
 
 			modelrender->ForcedMaterialOverride( matMotion );
-			int result = BaseClass::InternalDrawModel( flags );
+			result = BaseClass::InternalDrawModel( flags );
 			modelrender->ForcedMaterialOverride( nullptr );
 		}
 
@@ -881,7 +881,7 @@ float C_NEOPlayer::GetFOV()
 	CWeaponNEOBase* activeWeapon = GetActiveNEOWeapon();
 
 	if ( activeWeapon )
-		activeWeapon->m_fFov;
+		return activeWeapon->m_fFov;
 	else
 		return 75.f;
 }
@@ -963,6 +963,16 @@ void C_NEOPlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 
 	// calc current FOV
 	fov = GetFOV();
+}
+
+CWeaponNEOBase* C_NEOPlayer::NEOAnim_GetActiveWeapon()
+{
+	return GetActiveNEOWeapon();
+}
+
+bool C_NEOPlayer::NEOAnim_CanMove()
+{
+	return true;
 }
 
 void C_NEOPlayer::NEO_MuzzleFlash()

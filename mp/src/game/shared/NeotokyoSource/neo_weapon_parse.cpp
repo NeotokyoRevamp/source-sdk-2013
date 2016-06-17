@@ -1,12 +1,11 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
-//
-// Purpose: 
-//
-//=============================================================================//
-
 #include "cbase.h"
 #include <KeyValues.h>
 #include "neo_weapon_parse.h"
+
+CNEOWeaponInfo* GetNEOWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle )
+{
+	return static_cast< CNEOWeaponInfo* >(GetFileWeaponInfoFromHandle( handle ));
+}
 
 FileWeaponInfo_t* CreateWeaponInfo()
 {
@@ -60,9 +59,3 @@ void CNEOWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponName 
 	m_fCycleTime = pKeyValuesData->GetFloat( "CycleTime", 0.15f );
 	m_fTPMuzzleFlashScale = pKeyValuesData->GetFloat( "TPMuzzleFlashScale", 1.0f );
 }
-
-// Check the header for more info -Ochii
-/*virtual const char* CNEOWeaponInfo::GetClassName()
-{
-	return "CNEOWeaponInfo";
-}*/

@@ -36,11 +36,26 @@ $Project "Client (NeotokyoSource)"
 
 		$Folder	"Neotokyo DLL"
 		{
+			$Folder "VGUI"
+			{
+				$File	"NeotokyoSource\VGUI\neoframe.cpp"
+				$File	"NeotokyoSource\VGUI\neoframe.h"
+				$File	"NeotokyoSource\VGUI\neoviewport.cpp"
+				$File	"NeotokyoSource\VGUI\neoviewport.h"
+			}
+			
 			$File	"NeotokyoSource\c_neoplayer.cpp"
 			$File	"NeotokyoSource\c_neoplayer.h"
+			$File	"NeotokyoSource\clientmode_neonormal.cpp"
+			$File	"NeotokyoSource\clientmode_neonormal.h"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_gamerules.cpp"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_gamerules.h"
+			$File	"NeotokyoSource\neo_in_main.cpp"
 			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_playeranimstate.h"
-			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_weapon_prase.cpp"
-			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_weapon_prase.h"
+			$File	"NeotokyoSource\neo_prediction.cpp"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_shareddefs.h"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_weapon_parse.cpp"
+			$File	"$SRCDIR\game\shared\NeotokyoSource\neo_weapon_parse.h"
 			$File	"$SRCDIR\game\shared\NeotokyoSource\weapon_neobase.cpp"
 			$File	"$SRCDIR\game\shared\NeotokyoSource\weapon_neobase.h"
 			$File	"$SRCDIR\game\shared\NeotokyoSource\weapon_neobasefirearm.h"			

@@ -1,3 +1,4 @@
+#include "cbase.h"
 #include "weapon_neobase.h"
 #include "c_neoplayer.h"
 #include "materialsystem\imaterialvar.h"
@@ -595,6 +596,8 @@ bool CWeaponNEOBase::PlayEmptySound()
 {
 	CPASAttenuationFilter filter( this );
 	EmitSound( filter, entindex(), "Default.ClipEmpty_Rifle" );
+
+	return false;
 }
 
 void CWeaponNEOBase::DoNEOMuzzleFlash()

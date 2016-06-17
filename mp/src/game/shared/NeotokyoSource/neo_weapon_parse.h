@@ -52,12 +52,10 @@ public:
 	
 	virtual void Parse( KeyValues *pKeyValuesData, const char *szWeaponName );
 
-	virtual const char* GetClassName(); // This is on the original game but I'm not sure we need this, let's keep this commented for now. -Ochii
-
 public:
 	wchar_t m_wBulletCharacter;
 
-	char m_szTeam2viewmodel[ 80 ];
+	char m_szTeam2viewmodel[ MAX_WEAPON_STRING ];
 
 	bool m_bDrawCrosshair;
 
@@ -98,9 +96,6 @@ public:
 	float m_fTPMuzzleFlashScale;
 };
 
-CNEOWeaponInfo* GetNEOWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle )
-{
-	return static_cast< CNEOWeaponInfo* >(GetFileWeaponInfoFromHandle( handle ));
-}
+extern CNEOWeaponInfo* GetNEOWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle );
 
 #endif // NEO_WEAPON_PARSE_H
