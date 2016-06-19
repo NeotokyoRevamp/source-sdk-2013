@@ -26,11 +26,19 @@ public:
 	virtual void	LevelShutdown();
 	virtual float	GetViewModelFOV();
 
+	bool IsNEODev();
+
 private:
 	bool m_bUnknown;
-	bool m_bUnknown2;
+	bool m_bIsNEODev;
 };
 
+inline bool ClientModeNEONormal::IsNEODev()
+{
+	return m_bIsNEODev;
+}
+
 extern IClientMode* GetClientModeNormal();
+extern ClientModeNEONormal* GetClientModeNEONormal();
 
 #endif // CLIENTMODE_NEONORMAL_H

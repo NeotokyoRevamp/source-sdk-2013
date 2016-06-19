@@ -38,8 +38,12 @@ $Project "Client (NeotokyoSource)"
 		{
 			$Folder "VGUI"
 			{
+				$File	"NeotokyoSource\VGUI\neoclassmenu.cpp"
+				$File	"NeotokyoSource\VGUI\neoclassmenu.h"
 				$File	"NeotokyoSource\VGUI\neoframe.cpp"
 				$File	"NeotokyoSource\VGUI\neoframe.h"
+				$File	"NeotokyoSource\VGUI\neoimagebutton.cpp"
+				$File	"NeotokyoSource\VGUI\neoimagebutton.h"
 				$File	"NeotokyoSource\VGUI\neoviewport.cpp"
 				$File	"NeotokyoSource\VGUI\neoviewport.h"
 			}

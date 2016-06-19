@@ -13,11 +13,16 @@ IClientMode* GetClientModeNormal()
 	return &g_ClientModeNormal;
 }
 
+ClientModeNEONormal* GetClientModeNEONormal()
+{
+	return (ClientModeNEONormal*) GetClientModeNormal();
+}
+
 
 ClientModeNEONormal::ClientModeNEONormal()
 {
 	m_bUnknown = false;
-	m_bUnknown2 = false;
+	m_bIsNEODev = false;
 }
 
 ClientModeNEONormal::~ClientModeNEONormal()

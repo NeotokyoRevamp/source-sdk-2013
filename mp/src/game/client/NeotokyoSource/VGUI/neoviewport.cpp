@@ -15,27 +15,27 @@ IViewPortPanel* NEOViewport::CreatePanelByName( const char *szPanelName )
 {
 	IViewPortPanel* newpanel = nullptr;
 
-	if ( Q_strcmp( PANEL_TEAM, szPanelName ) == 0 )
+	if ( V_strcmp( PANEL_TEAM, szPanelName ) == 0 )
 	{
 		//newpanel = new CNeoTeamMenu( this );
 	}
 
-	else if ( Q_strcmp( PANEL_SCOREBOARD, szPanelName ) == 0 )
+	else if ( V_strcmp( PANEL_SCOREBOARD, szPanelName ) == 0 )
 	{
 		//newpanel = new CNEOClientScoreBoardDialog( this );
 	}
 
-	else if ( Q_strcmp( PANEL_CLASS, szPanelName ) == 0 )
+	else if ( V_strcmp( PANEL_CLASS, szPanelName ) == 0 )
 	{
 		//newpanel = new CNeoClassMenu( this );
 	}
 
-	else if ( Q_strcmp( PANEL_LOADOUT_DEV, szPanelName ) == 0 )
+	else if ( V_strcmp( PANEL_LOADOUT_DEV, szPanelName ) == 0 )
 	{
 		//newpanel = new CNeoLoadoutMenu_Dev( this );
 	}
 
-	else if ( Q_strcmp( PANEL_LOADOUT, szPanelName ) == 0 )
+	else if ( V_strcmp( PANEL_LOADOUT, szPanelName ) == 0 )
 	{
 		//newpanel = new CNeoLoadoutMenu( this );
 	}
