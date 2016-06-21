@@ -1,5 +1,5 @@
-#ifndef NEO_CLASSMENU_H
-#define NEO_CLASSMENU_H
+#ifndef NEO_TEAMMENU_H
+#define NEO_TEAMMENU_H
 
 #ifdef _WIN32
 #pragma once
@@ -8,19 +8,19 @@
 #include "neoframe.h"
 #include <game/client/iviewport.h>
 
-class CNeoClassMenu : public vgui::CNeoFrame, public IViewPortPanel
+class CNeoTeamMenu : public vgui::CNeoFrame, public IViewPortPanel
 {
-	DECLARE_CLASS_SIMPLE( CNeoClassMenu, vgui::CNeoFrame );
+	DECLARE_CLASS_SIMPLE( CNeoTeamMenu, vgui::CNeoFrame );
 
 public:
-	CNeoClassMenu( IViewPort *pViewPort );
-	virtual ~CNeoClassMenu();
+	CNeoTeamMenu( IViewPort *pViewPort );
+	virtual ~CNeoTeamMenu();
 
 	virtual const char *GetName( void ) { return PANEL_CLASS; }
 	virtual void SetData( KeyValues *data ) {};
 	virtual void Reset() {};
 	virtual void Update();
-	virtual bool NeedsUpdate( void ) { return m_bNeedsUpdate; }
+	virtual bool NeedsUpdate( void ) { return true; }
 	virtual bool HasInputElements( void ) { return true; }
 	virtual void ShowPanel( bool bShow );
 
@@ -32,15 +32,11 @@ public:
 	virtual void OnCommand( const char* command );
 	virtual void OnKeyCodePressed( vgui::KeyCode code );
 
-	void CreateImagePanels( int classId );
-
 private:
 	IViewPort* m_pViewPort;
 	int m_iJumpKey;
 	int m_iScoreboardKey;
 	float m_fCreationTime;
-	bool m_bUnknown;
-	bool m_bNeedsUpdate;
 };
 
-#endif // NEO_CLASSMENU_H
+#endif // NEO_TEAMMENU_H

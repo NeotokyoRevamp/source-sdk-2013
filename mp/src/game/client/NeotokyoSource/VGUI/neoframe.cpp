@@ -8,9 +8,8 @@ namespace vgui
 CNeoFrame::CNeoFrame( const char *panelName ) : Frame( nullptr, panelName )
 {
 	ISurface* pSurface = surface();
-	ISchemeManager* pScheme = scheme();
 
-	SetScheme( pScheme->LoadSchemeFromFile( "resource/ClientScheme.res", "ClientScheme" ) );
+	SetScheme( scheme()->LoadSchemeFromFile( "resource/ClientScheme.res", "ClientScheme" ) );
 
 	m_iTextureID1 = pSurface->CreateNewTextureID();
 	pSurface->DrawSetTextureFile( m_iTextureID1, "vgui/ngui_corner", true, false );

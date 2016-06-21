@@ -3,6 +3,7 @@
 #include "clientmode_neonormal.h"
 #include "c_neoplayer.h"
 #include "neoimagebutton.h"
+#include "IGameUIFuncs.h"
 
 static const char* s_ClassMenuClassesJinrai[ 18 ]
 {
@@ -65,31 +66,23 @@ const char* GetNameOfClass( int teamId, int classId, int variant )
 }
 
 
-CNeoClassMenu::CNeoClassMenu() : CNeoFrame( PANEL_CLASS )
+CNeoClassMenu::CNeoClassMenu( IViewPort *pViewPort ) : CNeoFrame( PANEL_CLASS )
 {
-	m_iUnknown = 0;
-	m_iUnknown2 = 0;
+	m_pViewPort = pViewPort;
 
-	m_fCreationTime = gpGlobals->curtime;
+	m_iJumpKey = 0;
+	m_iScoreboardKey = 0;
 
-	m_bUnknown2 = false;
+	m_bNeedsUpdate = false;
 
 	LoadControlSettings( "Resource/UI/ClassMenu.res" );
 	InvalidateLayout();
+
+	m_fCreationTime = gpGlobals->curtime;
 }
 
 CNeoClassMenu::~CNeoClassMenu()
 {
-}
-
-bool CNeoClassMenu::IsVisible()
-{
-	return BaseClass::IsVisible();
-}
-
-void CNeoClassMenu::SetParent( vgui::VPANEL newParent )
-{
-	BaseClass::SetParent( newParent );
 }
 
 void CNeoClassMenu::ApplySchemeSettings( vgui::IScheme* pScheme )
@@ -178,8 +171,62 @@ void CNeoClassMenu::OnCommand( const char* command )
 
 void CNeoClassMenu::OnKeyCodePressed( vgui::KeyCode code )
 {
-	if ( !m_iUnknown2 || m_iUnknown2 != code )
+	if ( !m_iScoreboardKey || m_iScoreboardKey != code )
 		BaseClass::OnKeyCodePressed( code );
+}
+
+void CNeoClassMenu::Update()
+{
+	C_NEOPlayer* localPlayer = C_NEOPlayer::GetLocalNEOPlayer();
+
+	if ( localPlayer && (localPlayer->GetTeamNumber() == 2 || localPlayer->GetTeamNumber() == 3) )
+	{
+		m_bNeedsUpdate = false;
+		CreateImagePanels( localPlayer->m_iClassType );
+	}
+}
+
+void CNeoClassMenu::ShowPanel( bool bShow )
+{
+	gViewPortInterface->ShowPanel( PANEL_SCOREBOARD, false );
+
+	if ( IsVisible() == bShow )
+		return;
+
+	if ( bShow )
+	{
+		Activate();
+		SetMouseInputEnabled( true );
+
+		if ( !m_iJumpKey )
+			m_iJumpKey = gameuifuncs->GetButtonCodeForBind( "jump" );
+
+		if ( !m_iScoreboardKey )
+			m_iScoreboardKey = gameuifuncs->GetButtonCodeForBind( "showscores" );
+
+		MoveToCenterOfScreen();
+
+		int classId = C_NEOPlayer::GetLocalNEOPlayer()->m_iClassType;
+
+		if ( classId == 0 )
+		{
+			classId = 1;
+			engine->ClientCmd( "setclass 1" );
+		}
+
+		m_bUnknown = true;
+
+		CreateImagePanels( classId );
+		CreateImagePanels( classId );
+	}
+
+	else
+	{
+		SetVisible( false );
+		SetMouseInputEnabled( false );
+	}
+
+	m_pViewPort->ShowBackGround( bShow );
 }
 
 void CNeoClassMenu::CreateImagePanels( int classId )
@@ -197,7 +244,7 @@ void CNeoClassMenu::CreateImagePanels( int classId )
 
 	if ( localPlayer->GetTeamNumber() != 2 && localPlayer->GetTeamNumber() != 3 )
 	{
-		m_bUnknown2 = true;
+		m_bNeedsUpdate = true;
 		classId = 0;
 	}
 

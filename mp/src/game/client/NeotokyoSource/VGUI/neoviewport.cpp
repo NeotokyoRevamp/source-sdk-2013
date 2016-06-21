@@ -1,6 +1,8 @@
 #include "cbase.h"
 #include "NEOViewport.h"
 #include "neo_shareddefs.h"
+#include "neoteammenu.h"
+#include "neoclassmenu.h"
 
 void NEOViewport::ApplySchemeSettings( vgui::IScheme *pScheme )
 {
@@ -17,7 +19,7 @@ IViewPortPanel* NEOViewport::CreatePanelByName( const char *szPanelName )
 
 	if ( V_strcmp( PANEL_TEAM, szPanelName ) == 0 )
 	{
-		//newpanel = new CNeoTeamMenu( this );
+		newpanel = new CNeoTeamMenu( this );
 	}
 
 	else if ( V_strcmp( PANEL_SCOREBOARD, szPanelName ) == 0 )
@@ -27,7 +29,7 @@ IViewPortPanel* NEOViewport::CreatePanelByName( const char *szPanelName )
 
 	else if ( V_strcmp( PANEL_CLASS, szPanelName ) == 0 )
 	{
-		//newpanel = new CNeoClassMenu( this );
+		newpanel = new CNeoClassMenu( this );
 	}
 
 	else if ( V_strcmp( PANEL_LOADOUT_DEV, szPanelName ) == 0 )
