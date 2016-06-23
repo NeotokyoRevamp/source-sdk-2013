@@ -33,7 +33,7 @@ void CNeoTeamMenu::ApplySchemeSettings( vgui::IScheme* pScheme )
 
 void CNeoTeamMenu::OnCommand( const char* command )
 {
-	if ( V_stricmp( "vguicancel", command ) && V_stricmp( "Close", command ) )
+	if ( V_stricmp( command, "vguicancel" ) && V_stricmp( command, "Close" ) )
 		engine->ClientCmd( command );
 
 	Close();

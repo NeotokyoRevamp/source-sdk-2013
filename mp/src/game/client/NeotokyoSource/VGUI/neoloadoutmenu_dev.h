@@ -1,26 +1,28 @@
-#ifndef NEO_TEAMMENU_H
-#define NEO_TEAMMENU_H
+#ifndef NEO_LOADOUTMENUDEV_H
+#define NEO_LOADOUTMENUDEV_H
 
 #ifdef _WIN32
 #pragma once
 #endif
 
+#include <string>
 #include "neoframe.h"
 #include <game/client/iviewport.h>
+#include "neo_shareddefs.h"
 
-class CNeoTeamMenu : public vgui::CNeoFrame, public IViewPortPanel
+class CNeoLoadoutMenu_Dev : public vgui::CNeoFrame, public IViewPortPanel
 {
-	DECLARE_CLASS_SIMPLE( CNeoTeamMenu, vgui::CNeoFrame );
+	DECLARE_CLASS_SIMPLE( CNeoLoadoutMenu_Dev, vgui::CNeoFrame );
 
 public:
-	CNeoTeamMenu( IViewPort *pViewPort );
-	virtual ~CNeoTeamMenu();
+	CNeoLoadoutMenu_Dev( IViewPort *pViewPort );
+	virtual ~CNeoLoadoutMenu_Dev();
 
-	virtual const char *GetName( void ) { return PANEL_TEAM; }
+	virtual const char *GetName( void ) { return PANEL_LOADOUT_DEV; }
 	virtual void SetData( KeyValues *data ) {};
 	virtual void Reset() {};
 	virtual void Update();
-	virtual bool NeedsUpdate( void ) { return true; }
+	virtual bool NeedsUpdate( void ) { return m_bNeedsUpdate; }
 	virtual bool HasInputElements( void ) { return true; }
 	virtual void ShowPanel( bool bShow );
 
@@ -32,11 +34,15 @@ public:
 	virtual void OnCommand( const char* command );
 	virtual void OnKeyCodePressed( vgui::KeyCode code );
 
+	virtual void SetWeaponImages();
+
 private:
 	IViewPort* m_pViewPort;
 	int m_iJumpKey;
 	int m_iScoreboardKey;
 	float m_fCreationTime;
+	bool m_bUnknown;
+	bool m_bNeedsUpdate;
 };
 
-#endif // NEO_TEAMMENU_H
+#endif // NEO_LOADOUTMENUDEV_H

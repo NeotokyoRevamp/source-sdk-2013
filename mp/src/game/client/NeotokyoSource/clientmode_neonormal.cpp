@@ -9,13 +9,13 @@
 // Instance the singleton and expose the interface to it.
 IClientMode* GetClientModeNormal()
 {
-	static ClientModeNEONormal g_ClientModeNormal;
-	return &g_ClientModeNormal;
+	return GetClientModeNEONormal();
 }
 
 ClientModeNEONormal* GetClientModeNEONormal()
 {
-	return (ClientModeNEONormal*) GetClientModeNormal();
+	static ClientModeNEONormal g_ClientModeNormal;
+	return &g_ClientModeNormal;
 }
 
 

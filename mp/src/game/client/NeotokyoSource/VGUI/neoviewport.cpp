@@ -3,6 +3,8 @@
 #include "neo_shareddefs.h"
 #include "neoteammenu.h"
 #include "neoclassmenu.h"
+#include "neoloadoutmenu_dev.h"
+#include "neoloadoutmenu.h"
 
 void NEOViewport::ApplySchemeSettings( vgui::IScheme *pScheme )
 {
@@ -34,12 +36,12 @@ IViewPortPanel* NEOViewport::CreatePanelByName( const char *szPanelName )
 
 	else if ( V_strcmp( PANEL_LOADOUT_DEV, szPanelName ) == 0 )
 	{
-		//newpanel = new CNeoLoadoutMenu_Dev( this );
+		newpanel = new CNeoLoadoutMenu_Dev( this );
 	}
 
 	else if ( V_strcmp( PANEL_LOADOUT, szPanelName ) == 0 )
 	{
-		//newpanel = new CNeoLoadoutMenu( this );
+		newpanel = new CNeoLoadoutMenu( this );
 	}
 
 	else

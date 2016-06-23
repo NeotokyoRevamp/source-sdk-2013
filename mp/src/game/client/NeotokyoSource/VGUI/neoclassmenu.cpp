@@ -95,20 +95,20 @@ void CNeoClassMenu::OnCommand( const char* command )
 	if ( GetClientModeNEONormal()->IsNEODev() )
 		engine->ClientCmd( "iamantdev" );
 
-	if ( !V_stricmp( "vguicancel", command ) || !V_stricmp( "Close", command ) )
+	if ( !V_stricmp( command, "vguicancel" ) || !V_stricmp( command, "Close" ) )
 	{
 		Close();
 		gViewPortInterface->ShowBackGround( false );
 	}
 	
-	else if ( !V_stricmp( "playerready", command ) )
+	else if ( !V_stricmp( command, "playerready" ) )
 	{
 		engine->ClientCmd( command );
 		Close();
 		gViewPortInterface->ShowBackGround( false );
 	}
 
-	else if ( !V_stricmp( "SetVariant 0", command ) )
+	else if ( !V_stricmp( command, "SetVariant 0" ) )
 	{
 		C_NEOPlayer::GetLocalNEOPlayer()->m_iOldClassType = 0;
 
@@ -120,7 +120,7 @@ void CNeoClassMenu::OnCommand( const char* command )
 		}
 	}
 
-	else if ( !V_stricmp( "SetVariant 1", command ) )
+	else if ( !V_stricmp( command, "SetVariant 1" ) )
 	{
 		C_NEOPlayer::GetLocalNEOPlayer()->m_iOldClassType = 1;
 
@@ -132,7 +132,7 @@ void CNeoClassMenu::OnCommand( const char* command )
 		}
 	}
 
-	else if ( !V_stricmp( "SetVariant 2", command ) )
+	else if ( !V_stricmp( command, "SetVariant 2" ) )
 	{
 		C_NEOPlayer::GetLocalNEOPlayer()->m_iOldClassType = 2;
 
@@ -144,21 +144,21 @@ void CNeoClassMenu::OnCommand( const char* command )
 		}
 	}
 
-	else if ( !V_stricmp( "setclass 1", command ) )
+	else if ( !V_stricmp( command, "setclass 1" ) )
 	{
 		m_bUnknown = true;
 		CreateImagePanels( 1 );
 		engine->ClientCmd( command );
 	}
 
-	else if ( !V_stricmp( "setclass 2", command ) )
+	else if ( !V_stricmp( command, "setclass 2" ) )
 	{		
 		m_bUnknown = true;
 		CreateImagePanels( 2 );
 		engine->ClientCmd( command );
 	}
 
-	else if ( !V_stricmp( "setclass 3", command ) )
+	else if ( !V_stricmp( command, "setclass 3" ) )
 	{
 		m_bUnknown = true;
 		CreateImagePanels( 3 );
@@ -252,8 +252,8 @@ void CNeoClassMenu::CreateImagePanels( int classId )
 	imagePanel->SetTexture( GetNameOfClass( localPlayer->GetTeamNumber(), classId, 0 ) );
 
 	vgui::CNImageButton* imagePanel2 = (vgui::CNImageButton*) FindChildByName( "Model_ImagePanel2" );
-	imagePanel2->SetTexture( GetNameOfClass( localPlayer->GetTeamNumber(), classId, 0 ) );
+	imagePanel2->SetTexture( GetNameOfClass( localPlayer->GetTeamNumber(), classId, 1 ) );
 
 	vgui::CNImageButton* imagePanel3 = (vgui::CNImageButton*) FindChildByName( "Model_ImagePanel3" );
-	imagePanel3->SetTexture( GetNameOfClass( localPlayer->GetTeamNumber(), classId, 0 ) );
+	imagePanel3->SetTexture( GetNameOfClass( localPlayer->GetTeamNumber(), classId, 2) );
 }
