@@ -52,3 +52,20 @@ const CViewVectors* CNEOGameRules::GetViewVectors() const
 {
 	return &g_NEOViewVectors;
 }
+
+// I'm not sure what this is all about since the values seem to be 0 all the time
+void CNEOGameRules::LevelShutdown()
+{
+	DevMsg( "Client CNEOGameRules::LevelShutdown\n" );
+
+	if ( m_iUnknown2 < 0 )
+		m_iUnknown4 = m_iUnknown;
+
+	else
+	{
+		delete m_iUnknown;
+
+		m_iUnknown1 = 0;
+		m_iUnknown4 = nullptr;
+	}
+}

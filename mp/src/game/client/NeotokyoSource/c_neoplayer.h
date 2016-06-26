@@ -66,6 +66,8 @@ public:
 	static C_NEOPlayer* GetLocalNEOPlayer();
 
 	bool IsLocalNEOPlayer( void ) const;
+	bool CanMove();
+	bool CanSpeedBoost();
 
 	CWeaponNEOBase* GetActiveNEOWeapon() const;
 

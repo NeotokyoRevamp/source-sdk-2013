@@ -9,6 +9,7 @@
 #include "materialsystem\imaterialvar.h"
 #include "convar.h"
 #include "view_scene.h"
+#include "neo_gamerules.h"
 
 ConVar cl_nt_ragdoll_lifetime( "cl_nt_ragdoll_lifetime", "60", FCVAR_REPLICATED );
 
@@ -358,6 +359,16 @@ C_NEOPlayer* C_NEOPlayer::GetLocalNEOPlayer()
 bool C_NEOPlayer::IsLocalNEOPlayer( void ) const
 {
 	return (GetLocalNEOPlayer() == this);
+}
+
+bool C_NEOPlayer::CanMove()
+{
+	return (GetObserverMode() == OBS_MODE_NONE && !NEOGameRules()->IsInFreezePeriod());
+}
+
+bool C_NEOPlayer::CanSpeedBoost()
+{
+	return m_fSprintNRG > 33.f;
 }
 
 CWeaponNEOBase* C_NEOPlayer::GetActiveNEOWeapon() const

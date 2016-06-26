@@ -1,9 +1,46 @@
 #include "cbase.h"
 #include "clientmode_neonormal.h"
+#include "ivmodemanager.h"
+#include "panelmetaclassmgr.h"
+#include "neo_gamerules.h"
 #include "VGUI\neoviewport.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+#define SCREEN_FILE		"scripts/vgui_screens.txt"
+
+
+class CNEOModeManager : public IVModeManager
+{
+public:
+	virtual void	Init();
+	virtual void	SwitchMode( bool commander, bool force ) {}
+	virtual void	LevelInit( const char *newmap );
+	virtual void	LevelShutdown( void );
+	virtual void	ActivateMouse( bool isactive ) {}
+};
+
+static CNEOModeManager g_ModeManager;
+IVModeManager *modemanager = (IVModeManager *) &g_ModeManager;
+
+void CNEOModeManager::Init()
+{
+	g_pClientMode = GetClientModeNormal();
+
+	PanelMetaClassMgr()->LoadMetaClassDefinitionFile( SCREEN_FILE );
+}
+
+void CNEOModeManager::LevelInit( const char *newmap )
+{	
+	g_pClientMode->LevelInit( newmap );
+}
+
+void CNEOModeManager::LevelShutdown( void )
+{
+	NEOGameRules()->LevelShutdown();
+	g_pClientMode->LevelShutdown();
+}
 
 
 // Instance the singleton and expose the interface to it.

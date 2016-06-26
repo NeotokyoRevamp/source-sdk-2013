@@ -53,6 +53,12 @@ public : // IGameResources intreface
 	virtual int		GetFrags( int index );
 	virtual int		GetHealth( int index );
 
+#ifdef NEO_DLL
+	virtual int		GetClassType( int index );
+	virtual int		GetStar( int index );
+	virtual int		GetRank( int index );
+#endif
+
 	virtual void ClientThink();
 	virtual	void	OnDataChanged(DataUpdateType_t updateType);
 
@@ -70,6 +76,13 @@ protected:
 	bool	m_bAlive[MAX_PLAYERS+1];
 	int		m_iHealth[MAX_PLAYERS+1];
 	Color	m_Colors[MAX_TEAMS];
+
+#ifdef NEO_DLL
+	int		m_iClassType[MAX_PLAYERS+1];
+	int		m_iStar[MAX_PLAYERS+1];
+	int		m_iRank[MAX_PLAYERS+1];
+#endif
+
 	string_t m_szUnconnectedName;
 
 };

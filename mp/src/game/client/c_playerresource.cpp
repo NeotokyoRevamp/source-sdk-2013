@@ -13,6 +13,10 @@
 #include "hl2mp_gamerules.h"
 #endif
 
+#ifdef NEO_DLL
+#include "neo_shareddefs.h"
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -26,6 +30,11 @@ IMPLEMENT_CLIENTCLASS_DT_NOBASE(C_PlayerResource, DT_PlayerResource, CPlayerReso
 	RecvPropArray3( RECVINFO_ARRAY(m_iTeam), RecvPropInt( RECVINFO(m_iTeam[0]))),
 	RecvPropArray3( RECVINFO_ARRAY(m_bAlive), RecvPropInt( RECVINFO(m_bAlive[0]))),
 	RecvPropArray3( RECVINFO_ARRAY(m_iHealth), RecvPropInt( RECVINFO(m_iHealth[0]))),
+#ifdef NEO_DLL
+	RecvPropArray3( RECVINFO_ARRAY(m_iClassType), RecvPropInt( RECVINFO(m_iClassType[0]))),
+	RecvPropArray3( RECVINFO_ARRAY(m_iStar), RecvPropInt( RECVINFO(m_iStar[0]))),
+	RecvPropArray3( RECVINFO_ARRAY(m_iRank), RecvPropInt( RECVINFO(m_iRank[0]))),
+#endif
 END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_PlayerResource )
@@ -38,6 +47,11 @@ BEGIN_PREDICTION_DATA( C_PlayerResource )
 	DEFINE_PRED_ARRAY( m_iTeam, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
 	DEFINE_PRED_ARRAY( m_bAlive, FIELD_BOOLEAN, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
 	DEFINE_PRED_ARRAY( m_iHealth, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
+#ifdef NEO_DLL
+	DEFINE_PRED_ARRAY( m_iClassType, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE ),
+	DEFINE_PRED_ARRAY( m_iStar, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE ),
+	DEFINE_PRED_ARRAY( m_iRank, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE ),
+#endif
 
 END_PREDICTION_DATA()	
 
@@ -58,6 +72,9 @@ C_PlayerResource::C_PlayerResource()
 	memset( m_iTeam, 0, sizeof( m_iTeam ) );
 	memset( m_bAlive, 0, sizeof( m_bAlive ) );
 	memset( m_iHealth, 0, sizeof( m_iHealth ) );
+	memset( m_iClassType, 0, sizeof( m_iClassType ) );
+	memset( m_iStar, 0, sizeof( m_iStar ) );
+	memset( m_iRank, 0, sizeof( m_iRank ) );
 	m_szUnconnectedName = 0;
 	
 	for ( int i=0; i<MAX_TEAMS; i++ )
@@ -69,6 +86,13 @@ C_PlayerResource::C_PlayerResource()
 	m_Colors[TEAM_COMBINE] = COLOR_BLUE;
 	m_Colors[TEAM_REBELS] = COLOR_RED;
 	m_Colors[TEAM_UNASSIGNED] = COLOR_YELLOW;
+#endif
+
+#ifdef NEO_DLL
+	m_Colors[ TEAM_UNASSIGNED ] = COLOR_GREY;
+	m_Colors[ TEAM_SPECTATOR ] = COLOR_YELLOW;
+	m_Colors[ TEAM_JINRAI ] = COLOR_GREEN;
+	m_Colors[ TEAM_NSF ] = COLOR_BLUE;
 #endif
 
 	g_PR = this;
@@ -332,3 +356,29 @@ bool C_PlayerResource::IsConnected( int iIndex )
 	else
 		return m_bConnected[iIndex];
 }
+
+#ifdef NEO_DLL
+int C_PlayerResource::GetClassType( int index )
+{
+	if ( !IsConnected( index ) )
+		return 0; 
+	
+	return m_iClassType[ index ];
+}
+
+int C_PlayerResource::GetStar( int index )
+{
+	if ( !IsConnected( index ) )
+		return 0;
+
+	return m_iStar[ index ];
+}
+
+int C_PlayerResource::GetRank( int index )
+{
+	if ( !IsConnected( index ) )
+		return 0;
+
+	return m_iRank[ index ];
+}
+#endif
