@@ -6,6 +6,9 @@
 #include "IGameUIFuncs.h"
 #include "neoimagebutton.h"
 
+// memdbgon must be the last include file in a .cpp file!!!
+#include "tier0/memdbgon.h"
+
 CNeoLoadoutMenu_Dev::CNeoLoadoutMenu_Dev( IViewPort *pViewPort ) : CNeoFrame( PANEL_TEAM )
 {
 	m_pViewPort = pViewPort;

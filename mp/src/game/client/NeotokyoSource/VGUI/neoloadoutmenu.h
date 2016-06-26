@@ -54,18 +54,9 @@ public:
 
 public:
 	std::string m_szWeaponName;
-	int m_iUnknown; // There may be way too many unknown variables. Some may even be part of std::string
-
 	std::string m_szVguiImage;
-	int m_iUnknown2;
-
 	std::string m_szWeaponEntityName;
-	int m_iUnknown3;
-
 	std::string m_szAmmoType;
-	int m_iUnknown4;
-	int m_iUnknown5;
-	bool m_bUnknown;
 };
 
 extern CLoadoutWeaponClass s_DevLoadoutWeapons[ 14 ];

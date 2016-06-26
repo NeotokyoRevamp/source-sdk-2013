@@ -2,6 +2,7 @@
 #include "NEOViewport.h"
 #include "neo_shareddefs.h"
 #include "neoteammenu.h"
+#include "neoclientscoreboard.h"
 #include "neoclassmenu.h"
 #include "neoloadoutmenu_dev.h"
 #include "neoloadoutmenu.h"
@@ -26,7 +27,7 @@ IViewPortPanel* NEOViewport::CreatePanelByName( const char *szPanelName )
 
 	else if ( V_strcmp( PANEL_SCOREBOARD, szPanelName ) == 0 )
 	{
-		//newpanel = new CNEOClientScoreBoardDialog( this );
+		newpanel = new CNEOClientScoreBoardDialog( this );
 	}
 
 	else if ( V_strcmp( PANEL_CLASS, szPanelName ) == 0 )

@@ -5,6 +5,9 @@
 #include "IGameUIFuncs.h"
 #include "neoimagebutton.h"
 
+// memdbgon must be the last include file in a .cpp file!!!
+#include "tier0/memdbgon.h"
+
 static CLoadoutWeaponClass s_DevLoadoutWeapons[ 14 ]
 {
 	{ "MPN45", "vgui/loadout/loadout_mpn", "weapon_mpn", "AMMO_PRI" },
