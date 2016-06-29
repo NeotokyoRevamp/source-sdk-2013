@@ -641,3 +641,8 @@ const char* CWeaponNEOBase::GetTeam2ViewModelName()
 {
 	return ((CNEOWeaponInfo*) &GetWpnData())->m_szTeam2viewmodel; // Yeah this is kinda ugly
 }
+
+const CNEOWeaponInfo& CWeaponNEOBase::GetNEOWpnData() const
+{
+	return *(CNEOWeaponInfo*) &GetWpnData();
+}

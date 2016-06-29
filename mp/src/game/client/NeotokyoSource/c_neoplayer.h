@@ -75,6 +75,7 @@ public:
 	inline int GetVision() { return m_iVision; }
 	inline int GetSprint() { return m_iSprint; }
 
+	void UpdateSomething2();
 	void UpdateThermoptic();
 	void UpdateGeiger();
 	void UpdateVision();

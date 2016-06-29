@@ -376,6 +376,11 @@ CWeaponNEOBase* C_NEOPlayer::GetActiveNEOWeapon() const
 	return dynamic_cast< CWeaponNEOBase* >( GetActiveWeapon() );
 }
 
+void C_NEOPlayer::UpdateSomething2()
+{
+	// To mess with later
+}
+
 void C_NEOPlayer::UpdateThermoptic()
 {
 	if ( m_iThermoptic != m_iOldThermoptic )
@@ -878,6 +883,7 @@ void C_NEOPlayer::PreThink()
 {
 	BaseClass::PreThink();
 
+	UpdateSomething2();
 	UpdateThermoptic();
 	UpdateGeiger();
 	UpdateVision();

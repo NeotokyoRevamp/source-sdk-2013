@@ -64,6 +64,9 @@ public:
 	virtual float			GetRunningFov() { return 75.f; }
 	virtual float			GetAimingFov() { return 50.f; }
 
+public:
+	const CNEOWeaponInfo& GetNEOWpnData() const;
+
 public: // Let's just keep these public for a while
 	int			m_iTeam2ViewModelIndex; 
 
