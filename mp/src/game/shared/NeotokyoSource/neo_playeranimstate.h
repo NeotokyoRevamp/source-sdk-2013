@@ -20,6 +20,9 @@
 	class CNEOPlayer;
 #endif
 
+// When moving this fast, he plays run anim.
+#define ARBITRARY_RUN_SPEED		175.0f
+
 enum PlayerAnimEvent_t
 {
 	PLAYERANIMEVENT_FIRE_GUN_PRIMARY=0,

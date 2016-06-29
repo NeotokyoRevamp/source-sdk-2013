@@ -24,7 +24,14 @@ public:
 	// C_BaseEnity implementantions
 	virtual void			AddEntity();
 
-	virtual Vector			EyePosition();	 
+	virtual Vector			EyePosition();	
+
+	virtual void			OnDataChanged( DataUpdateType_t updateType );
+	virtual void			PostDataUpdate( DataUpdateType_t updateType );
+
+	virtual const QAngle&	GetRenderAngles();
+	virtual int				DrawModel( int flags );
+	virtual ShadowType_t	ShadowCastType();
 
 	// C_BaseAnimating implementations
 	virtual C_BaseAnimating* BecomeRagdollOnClient( bool bCopyEntity = true );
@@ -59,19 +66,27 @@ public:
 	static C_NEOPlayer* GetLocalNEOPlayer();
 
 	bool IsLocalNEOPlayer( void ) const;
+	bool CanMove();
+	bool CanSpeedBoost();
 
 	CWeaponNEOBase* GetActiveNEOWeapon() const;
 
+	inline int GetThermoptic() { return m_iThermoptic; }
+	inline int GetVision() { return m_iVision; }
+	inline int GetSprint() { return m_iSprint; }
+
+	void UpdateSomething2();
 	void UpdateThermoptic();
 	void UpdateGeiger();
 	void UpdateVision();
 	void UpdateInCross();
 	void UpdateSomething( float a1 );
 
-private:
+public: // Eh let's make it all public for now
 	CNetworkVar( bool, m_bIsVIP );
 
 	float m_flUnknown;
+
 	int m_iUnknown;
 	float m_flUnknown3;
 
@@ -118,6 +133,8 @@ private:
 	CNetworkVar( int, m_iLives );
 	CNetworkVar( int, m_iStar );
 
+	bool m_bUnknown;
+
 	CNetworkVar( float, m_fTurnSpeed );
 
 	float m_flUnknown4;
@@ -128,8 +145,10 @@ private:
 
 	bool m_bIsOnDeathScreen;
 
-	float m_fLastDeathTime;
+	float m_fRagdollCreationTime;
 	float m_fLastThinkTime;
+
+	bool m_bUnknown2;
 
 private:
 	C_NEOPlayer( const C_NEOPlayer& );

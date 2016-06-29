@@ -318,6 +318,8 @@ public:
 	void					SetOwner( CBaseCombatCharacter *owner );
 	virtual void			OnPickedUp( CBaseCombatCharacter *pNewOwner );
 
+	virtual void			OverrideViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles ); // This should be moved to C_WeaponNEOBase! -Ochii
+
 	virtual void			AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles ) {};
 	virtual float			CalcViewmodelBob( void ) { return 0.0f; };
 
@@ -602,6 +604,10 @@ public:
 	CNetworkVar( bool, m_bFlipViewModel );
 
 	IPhysicsConstraint		*GetConstraint() { return m_pConstraint; }
+
+#ifdef NEO_DLL
+	float m_fFov; // It's here to replicate the game, better move this to its own class later
+#endif
 
 private:
 	WEAPON_FILE_INFO_HANDLE	m_hWeaponFileInfo;

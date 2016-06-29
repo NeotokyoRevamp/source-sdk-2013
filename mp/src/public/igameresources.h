@@ -36,6 +36,12 @@ public:
 	virtual int		GetFrags( int index ) = 0;
 	virtual int		GetTeam( int index ) = 0;
 	virtual int		GetHealth( int index ) = 0;
+
+#ifdef NEO_DLL
+	virtual int		GetClassType( int index ) = 0;
+	virtual int		GetStar( int index ) = 0;
+	virtual int		GetRank( int index ) = 0;
+#endif
 };
 
 extern IGameResources *GameResources( void ); // singelton accessor
